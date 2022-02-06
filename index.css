@@ -14,7 +14,7 @@
 	border: none;
 }
 #index {
-	position: relative;
+	position: absolute;
 	width: 1920px;
 	height: 1080px;
 	background-color: rgba(255,255,255,1);
@@ -34,16 +34,16 @@
 	}
 
 }
-#background {
-	position: relative;
+#background_b {
+	position: absolute;
 	width: 1920px;
 	height: 1080px;
 	left: 0px;
 	top: 0px;
 	overflow: visible;
 }
-#MainContent {
-	position: relative;
+#MainContent_b {
+	position: absolute;
 	width: 1601.499px;
 	height: 716px;
 	left: 149.409px;
@@ -51,12 +51,12 @@
 	overflow: visible;
 	padding: 65px;
 }
-#background_l {
+#background_ca {
 	filter: blur(30px);
 	fill: rgba(255,255,255,1);
 }
-.background_l {
-	position: relative;
+.background_ca {
+	position: absolute;
 	overflow: visible;
 	width: 1601.587px;
 	height: 716px;
@@ -64,7 +64,7 @@
 	top: 0px;
 }
 #AboutmeButton {
-	position: relative;
+	position: absolute;
 	width: 360px;
 	height: 100px;
 	left: 1176.499px;
@@ -76,7 +76,7 @@
 	cursor: pointer;
 	padding: 32px 107px 32px 105px;
 }
-#About {
+#About_b {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -85,18 +85,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About {
-	position: relative;
+.About_b {
+	position: absolute;
 	overflow: visible;
 	width: 360px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
-#About_me {
+#About_me_b {
 	left: 105px;
 	top: 32px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 149px;
 	white-space: nowrap;
@@ -108,7 +108,7 @@
 	color: rgba(112,112,112,1);
 }
 #CGButton {
-	position: relative;
+	position: absolute;
 	width: 359px;
 	height: 100px;
 	left: 621.181px;
@@ -120,7 +120,7 @@
 	cursor: pointer;
 	padding: 32px 29px 32px 30px;
 }
-#CG {
+#CG_cb {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -129,18 +129,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG {
-	position: relative;
+.CG_cb {
+	position: absolute;
 	overflow: visible;
 	width: 359.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics {
+#Computer_Graphics_cc {
 	left: 30px;
 	top: 32px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 301px;
 	white-space: nowrap;
@@ -152,7 +152,7 @@
 	color: rgba(112,112,112,1);
 }
 #ProgrammingButton {
-	position: relative;
+	position: absolute;
 	width: 359px;
 	height: 100px;
 	left: 65px;
@@ -160,7 +160,7 @@
 	overflow: visible;
 	padding: 32px 79px 32px 80px;
 }
-#Programming {
+#Programming_ce {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -169,18 +169,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming {
-	position: relative;
+.Programming_ce {
+	position: absolute;
 	overflow: visible;
 	width: 359.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
-#Programming_u {
+#Programming_cf {
 	left: 80px;
 	top: 32px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 201px;
 	white-space: nowrap;
@@ -192,15 +192,15 @@
 	color: rgba(112,112,112,1);
 }
 #logo {
-	position: relative;
+	position: absolute;
 	width: 720px;
 	height: 396px;
 	left: 449.91px;
 	top: 65px;
 	overflow: visible;
 }
-#Header {
-	position: relative;
+#Header_ch {
+	position: absolute;
 	width: 1799.845px;
 	height: 100px;
 	left: 49.548px;
@@ -208,20 +208,20 @@
 	overflow: visible;
 	padding: 0px;
 }
-#HeaderBackground {
+#HeaderBackground_ci {
 	filter: blur(30px);
 	fill: rgba(255,255,255,1);
 }
-.HeaderBackground {
-	position: relative;
+.HeaderBackground_ci {
+	position: absolute;
 	overflow: visible;
 	width: 1799.845px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
-#Aboutme_Header {
-	position: relative;
+#Aboutme_Header_cj {
+	position: absolute;
 	width: 359.226px;
 	height: 70px;
 	left: 1440.619px;
@@ -232,7 +232,7 @@
 	--web-action-target: aboutme.html;
 	cursor: pointer;
 }
-#About_z {
+#About_ck {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -241,18 +241,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About_z {
-	position: relative;
+.About_ck {
+	position: absolute;
 	overflow: visible;
 	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
-#About_me_ {
+#About_me_cl {
 	left: 105.613px;
 	top: 17px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 149px;
 	white-space: nowrap;
@@ -263,8 +263,8 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#CG_Header {
-	position: relative;
+#CG_Header_cm {
+	position: absolute;
 	width: 359.226px;
 	height: 70px;
 	left: 1040.516px;
@@ -275,7 +275,7 @@
 	--web-action-target: CG.html;
 	cursor: pointer;
 }
-#CG_ {
+#CG_cn {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -284,18 +284,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG_ {
-	position: relative;
+.CG_cn {
+	position: absolute;
 	overflow: visible;
 	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics_ {
+#Computer_Graphics_co {
 	left: 29.113px;
 	top: 13.5px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 301px;
 	white-space: nowrap;
@@ -306,8 +306,8 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#Programming_Header {
-	position: relative;
+#Programming_Header_cp {
+	position: absolute;
 	width: 359.226px;
 	height: 70px;
 	left: 640.413px;
@@ -318,7 +318,7 @@
 	--web-action-target: programming.html;
 	cursor: pointer;
 }
-#Programming_ {
+#Programming_cq {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -327,18 +327,18 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_ {
-	position: relative;
+.Programming_cq {
+	position: absolute;
 	overflow: visible;
 	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
-#Programming_ba {
+#Programming_cr {
 	left: 79.613px;
 	top: 17px;
-	position: relative;
+	position: absolute;
 	overflow: visible;
 	width: 201px;
 	white-space: nowrap;
@@ -349,16 +349,16 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#TopLogo {
-	position: relative;
+#TopLogo_cs {
+	position: absolute;
 	width: 199.432px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 	overflow: visible;
 }
-#Top_Header {
-	position: relative;
+#Top_Header_ct {
+	position: absolute;
 	width: 199.432px;
 	height: 100px;
 	left: 0px;

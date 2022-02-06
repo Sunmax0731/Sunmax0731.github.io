@@ -34,7 +34,7 @@
 	}
 
 }
-#background {
+#background_bl {
 	position: absolute;
 	width: 1920px;
 	height: 1080px;
@@ -42,7 +42,7 @@
 	top: 0px;
 	overflow: visible;
 }
-#MainContent {
+#MainContent_bm {
 	position: absolute;
 	width: 1602.89px;
 	height: 716px;
@@ -50,11 +50,11 @@
 	top: 200px;
 	overflow: visible;
 }
-#background_l {
+#background_bn {
 	filter: blur(30px);
 	fill: rgba(255,255,255,1);
 }
-.background_l {
+.background_bn {
 	position: absolute;
 	overflow: visible;
 	width: 1602.891px;
@@ -76,7 +76,7 @@
 	font-size: 72px;
 	color: rgba(221,221,221,1);
 }
-#Header {
+#Header_bp {
 	position: absolute;
 	width: 1799.845px;
 	height: 100px;
@@ -85,11 +85,11 @@
 	overflow: visible;
 	padding: 0px;
 }
-#HeaderBackground {
+#HeaderBackground_bq {
 	filter: blur(30px);
 	fill: rgba(255,255,255,1);
 }
-.HeaderBackground {
+.HeaderBackground_bq {
 	position: absolute;
 	overflow: visible;
 	width: 1799.845px;
@@ -97,7 +97,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Aboutme_Header {
+#Aboutme_Header_br {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -109,7 +109,7 @@
 	--web-action-target: aboutme.html;
 	cursor: pointer;
 }
-#About {
+#About_bs {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -118,7 +118,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About {
+.About_bs {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -126,7 +126,7 @@
 	left: 0px;
 	top: 0px;
 }
-#About_me {
+#About_me_bt {
 	left: 105.613px;
 	top: 17px;
 	position: absolute;
@@ -140,7 +140,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#CG_Header {
+#CG_Header_bu {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -152,7 +152,7 @@
 	--web-action-target: CG.html;
 	cursor: pointer;
 }
-#CG {
+#CG_bv {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -161,7 +161,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG {
+.CG_bv {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -169,7 +169,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics {
+#Computer_Graphics_bw {
 	left: 29.113px;
 	top: 13.5px;
 	position: absolute;
@@ -183,7 +183,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#Programming_Header {
+#Programming_Header_bx {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -191,7 +191,7 @@
 	top: 15px;
 	overflow: visible;
 }
-#Programming_w {
+#Programming_by {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -200,7 +200,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_w {
+.Programming_by {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -208,7 +208,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_x {
+#Programming_bz {
 	left: 79.613px;
 	top: 17px;
 	position: absolute;
@@ -222,7 +222,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#TopLogo {
+#TopLogo_b {
 	position: absolute;
 	width: 199.432px;
 	height: 100px;
@@ -234,7 +234,7 @@
 	--web-action-target: index.html;
 	cursor: pointer;
 }
-#Top_Header {
+#Top_Header_b {
 	position: absolute;
 	width: 199.432px;
 	height: 100px;
