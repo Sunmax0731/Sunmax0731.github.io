@@ -1,0 +1,244 @@
+.mediaViewInfo {
+	--web-view-name: aboutme;
+	--web-view-id: aboutme;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+:root {
+	--web-view-ids: aboutme;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: none;
+}
+#aboutme {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	background-color: rgba(255,255,255,1);
+	overflow: hidden;
+	--web-view-name: aboutme;
+	--web-view-id: aboutme;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+@keyframes fadein {
+
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+
+}
+#background {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#MainContent {
+	position: absolute;
+	width: 1602.89px;
+	height: 716px;
+	left: 148.645px;
+	top: 200px;
+	overflow: visible;
+}
+#background_l {
+	filter: blur(30px);
+	fill: rgba(255,255,255,1);
+}
+.background_l {
+	position: absolute;
+	overflow: visible;
+	width: 1602.89px;
+	height: 716px;
+	left: 0px;
+	top: 0px;
+}
+#n_About_me {
+	left: 589.355px;
+	top: 304px;
+	position: absolute;
+	overflow: visible;
+	width: 559px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 72px;
+	color: rgba(221,221,221,1);
+}
+#Header {
+	position: absolute;
+	width: 1799.845px;
+	height: 100px;
+	left: 49.548px;
+	top: 55px;
+	overflow: visible;
+	padding: 0px;
+}
+#HeaderBackground {
+	filter: blur(30px);
+	fill: rgba(255,255,255,1);
+}
+.HeaderBackground {
+	position: absolute;
+	overflow: visible;
+	width: 1799.845px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Aboutme_Header {
+	position: absolute;
+	width: 359.226px;
+	height: 70px;
+	left: 1440.62px;
+	top: 15px;
+	overflow: visible;
+}
+#About {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.About {
+	position: absolute;
+	overflow: visible;
+	width: 359.226px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#About_me {
+	left: 105.613px;
+	top: 17px;
+	position: absolute;
+	overflow: visible;
+	width: 149px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#CG_Header {
+	position: absolute;
+	width: 359.226px;
+	height: 70px;
+	left: 1040.516px;
+	top: 15px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: CG.html;
+	cursor: pointer;
+}
+#CG {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.CG {
+	position: absolute;
+	overflow: visible;
+	width: 359.226px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#Computer_Graphics {
+	left: 29.113px;
+	top: 13.5px;
+	position: absolute;
+	overflow: visible;
+	width: 301px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#Programming_Header {
+	position: absolute;
+	width: 359.226px;
+	height: 70px;
+	left: 640.413px;
+	top: 15px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: programming.html;
+	cursor: pointer;
+}
+#Programming {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Programming {
+	position: absolute;
+	overflow: visible;
+	width: 359.226px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_x {
+	left: 79.613px;
+	top: 17px;
+	position: absolute;
+	overflow: visible;
+	width: 201px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#TopLogo {
+	position: absolute;
+	width: 199.432px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: index.html;
+	cursor: pointer;
+}
+#Top_Header {
+	position: absolute;
+	width: 199.432px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
