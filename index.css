@@ -1,0 +1,332 @@
+.mediaViewInfo {
+	--web-view-name: index;
+	--web-view-id: index;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+:root {
+	--web-view-ids: index;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: none;
+}
+#index {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	background-color: rgba(255,255,255,1);
+	overflow: hidden;
+	--web-view-name: index;
+	--web-view-id: index;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+#background {
+	fill: rgba(255,255,255,1);
+}
+.background {
+	position: absolute;
+	overflow: visible;
+	width: 1920px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#MainContent {
+	position: absolute;
+	width: 1602px;
+	height: 716px;
+	left: 149px;
+	top: 200px;
+	overflow: visible;
+	padding: 65px;
+}
+#background_i {
+	filter: blur(30px);
+	fill: rgba(255,255,255,1);
+}
+.background_i {
+	position: absolute;
+	overflow: visible;
+	width: 1602px;
+	height: 716px;
+	left: 0px;
+	top: 0px;
+}
+#AboutmeButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 1177px;
+	top: 551px;
+	overflow: visible;
+	padding: 32px 106px 32px 106px;
+}
+#About {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.About {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#About_me {
+	left: 106px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 149px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#CGButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 621px;
+	top: 551px;
+	overflow: visible;
+	padding: 32px 24px 32px 36px;
+}
+#CG {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.CG {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Computer_Graphics {
+	left: 36px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 301px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#ProgrammingButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 65px;
+	top: 551px;
+	overflow: visible;
+	padding: 32px 80px 32px 80px;
+}
+#Programming {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Programming {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_r {
+	left: 80px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 201px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#logo {
+	position: absolute;
+	width: 720px;
+	height: 396px;
+	left: 451px;
+	top: 65px;
+	overflow: visible;
+}
+#Header {
+	position: absolute;
+	width: 1800px;
+	height: 100px;
+	left: 50px;
+	top: 55px;
+	overflow: visible;
+	padding: 0px;
+}
+#HeaderBackground {
+	filter: blur(30px);
+	fill: rgba(255,255,255,1);
+}
+.HeaderBackground {
+	position: absolute;
+	overflow: visible;
+	width: 1800px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_Header {
+	position: absolute;
+	width: 360px;
+	height: 70px;
+	left: 640px;
+	top: 15px;
+	overflow: visible;
+}
+#Programming_w {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Programming_w {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_x {
+	left: 80px;
+	top: 17px;
+	position: absolute;
+	overflow: visible;
+	width: 201px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#CG_Header {
+	position: absolute;
+	width: 360px;
+	height: 70px;
+	left: 1040px;
+	top: 15px;
+	overflow: visible;
+}
+#CG_z {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.CG_z {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#Computer_Graphics_ {
+	left: 30px;
+	top: 17px;
+	position: absolute;
+	overflow: visible;
+	width: 301px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#Aboutme_Header {
+	position: absolute;
+	width: 360px;
+	height: 70px;
+	left: 1440px;
+	top: 15px;
+	overflow: visible;
+}
+#About_ {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.About_ {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 70px;
+	left: 0px;
+	top: 0px;
+}
+#About_me_ {
+	left: 106px;
+	top: 17px;
+	position: absolute;
+	overflow: visible;
+	width: 149px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#Top_Header {
+	position: absolute;
+	width: 200px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
