@@ -84,7 +84,7 @@
 	overflow: visible;
 	width: 149px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
@@ -111,7 +111,7 @@
 .CG {
 	position: absolute;
 	overflow: visible;
-	width: 360.226px;
+	width: 359.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
@@ -150,19 +150,19 @@
 .Programming {
 	position: absolute;
 	overflow: visible;
-	width: 360.226px;
+	width: 359.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
 #Programming_r {
-	left: 79.613px;
+	left: 80.113px;
 	top: 32px;
 	position: absolute;
 	overflow: visible;
 	width: 201px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
@@ -198,15 +198,15 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_Header {
+#Aboutme_Header {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
-	left: 640.413px;
+	left: 1440.619px;
 	top: 15px;
 	overflow: visible;
 }
-#Programming_w {
+#About_w {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -215,7 +215,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_w {
+.About_w {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -223,14 +223,14 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_x {
-	left: 79.613px;
+#About_me_x {
+	left: 105.613px;
 	top: 17px;
 	position: absolute;
 	overflow: visible;
-	width: 201px;
+	width: 149px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
@@ -276,15 +276,15 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#Aboutme_Header {
+#Programming_Header {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
-	left: 1440.619px;
+	left: 640.413px;
 	top: 15px;
 	overflow: visible;
 }
-#About_ {
+#Programming_ {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -293,7 +293,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About_ {
+.Programming_ {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -301,14 +301,14 @@
 	left: 0px;
 	top: 0px;
 }
-#About_me_ {
-	left: 105.613px;
+#Programming_ba {
+	left: 79.613px;
 	top: 17px;
 	position: absolute;
 	overflow: visible;
-	width: 149px;
+	width: 201px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
