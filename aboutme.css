@@ -1,0 +1,277 @@
+.mediaViewInfo {
+	--web-view-name: aboutme;
+	--web-view-id: aboutme;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+:root {
+	--web-view-ids: aboutme;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: none;
+}
+#aboutme {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	background-color: rgba(255,255,255,1);
+	overflow: hidden;
+	--web-view-name: aboutme;
+	--web-view-id: aboutme;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+@keyframes fadein {
+
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+
+}
+#background {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.background {
+	position: absolute;
+	overflow: visible;
+	width: 1920px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#MainContent {
+	position: absolute;
+	width: 1520px;
+	height: 844px;
+	left: 400px;
+	top: 236px;
+	overflow: visible;
+}
+#n_2 {
+	mix-blend-mode: normal;
+	position: absolute;
+	width: 1520px;
+	height: 844px;
+	left: 0px;
+	top: 0px;
+	overflow: hidden;
+}
+#n_1 {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.n_1 {
+	position: absolute;
+	overflow: visible;
+	width: 1520px;
+	height: 1080px;
+	left: 0px;
+	top: -236px;
+}
+#Text {
+	left: 218px;
+	top: 35px;
+	position: absolute;
+	overflow: visible;
+	width: 408px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 72px;
+	color: rgba(112,112,112,1);
+}
+#n__VR____Sunmax____httpstwitte {
+	left: 293px;
+	top: 187px;
+	position: absolute;
+	overflow: visible;
+	width: 963px;
+	height: 657px;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 54px;
+	color: rgba(112,112,112,1);
+}
+#Sidebar {
+	position: absolute;
+	width: 400px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#background_q {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.background_q {
+	position: absolute;
+	overflow: visible;
+	width: 400px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#AboutmeButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 500px;
+	overflow: visible;
+}
+#About {
+	fill: rgba(239,239,239,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.About {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#About_me {
+	left: 106px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 149px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#CGButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 380px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: CG.html;
+	cursor: pointer;
+}
+#n_DCG {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.n_DCG {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Computer_Graphics {
+	left: 30px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 301px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#ProgrammingButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 260px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: programming.html;
+	cursor: pointer;
+}
+#Programming {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Programming {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_z {
+	left: 80px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 201px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#LogoButton {
+	position: absolute;
+	width: 360px;
+	height: 200px;
+	left: 20px;
+	top: 20px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: index.html;
+	cursor: pointer;
+}

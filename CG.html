@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CG</title>
+<link rel="stylesheet" type="text/css" id="applicationStylesheet" href="CG.css"/>
+<script id="applicationScript" type="text/javascript" src="CG.js"></script>
+</head>
+<body>
+<div id="CG">
+	<svg class="background">
+		<rect id="background" rx="0" ry="0" x="0" y="0" width="1920" height="1080">
+		</rect>
+	</svg>
+	<div id="MainContent">
+		<div id="CG_l">
+			<span>CGのスキルセット</span>
+		</div>
+		<div id="Adobe__Photoshop__Photoshop_Li">
+			<span>Adobe</span><br/><span style="font-size:48px;"> Photoshop<br/> Photoshop Lightroom<br/> Illustrator</span><br/><span><br/>3DCG<br/> </span><span style="font-size:48px;">Blender キャラクターモデリング</span>
+		</div>
+	</div>
+	<div id="Sidebar">
+		<svg class="background_o">
+			<rect id="background_o" rx="0" ry="0" x="0" y="0" width="400" height="1080">
+			</rect>
+		</svg>
+		<div onclick="application.goToTargetView(event)" id="AboutmeButton">
+			<svg class="About">
+				<rect id="About" rx="8" ry="8" x="0" y="0" width="360" height="100">
+				</rect>
+			</svg>
+			<div id="About_me">
+				<span>About me</span>
+			</div>
+		</div>
+		<div id="n_DCGButton">
+			<svg class="n_DCG">
+				<rect id="n_DCG" rx="8" ry="8" x="0" y="0" width="360" height="100">
+				</rect>
+			</svg>
+			<div id="Computer_Graphics">
+				<span>Computer Graphics</span>
+			</div>
+		</div>
+		<div onclick="application.goToTargetView(event)" id="ProgrammingButton">
+			<svg class="Programming">
+				<rect id="Programming" rx="8" ry="8" x="0" y="0" width="360" height="100">
+				</rect>
+			</svg>
+			<div id="Programming_x">
+				<span>Programming</span>
+			</div>
+		</div>
+		<img onclick="application.goToTargetView(event)" id="LogoButton" src="LogoButton.png" srcset="LogoButton.png 1x, LogoButton@2x.png 2x">
+			
+	</div>
+</div>
+</body>
+</html>

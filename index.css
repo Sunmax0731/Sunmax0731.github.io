@@ -1,0 +1,272 @@
+.mediaViewInfo {
+	--web-view-name: index;
+	--web-view-id: index;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+:root {
+	--web-view-ids: index;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: none;
+}
+#index {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	background-color: rgba(255,255,255,1);
+	overflow: hidden;
+	--web-view-name: index;
+	--web-view-id: index;
+	--web-scale-on-resize: true;
+	--web-enable-deep-linking: true;
+}
+@keyframes fadein {
+
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+
+}
+#background {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.background {
+	position: absolute;
+	overflow: visible;
+	width: 1920px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#MainContent {
+	position: absolute;
+	width: 1520px;
+	height: 1080px;
+	left: 400px;
+	top: 0px;
+	overflow: visible;
+}
+#n_1 {
+	mix-blend-mode: normal;
+	position: absolute;
+	width: 1520px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+	overflow: hidden;
+}
+#n_1_m {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.n_1_m {
+	position: absolute;
+	overflow: visible;
+	width: 1520px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#TOP_Page {
+	left: 607px;
+	top: 504px;
+	position: absolute;
+	overflow: visible;
+	width: 308px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 72px;
+	color: rgba(112,112,112,1);
+}
+#Sidebar {
+	position: absolute;
+	width: 400px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#background_p {
+	filter: blur(30px);
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.background_p {
+	position: absolute;
+	overflow: visible;
+	width: 400px;
+	height: 1080px;
+	left: 0px;
+	top: 0px;
+}
+#AboutmeButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 500px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: aboutme.html;
+	cursor: pointer;
+}
+#About {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.About {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#About_me {
+	left: 106px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 149px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#CGButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 380px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: CG.html;
+	cursor: pointer;
+}
+#CG {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.CG {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Computer_Graphics {
+	left: 36px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 301px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#ProgrammingButton {
+	position: absolute;
+	width: 360px;
+	height: 100px;
+	left: 20px;
+	top: 260px;
+	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: programming.html;
+	cursor: pointer;
+}
+#Programming {
+	fill: rgba(255,255,255,1);
+	stroke: rgba(112,112,112,1);
+	stroke-width: 1px;
+	stroke-linejoin: miter;
+	stroke-linecap: butt;
+	stroke-miterlimit: 4;
+	shape-rendering: auto;
+}
+.Programming {
+	position: absolute;
+	overflow: visible;
+	width: 360px;
+	height: 100px;
+	left: 0px;
+	top: 0px;
+}
+#Programming_y {
+	left: 80px;
+	top: 32px;
+	position: absolute;
+	overflow: visible;
+	width: 201px;
+	white-space: nowrap;
+	text-align: left;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 36px;
+	color: rgba(112,112,112,1);
+}
+#LogoButton {
+	position: absolute;
+	width: 360px;
+	height: 200px;
+	left: 20px;
+	top: 20px;
+	overflow: visible;
+}
+#LogoButton_ {
+	position: absolute;
+	width: 360px;
+	height: 200px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
