@@ -34,9 +34,9 @@
 }
 #MainContent {
 	position: absolute;
-	width: 1602px;
+	width: 1602.89px;
 	height: 716px;
-	left: 149px;
+	left: 148.645px;
 	top: 200px;
 	overflow: visible;
 }
@@ -47,19 +47,18 @@
 .background_i {
 	position: absolute;
 	overflow: visible;
-	width: 1602px;
+	width: 1602.891px;
 	height: 716px;
 	left: 0px;
 	top: 0px;
 }
 #AboutmeButton {
 	position: absolute;
-	width: 360px;
+	width: 360.465px;
 	height: 100px;
-	left: 1177px;
+	left: 1176.774px;
 	top: 551px;
 	overflow: visible;
-	padding: 32px 106px 32px 106px;
 }
 #About {
 	fill: rgba(255,255,255,1);
@@ -73,13 +72,13 @@
 .About {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 360.465px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
 #About_me {
-	left: 106px;
+	left: 105.49px;
 	top: 32px;
 	position: absolute;
 	overflow: visible;
@@ -94,12 +93,11 @@
 }
 #CGButton {
 	position: absolute;
-	width: 360px;
+	width: 359.226px;
 	height: 100px;
-	left: 621px;
+	left: 621.832px;
 	top: 551px;
 	overflow: visible;
-	padding: 32px 24px 32px 36px;
 }
 #CG {
 	fill: rgba(255,255,255,1);
@@ -113,19 +111,19 @@
 .CG {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 360.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
 #Computer_Graphics {
-	left: 36px;
+	left: 30.113px;
 	top: 32px;
 	position: absolute;
 	overflow: visible;
 	width: 301px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
@@ -134,12 +132,11 @@
 }
 #ProgrammingButton {
 	position: absolute;
-	width: 360px;
+	width: 359.226px;
 	height: 100px;
-	left: 65px;
+	left: 65.651px;
 	top: 551px;
 	overflow: visible;
-	padding: 32px 80px 32px 80px;
 }
 #Programming {
 	fill: rgba(255,255,255,1);
@@ -153,13 +150,13 @@
 .Programming {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 360.226px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
 #Programming_r {
-	left: 80px;
+	left: 79.613px;
 	top: 32px;
 	position: absolute;
 	overflow: visible;
@@ -176,15 +173,15 @@
 	position: absolute;
 	width: 720px;
 	height: 396px;
-	left: 451px;
+	left: 450.674px;
 	top: 65px;
 	overflow: visible;
 }
 #Header {
 	position: absolute;
-	width: 1800px;
+	width: 1799.845px;
 	height: 100px;
-	left: 50px;
+	left: 49.548px;
 	top: 55px;
 	overflow: visible;
 	padding: 0px;
@@ -196,16 +193,16 @@
 .HeaderBackground {
 	position: absolute;
 	overflow: visible;
-	width: 1800px;
+	width: 1799.845px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
 }
 #Programming_Header {
 	position: absolute;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
-	left: 640px;
+	left: 640.413px;
 	top: 15px;
 	overflow: visible;
 }
@@ -221,13 +218,13 @@
 .Programming_w {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
 #Programming_x {
-	left: 80px;
+	left: 79.613px;
 	top: 17px;
 	position: absolute;
 	overflow: visible;
@@ -242,9 +239,9 @@
 }
 #CG_Header {
 	position: absolute;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
-	left: 1040px;
+	left: 1040.516px;
 	top: 15px;
 	overflow: visible;
 }
@@ -260,19 +257,19 @@
 .CG_z {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
 #Computer_Graphics_ {
-	left: 30px;
-	top: 17px;
+	left: 29.113px;
+	top: 13.5px;
 	position: absolute;
 	overflow: visible;
 	width: 301px;
 	white-space: nowrap;
-	text-align: left;
+	text-align: center;
 	font-family: HGPSoeiKakugothicUB;
 	font-style: normal;
 	font-weight: normal;
@@ -281,9 +278,9 @@
 }
 #Aboutme_Header {
 	position: absolute;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
-	left: 1440px;
+	left: 1440.619px;
 	top: 15px;
 	overflow: visible;
 }
@@ -299,13 +296,13 @@
 .About_ {
 	position: absolute;
 	overflow: visible;
-	width: 360px;
+	width: 359.226px;
 	height: 70px;
 	left: 0px;
 	top: 0px;
 }
 #About_me_ {
-	left: 106px;
+	left: 105.613px;
 	top: 17px;
 	position: absolute;
 	overflow: visible;
@@ -320,7 +317,7 @@
 }
 #Top_Header {
 	position: absolute;
-	width: 200px;
+	width: 199.432px;
 	height: 100px;
 	left: 0px;
 	top: 0px;
