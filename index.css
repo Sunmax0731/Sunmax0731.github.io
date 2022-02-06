@@ -25,15 +25,12 @@
 	--web-enable-deep-linking: true;
 }
 #background {
-	fill: rgba(255,255,255,1);
-}
-.background {
 	position: absolute;
-	overflow: visible;
 	width: 1920px;
 	height: 1080px;
 	left: 0px;
 	top: 0px;
+	overflow: visible;
 }
 #MainContent {
 	position: absolute;
@@ -42,7 +39,6 @@
 	left: 149px;
 	top: 200px;
 	overflow: visible;
-	padding: 65px;
 }
 #background_i {
 	filter: blur(30px);
