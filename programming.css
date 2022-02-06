@@ -1,11 +1,11 @@
 .mediaViewInfo {
-	--web-view-name: index;
-	--web-view-id: index;
+	--web-view-name: programming;
+	--web-view-id: programming;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
 :root {
-	--web-view-ids: index;
+	--web-view-ids: programming;
 }
 * {
 	margin: 0;
@@ -13,14 +13,14 @@
 	box-sizing: border-box;
 	border: none;
 }
-#index {
+#programming {
 	position: absolute;
 	width: 1920px;
 	height: 1080px;
 	background-color: rgba(255,255,255,1);
 	overflow: hidden;
-	--web-view-name: index;
-	--web-view-id: index;
+	--web-view-name: programming;
+	--web-view-id: programming;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -62,143 +62,6 @@
 	left: 0px;
 	top: 0px;
 }
-#AboutmeButton {
-	position: absolute;
-	width: 360.465px;
-	height: 100px;
-	left: 1176.774px;
-	top: 551px;
-	overflow: visible;
-	--web-animation: fadein 0.30000001192092896s ease-out;
-	--web-action-type: page;
-	--web-action-target: aboutme.html;
-	cursor: pointer;
-}
-#About {
-	fill: rgba(255,255,255,1);
-	stroke: rgba(112,112,112,1);
-	stroke-width: 1px;
-	stroke-linejoin: miter;
-	stroke-linecap: butt;
-	stroke-miterlimit: 4;
-	shape-rendering: auto;
-}
-.About {
-	position: absolute;
-	overflow: visible;
-	width: 360.465px;
-	height: 100px;
-	left: 0px;
-	top: 0px;
-}
-#About_me {
-	left: 105.49px;
-	top: 32px;
-	position: absolute;
-	overflow: visible;
-	width: 149px;
-	white-space: nowrap;
-	text-align: center;
-	font-family: HGPSoeiKakugothicUB;
-	font-style: normal;
-	font-weight: normal;
-	font-size: 36px;
-	color: rgba(112,112,112,1);
-}
-#CGButton {
-	position: absolute;
-	width: 359.226px;
-	height: 100px;
-	left: 621.832px;
-	top: 551px;
-	overflow: visible;
-	--web-animation: fadein 0.30000001192092896s ease-out;
-	--web-action-type: page;
-	--web-action-target: CG.html;
-	cursor: pointer;
-}
-#CG {
-	fill: rgba(255,255,255,1);
-	stroke: rgba(112,112,112,1);
-	stroke-width: 1px;
-	stroke-linejoin: miter;
-	stroke-linecap: butt;
-	stroke-miterlimit: 4;
-	shape-rendering: auto;
-}
-.CG {
-	position: absolute;
-	overflow: visible;
-	width: 359.226px;
-	height: 100px;
-	left: 0px;
-	top: 0px;
-}
-#Computer_Graphics {
-	left: 30.113px;
-	top: 32px;
-	position: absolute;
-	overflow: visible;
-	width: 301px;
-	white-space: nowrap;
-	text-align: center;
-	font-family: HGPSoeiKakugothicUB;
-	font-style: normal;
-	font-weight: normal;
-	font-size: 36px;
-	color: rgba(112,112,112,1);
-}
-#ProgrammingButton {
-	position: absolute;
-	width: 359.226px;
-	height: 100px;
-	left: 65.651px;
-	top: 551px;
-	overflow: visible;
-	--web-animation: fadein 0.30000001192092896s ease-out;
-	--web-action-type: page;
-	--web-action-target: programming.html;
-	cursor: pointer;
-}
-#Programming {
-	fill: rgba(221,221,221,1);
-	stroke: rgba(112,112,112,1);
-	stroke-width: 1px;
-	stroke-linejoin: miter;
-	stroke-linecap: butt;
-	stroke-miterlimit: 4;
-	shape-rendering: auto;
-}
-.Programming {
-	position: absolute;
-	overflow: visible;
-	width: 359.226px;
-	height: 100px;
-	left: 0px;
-	top: 0px;
-}
-#Programming_u {
-	left: 80.113px;
-	top: 32px;
-	position: absolute;
-	overflow: visible;
-	width: 201px;
-	white-space: nowrap;
-	text-align: center;
-	font-family: HGPSoeiKakugothicUB;
-	font-style: normal;
-	font-weight: normal;
-	font-size: 36px;
-	color: rgba(112,112,112,1);
-}
-#logo {
-	position: absolute;
-	width: 720px;
-	height: 396px;
-	left: 450.674px;
-	top: 65px;
-	overflow: visible;
-}
 #Header {
 	position: absolute;
 	width: 1799.845px;
@@ -231,7 +94,7 @@
 	--web-action-target: aboutme.html;
 	cursor: pointer;
 }
-#About_z {
+#About {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -240,7 +103,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About_z {
+.About {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -248,7 +111,7 @@
 	left: 0px;
 	top: 0px;
 }
-#About_me_ {
+#About_me {
 	left: 105.613px;
 	top: 17px;
 	position: absolute;
@@ -274,7 +137,7 @@
 	--web-action-target: CG.html;
 	cursor: pointer;
 }
-#CG_ {
+#CG {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -283,7 +146,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG_ {
+.CG {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -291,7 +154,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics_ {
+#Computer_Graphics {
 	left: 29.113px;
 	top: 13.5px;
 	position: absolute;
@@ -312,12 +175,8 @@
 	left: 640.413px;
 	top: 15px;
 	overflow: visible;
-	--web-animation: fadein 0.30000001192092896s ease-out;
-	--web-action-type: page;
-	--web-action-target: programming.html;
-	cursor: pointer;
 }
-#Programming_ {
+#Programming_v {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -326,7 +185,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_ {
+.Programming_v {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -334,7 +193,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_ba {
+#Programming_w {
 	left: 79.613px;
 	top: 17px;
 	position: absolute;
@@ -355,6 +214,10 @@
 	left: 0px;
 	top: 0px;
 	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: index.html;
+	cursor: pointer;
 }
 #Top_Header {
 	position: absolute;
@@ -363,4 +226,18 @@
 	left: 0px;
 	top: 0px;
 	overflow: visible;
+}
+#n_Programming {
+	left: 629px;
+	top: 504px;
+	position: absolute;
+	overflow: visible;
+	width: 663px;
+	white-space: nowrap;
+	text-align: center;
+	font-family: HGPSoeiKakugothicUB;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 72px;
+	color: rgba(221,221,221,1);
 }
