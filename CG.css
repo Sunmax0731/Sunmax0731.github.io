@@ -1,6 +1,8 @@
 .mediaViewInfo {
 	--web-view-name: CG;
 	--web-view-id: CG;
+	--web-scale-to-fit: true;
+	--web-scale-to-fit-type: fit;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -21,6 +23,8 @@
 	overflow: hidden;
 	--web-view-name: CG;
 	--web-view-id: CG;
+	--web-scale-to-fit: true;
+	--web-scale-to-fit-type: fit;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
