@@ -35,7 +35,7 @@
 
 }
 #background_b {
-	position: absolute;
+	position: relative;
 	width: 1920px;
 	height: 1080px;
 	left: 0px;
@@ -43,7 +43,7 @@
 	overflow: visible;
 }
 #MainContent_b {
-	position: absolute;
+	position: relative;
 	width: 1601.499px;
 	height: 716px;
 	left: 149.409px;
@@ -200,7 +200,7 @@
 	overflow: visible;
 }
 #Header_ch {
-	position: absolute;
+	position: relative;
 	width: 1799.845px;
 	height: 100px;
 	left: 49.548px;
