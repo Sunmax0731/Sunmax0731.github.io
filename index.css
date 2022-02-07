@@ -3,6 +3,7 @@
 	--web-view-id: index;
 	--web-scale-to-fit: true;
 	--web-scale-to-fit-type: fit;
+	--web-enable-scale-up: true;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -25,6 +26,7 @@
 	--web-view-id: index;
 	--web-scale-to-fit: true;
 	--web-scale-to-fit-type: fit;
+	--web-enable-scale-up: true;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -48,18 +50,27 @@
 }
 #MainContent_b {
 	position: absolute;
-	width: 1601.499px;
+	width: 1601.587px;
 	height: 716px;
 	left: 149.409px;
 	top: 210px;
 	overflow: visible;
-	padding: 55px 65px 75px 65px;
+	padding: 0px;
 }
 #background_ca {
+	position: absolute;
+	width: 1601.587px;
+	height: 716px;
+	left: 0px;
+	top: 0px;
+	overflow: visible;
+}
+#background_cb {
 	filter: blur(0px);
 	fill: rgba(255,255,255,1);
 }
-.background_ca {
+.background_cb {
+	mix-blend-mode: multiply;
 	position: absolute;
 	overflow: visible;
 	width: 1601.587px;
@@ -97,7 +108,7 @@
 	left: 0px;
 	top: 0px;
 }
-#About_me_b {
+#About_me_ca {
 	left: 105px;
 	top: 32px;
 	position: absolute;
@@ -124,7 +135,7 @@
 	cursor: pointer;
 	padding: 32px 29px 32px 30px;
 }
-#CG_cb {
+#CG_cc {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -133,7 +144,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG_cb {
+.CG_cc {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -141,7 +152,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics_cc {
+#Computer_Graphics_cd {
 	left: 30px;
 	top: 32px;
 	position: absolute;
@@ -168,7 +179,7 @@
 	cursor: pointer;
 	padding: 32px 79px 32px 80px;
 }
-#Programming_ce {
+#Programming_cf {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -177,7 +188,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_ce {
+.Programming_cf {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -185,7 +196,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_cf {
+#Programming_cg {
 	left: 80px;
 	top: 32px;
 	position: absolute;
@@ -207,7 +218,7 @@
 	top: 55px;
 	overflow: visible;
 }
-#Header_ch {
+#Header_ci {
 	position: absolute;
 	width: 1799.845px;
 	height: 100px;
@@ -216,19 +227,19 @@
 	overflow: visible;
 	padding: 0px;
 }
-#HeaderBackground_ci {
+#HeaderBackground_cj {
 	filter: blur(50px);
 	fill: rgba(255,255,255,1);
 }
-.HeaderBackground_ci {
+.HeaderBackground_cj {
 	position: absolute;
 	overflow: visible;
-	width: 1799.845px;
-	height: 100px;
+	width: 2099.845px;
+	height: 400px;
 	left: 0px;
 	top: 0px;
 }
-#Aboutme_Header_cj {
+#Aboutme_Header_ck {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -240,7 +251,7 @@
 	--web-action-target: aboutme.html;
 	cursor: pointer;
 }
-#About_ck {
+#About_cl {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -249,7 +260,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.About_ck {
+.About_cl {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -257,7 +268,7 @@
 	left: 0px;
 	top: 0px;
 }
-#About_me_cl {
+#About_me_cm {
 	left: 105.613px;
 	top: 17px;
 	position: absolute;
@@ -271,7 +282,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#CG_Header_cm {
+#CG_Header_cn {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -283,7 +294,7 @@
 	--web-action-target: CG.html;
 	cursor: pointer;
 }
-#CG_cn {
+#CG_co {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -292,7 +303,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.CG_cn {
+.CG_co {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -300,7 +311,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Computer_Graphics_co {
+#Computer_Graphics_cp {
 	left: 29.113px;
 	top: 13.5px;
 	position: absolute;
@@ -314,7 +325,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#Programming_Header_cp {
+#Programming_Header_cq {
 	position: absolute;
 	width: 359.226px;
 	height: 70px;
@@ -326,7 +337,7 @@
 	--web-action-target: programming.html;
 	cursor: pointer;
 }
-#Programming_cq {
+#Programming_cr {
 	fill: rgba(255,255,255,1);
 	stroke: rgba(112,112,112,1);
 	stroke-width: 1px;
@@ -335,7 +346,7 @@
 	stroke-miterlimit: 4;
 	shape-rendering: auto;
 }
-.Programming_cq {
+.Programming_cr {
 	position: absolute;
 	overflow: visible;
 	width: 359.226px;
@@ -343,7 +354,7 @@
 	left: 0px;
 	top: 0px;
 }
-#Programming_cr {
+#Programming_cs {
 	left: 79.613px;
 	top: 17px;
 	position: absolute;
@@ -357,7 +368,7 @@
 	font-size: 36px;
 	color: rgba(112,112,112,1);
 }
-#TopLogo_cs {
+#TopLogo_ct {
 	position: absolute;
 	width: 199.432px;
 	height: 100px;
@@ -365,7 +376,7 @@
 	top: 0px;
 	overflow: visible;
 }
-#Top_Header_ct {
+#Top_Header_cu {
 	position: absolute;
 	width: 199.432px;
 	height: 100px;

@@ -3,6 +3,7 @@
 	--web-view-id: CG;
 	--web-scale-to-fit: true;
 	--web-scale-to-fit-type: fit;
+	--web-enable-scale-up: true;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -25,6 +26,7 @@
 	--web-view-id: CG;
 	--web-scale-to-fit: true;
 	--web-scale-to-fit-type: fit;
+	--web-enable-scale-up: true;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -96,8 +98,8 @@
 .HeaderBackground_ {
 	position: absolute;
 	overflow: visible;
-	width: 1799.845px;
-	height: 100px;
+	width: 2099.845px;
+	height: 400px;
 	left: 0px;
 	top: 0px;
 }
