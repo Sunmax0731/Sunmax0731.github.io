@@ -1,6 +1,8 @@
 .mediaViewInfo {
 	--web-view-name: index;
 	--web-view-id: index;
+	--web-scale-to-fit: true;
+	--web-scale-to-fit-type: fit;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -21,6 +23,8 @@
 	overflow: hidden;
 	--web-view-name: index;
 	--web-view-id: index;
+	--web-scale-to-fit: true;
+	--web-scale-to-fit-type: fit;
 	--web-scale-on-resize: true;
 	--web-enable-deep-linking: true;
 }
@@ -35,7 +39,7 @@
 
 }
 #background_b {
-	position: relative;
+	position: absolute;
 	width: 1920px;
 	height: 1080px;
 	left: 0px;
@@ -43,13 +47,13 @@
 	overflow: visible;
 }
 #MainContent_b {
-	position: relative;
+	position: absolute;
 	width: 1601.499px;
 	height: 716px;
 	left: 149.409px;
-	top: 200px;
+	top: 210px;
 	overflow: visible;
-	padding: 65px;
+	padding: 55px 65px 75px 65px;
 }
 #background_ca {
 	filter: blur(30px);
@@ -60,7 +64,7 @@
 	overflow: visible;
 	width: 1601.587px;
 	height: 716px;
-	left: -0.113px;
+	left: 0px;
 	top: 0px;
 }
 #AboutmeButton {
@@ -68,7 +72,7 @@
 	width: 360px;
 	height: 100px;
 	left: 1176.499px;
-	top: 551px;
+	top: 541px;
 	overflow: visible;
 	--web-animation: fadein 0.30000001192092896s ease-out;
 	--web-action-type: page;
@@ -112,7 +116,7 @@
 	width: 359px;
 	height: 100px;
 	left: 621.181px;
-	top: 551px;
+	top: 541px;
 	overflow: visible;
 	--web-animation: fadein 0.30000001192092896s ease-out;
 	--web-action-type: page;
@@ -156,8 +160,12 @@
 	width: 359px;
 	height: 100px;
 	left: 65px;
-	top: 551px;
+	top: 541px;
 	overflow: visible;
+	--web-animation: fadein 0.30000001192092896s ease-out;
+	--web-action-type: page;
+	--web-action-target: programming.html;
+	cursor: pointer;
 	padding: 32px 79px 32px 80px;
 }
 #Programming_ce {
@@ -196,11 +204,11 @@
 	width: 720px;
 	height: 396px;
 	left: 449.91px;
-	top: 65px;
+	top: 55px;
 	overflow: visible;
 }
 #Header_ch {
-	position: relative;
+	position: absolute;
 	width: 1799.845px;
 	height: 100px;
 	left: 49.548px;
