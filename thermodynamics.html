@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>熱力学 — 熱・エネルギー・エントロピー | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="vehicle-physics/assets/css/style.css">
+  <style>:root { --domain: var(--color-thermo); }</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">🏎</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="mechanics.html">力学</a></li>
+    <li><a href="thermodynamics.html" class="active">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">ΔS≥0</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="vehicle-physics.html">ホーム</a><span class="sep">›</span>
+        <span class="current">熱力学</span>
+      </div>
+      <span class="domain-badge">Thermodynamics</span>
+      <h1>熱力学 — 熱・エネルギー・エントロピー</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        カルノーサイクル、理想気体の状態方程式、熱伝導、分子運動論を可視化する。
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. 理想気体の分子運動 -->
+  <section class="section" id="gas" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>理想気体の分子運動</h3>
+        <p>PV = nRT を微視的に可視化。温度を上げると分子の運動エネルギーが増大する。</p>
+        <canvas class="sim-canvas" id="gasCanvas"></canvas>
+        <div class="controls">
+          <label>温度 T:</label>
+          <input type="range" id="gasTemp" min="100" max="1000" value="300">
+          <span class="val" id="gasTempVal">300 K</span>
+          <label>分子数:</label>
+          <input type="range" id="gasN" min="20" max="200" value="80">
+          <span class="val" id="gasNVal">80</span>
+          <label>体積 (壁位置):</label>
+          <input type="range" id="gasVol" min="30" max="100" value="80">
+          <span class="val" id="gasVolVal">80%</span>
+          <button id="gasReset">リセット</button>
+        </div>
+        <div class="info-panel" id="gasInfo">PV = nRT | 分子の平均速度 v̄ = √(3kT/m)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. カルノーサイクル -->
+  <section class="section" id="carnot">
+    <div class="container">
+      <div class="viz-card">
+        <h3>カルノーサイクル (PV図)</h3>
+        <p>等温膨張 → 断熱膨張 → 等温圧縮 → 断熱圧縮 の4過程をアニメーション表示。</p>
+        <canvas class="sim-canvas" id="carnotCanvas"></canvas>
+        <div class="controls">
+          <label>高温 T_H:</label>
+          <input type="range" id="carnotTH" min="400" max="1200" value="800">
+          <span class="val" id="carnotTHVal">800 K</span>
+          <label>低温 T_L:</label>
+          <input type="range" id="carnotTL" min="200" max="500" value="300">
+          <span class="val" id="carnotTLVal">300 K</span>
+          <button id="carnotStart">サイクル開始</button>
+        </div>
+        <div class="info-panel" id="carnotInfo">カルノー効率 η = 1 - T_L/T_H</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 熱伝導 -->
+  <section class="section" id="conduction" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>1次元熱伝導方程式</h3>
+        <p>∂T/∂t = α ∂²T/∂x² をリアルタイムで解き、温度分布の時間変化を色で表示。</p>
+        <canvas class="sim-canvas" id="heatCanvas" style="height:300px;"></canvas>
+        <div class="controls">
+          <label>熱拡散率 α:</label>
+          <input type="range" id="heatAlpha" min="1" max="50" value="10">
+          <span class="val" id="heatAlphaVal">10</span>
+          <label>初期条件:</label>
+          <select id="heatInit">
+            <option value="step">ステップ関数</option>
+            <option value="gauss">ガウス分布</option>
+            <option value="sine">正弦波</option>
+          </select>
+          <button id="heatReset">リセット</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. マクスウェル-ボルツマン -->
+  <section class="section" id="maxwell">
+    <div class="container">
+      <div class="viz-card">
+        <h3>マクスウェル-ボルツマン速度分布</h3>
+        <p>異なる温度での速度分布関数 f(v) を比較。温度が高いほど分布が広がる。</p>
+        <canvas class="sim-canvas" id="mbCanvas" style="height:350px;"></canvas>
+        <div class="controls">
+          <label>T₁:</label>
+          <input type="range" id="mbT1" min="100" max="1500" value="300">
+          <span class="val" id="mbT1Val">300 K</span>
+          <label>T₂:</label>
+          <input type="range" id="mbT2" min="100" max="1500" value="600">
+          <span class="val" id="mbT2Val">600 K</span>
+          <label>T₃:</label>
+          <input type="range" id="mbT3" min="100" max="1500" value="1000">
+          <span class="val" id="mbT3Val">1000 K</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+function setupCanvas(canvas){
+  const rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  return{ctx,w:rect.width,h:rect.height};
+}
+function bindSlider(id,valId,suffix,transform){
+  const s=document.getElementById(id),d=document.getElementById(valId);
+  const u=()=>{d.textContent=(transform?transform(+s.value):+s.value)+' '+suffix;};
+  s.addEventListener('input',u);u();return s;
+}
+
+// ---- 理想気体 ----
+(function(){
+  const canvas=document.getElementById('gasCanvas');
+  let{ctx,w,h}=setupCanvas(canvas);
+  let particles=[];
+  bindSlider('gasTemp','gasTempVal','K');
+  bindSlider('gasN','gasNVal','');
+  bindSlider('gasVol','gasVolVal','%');
+  function init(){
+    const n=+document.getElementById('gasN').value,vf=+document.getElementById('gasVol').value/100,mx=w*vf;
+    particles=[];
+    for(let i=0;i<n;i++)particles.push({x:20+Math.random()*(mx-40),y:20+Math.random()*(h-40),vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,r:3});
+  }
+  init();
+  let pressure=0,wallHits=0,fc=0;
+  function update(){
+    const T=+document.getElementById('gasTemp').value,vf=+document.getElementById('gasVol').value/100,mx=w*vf,ss=Math.sqrt(T/300);
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='#e04040';ctx.lineWidth=2;ctx.strokeRect(10,10,mx-10,h-20);
+    ctx.fillStyle='rgba(224,64,64,0.3)';ctx.fillRect(mx-5,10,10,h-20);
+    fc++;if(fc%60===0){pressure=wallHits;wallHits=0;}
+    let totalKE=0;
+    particles.forEach(p=>{
+      p.x+=p.vx*ss;p.y+=p.vy*ss;
+      if(p.x-p.r<10){p.x=10+p.r;p.vx*=-1;wallHits++;}
+      if(p.x+p.r>mx){p.x=mx-p.r;p.vx*=-1;wallHits++;}
+      if(p.y-p.r<10){p.y=10+p.r;p.vy*=-1;wallHits++;}
+      if(p.y+p.r>h-10){p.y=h-10-p.r;p.vy*=-1;wallHits++;}
+      const speed=Math.sqrt(p.vx*p.vx+p.vy*p.vy)*ss;totalKE+=0.5*speed*speed;
+      const hue=Math.max(0,240-speed*40);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`hsl(${hue},80%,60%)`;ctx.fill();
+    });
+    document.getElementById('gasInfo').innerHTML=`温度: <span class="highlight">${T} K</span> | 圧力(壁衝突/s): <span class="highlight">${pressure}</span> | 平均KE: <span class="highlight">${(totalKE/particles.length).toFixed(1)}</span>`;
+    requestAnimationFrame(update);
+  }
+  update();
+  document.getElementById('gasReset').addEventListener('click',init);
+  document.getElementById('gasN').addEventListener('change',init);
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));init();});
+})();
+
+// ---- カルノーサイクル ----
+(function(){
+  const canvas=document.getElementById('carnotCanvas');
+  let{ctx,w,h}=setupCanvas(canvas);
+  bindSlider('carnotTH','carnotTHVal','K');
+  bindSlider('carnotTL','carnotTLVal','K');
+  const mg={top:40,right:40,bottom:50,left:60};
+
+  function carnotCycle(TH,TL){
+    const R=8.314,gamma=1.4,V1=1,V2=3;
+    const V3=V2*Math.pow(TH/TL,1/(gamma-1)),V4=V1*Math.pow(TH/TL,1/(gamma-1));
+    const pts=[];
+    for(let i=0;i<=50;i++){const V=V1+(V2-V1)*i/50;pts.push({V,P:R*TH/V,phase:0});}
+    for(let i=1;i<=50;i++){const V=V2+(V3-V2)*i/50;pts.push({V,P:R*TH*Math.pow(V2,gamma-1)/Math.pow(V,gamma),phase:1});}
+    for(let i=1;i<=50;i++){const V=V3+(V4-V3)*i/50;pts.push({V,P:R*TL/V,phase:2});}
+    for(let i=1;i<=50;i++){const V=V4+(V1-V4)*i/50;pts.push({V,P:R*TL*Math.pow(V4,gamma-1)/Math.pow(V,gamma),phase:3});}
+    return pts;
+  }
+
+  let animIdx=0,animating=false,cyclePoints=[];
+
+  function draw(upTo){
+    const TH=+document.getElementById('carnotTH').value,TL=+document.getElementById('carnotTL').value;
+    cyclePoints=carnotCycle(TH,TL);
+    ctx.clearRect(0,0,w,h);
+    const pts=cyclePoints,gw=w-mg.left-mg.right,gh=h-mg.top-mg.bottom;
+    const maxV=Math.max(...pts.map(p=>p.V))*1.1,maxP=Math.max(...pts.map(p=>p.P))*1.1;
+    const sx=v=>mg.left+(v/maxV)*gw, sy=p=>mg.top+(1-p/maxP)*gh;
+
+    ctx.strokeStyle='#2a2a50';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(mg.left,mg.top);ctx.lineTo(mg.left,h-mg.bottom);ctx.lineTo(w-mg.right,h-mg.bottom);ctx.stroke();
+    ctx.fillStyle='#666';ctx.font='12px monospace';ctx.fillText('V',w/2,h-10);
+    ctx.save();ctx.translate(15,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('P',0,0);ctx.restore();
+
+    const colors=['#e04040','#e0a040','#4080e0','#40e0a0'],labels=['等温膨張','断熱膨張','等温圧縮','断熱圧縮'];
+    const limit=upTo!==undefined?upTo:pts.length;
+
+    if(limit>=pts.length){
+      ctx.beginPath();pts.forEach((p,i)=>{if(i===0)ctx.moveTo(sx(p.V),sy(p.P));else ctx.lineTo(sx(p.V),sy(p.P));});
+      ctx.closePath();ctx.fillStyle='rgba(224,64,64,0.1)';ctx.fill();
+    }
+
+    let prev=-1;ctx.lineWidth=2.5;
+    for(let i=0;i<limit;i++){
+      const p=pts[i];
+      if(p.phase!==prev){if(prev>=0)ctx.stroke();ctx.beginPath();ctx.strokeStyle=colors[p.phase];ctx.moveTo(sx(p.V),sy(p.P));prev=p.phase;}
+      else ctx.lineTo(sx(p.V),sy(p.P));
+    }
+    ctx.stroke();
+
+    if(limit>0&&limit<=pts.length){const cp=pts[Math.min(limit-1,pts.length-1)];
+      ctx.beginPath();ctx.arc(sx(cp.V),sy(cp.P),6,0,Math.PI*2);ctx.fillStyle=colors[cp.phase];ctx.fill();}
+
+    colors.forEach((c,i)=>{ctx.fillStyle=c;ctx.fillRect(w-160,mg.top+i*20,12,12);ctx.fillStyle='#888';ctx.font='11px sans-serif';ctx.fillText(labels[i],w-142,mg.top+i*20+11);});
+    document.getElementById('carnotInfo').innerHTML=`カルノー効率 η = 1 - T_L/T_H = <span class="highlight">${((1-TL/TH)*100).toFixed(1)}%</span>`;
+  }
+
+  function animate(){if(!animating)return;animIdx+=2;if(animIdx>cyclePoints.length){animIdx=cyclePoints.length;animating=false;}draw(animIdx);if(animating)requestAnimationFrame(animate);}
+  document.getElementById('carnotStart').addEventListener('click',()=>{animIdx=0;animating=true;const TH=+document.getElementById('carnotTH').value,TL=+document.getElementById('carnotTL').value;cyclePoints=carnotCycle(TH,TL);animate();});
+  ['carnotTH','carnotTL'].forEach(id=>document.getElementById(id).addEventListener('input',()=>draw()));
+  draw();
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));draw();});
+})();
+
+// ---- 熱伝導 ----
+(function(){
+  const canvas=document.getElementById('heatCanvas');
+  let{ctx,w,h}=setupCanvas(canvas);
+  const N=200;let temp=new Float64Array(N);
+  bindSlider('heatAlpha','heatAlphaVal','');
+  function initT(){
+    const type=document.getElementById('heatInit').value;
+    for(let i=0;i<N;i++){const x=i/N;
+      if(type==='step')temp[i]=x<0.5?1:0;
+      else if(type==='gauss')temp[i]=Math.exp(-((x-0.5)**2)/0.01);
+      else temp[i]=Math.sin(Math.PI*x);
+    }
+  }
+  initT();
+  function tColor(t){return`rgb(${Math.min(255,Math.floor(t*400))},${Math.min(255,Math.floor(t*100))},${Math.min(255,Math.floor((1-t)*200))})`;}
+  function update(){
+    const alpha=+document.getElementById('heatAlpha').value*0.001;
+    const nt=new Float64Array(N);nt[0]=temp[0];nt[N-1]=temp[N-1];
+    for(let i=1;i<N-1;i++)nt[i]=temp[i]+alpha*(temp[i-1]-2*temp[i]+temp[i+1]);
+    temp=nt;
+    ctx.clearRect(0,0,w,h);
+    const barH=h*0.3,barY=h*0.15,cellW=w/N;
+    for(let i=0;i<N;i++){ctx.fillStyle=tColor(temp[i]);ctx.fillRect(i*cellW,barY,cellW+1,barH);}
+    const gy=barY+barH+40,gH=h-gy-20;
+    ctx.strokeStyle='#e04040';ctx.lineWidth=2;ctx.beginPath();
+    for(let i=0;i<N;i++){const x=i*cellW,y=gy+gH*(1-temp[i]);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+    ctx.stroke();
+    ctx.strokeStyle='#2a2a50';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.moveTo(0,gy+gH);ctx.lineTo(w,gy+gH);ctx.stroke();
+    ctx.fillStyle='#666';ctx.font='11px monospace';ctx.fillText('T=1',5,gy-2);ctx.fillText('T=0',5,gy+gH-2);
+    requestAnimationFrame(update);
+  }
+  update();
+  document.getElementById('heatReset').addEventListener('click',initT);
+  document.getElementById('heatInit').addEventListener('change',initT);
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));});
+})();
+
+// ---- マクスウェル-ボルツマン ----
+(function(){
+  const canvas=document.getElementById('mbCanvas');
+  let{ctx,w,h}=setupCanvas(canvas);
+  const mg={top:30,right:30,bottom:50,left:50};
+  bindSlider('mbT1','mbT1Val','K');bindSlider('mbT2','mbT2Val','K');bindSlider('mbT3','mbT3Val','K');
+  const mass=4.65e-26,kB=1.381e-23;
+  function mb(v,T){const a=mass/(2*kB*T);return 4*Math.PI*Math.pow(a/Math.PI,1.5)*v*v*Math.exp(-a*v*v);}
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const temps=[{T:+document.getElementById('mbT1').value,color:'#e04040',label:'T₁'},
+      {T:+document.getElementById('mbT2').value,color:'#40a0e0',label:'T₂'},
+      {T:+document.getElementById('mbT3').value,color:'#40e080',label:'T₃'}];
+    const vMax=1200,nP=200;let fMax=0;
+    const curves=temps.map(({T})=>{const pts=[];for(let i=0;i<=nP;i++){const v=(i/nP)*vMax,f=mb(v,T);if(f>fMax)fMax=f;pts.push({v,f});}return pts;});
+    fMax*=1.1;
+    const gw=w-mg.left-mg.right,gh=h-mg.top-mg.bottom;
+    const sx=v=>mg.left+(v/vMax)*gw, sy=f=>mg.top+(1-f/fMax)*gh;
+    ctx.strokeStyle='#2a2a50';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mg.left,mg.top);ctx.lineTo(mg.left,h-mg.bottom);ctx.lineTo(w-mg.right,h-mg.bottom);ctx.stroke();
+    ctx.fillStyle='#666';ctx.font='12px monospace';ctx.fillText('v (m/s)',w/2,h-8);
+    for(let v=200;v<=1000;v+=200){const x=sx(v);ctx.strokeStyle='#1a1a30';ctx.beginPath();ctx.moveTo(x,mg.top);ctx.lineTo(x,h-mg.bottom);ctx.stroke();ctx.fillStyle='#555';ctx.font='10px monospace';ctx.fillText(v,x-10,h-mg.bottom+15);}
+    curves.forEach((pts,i)=>{
+      ctx.strokeStyle=temps[i].color;ctx.lineWidth=2;ctx.beginPath();
+      pts.forEach((p,j)=>{if(j===0)ctx.moveTo(sx(p.v),sy(p.f));else ctx.lineTo(sx(p.v),sy(p.f));});ctx.stroke();
+      ctx.globalAlpha=0.08;ctx.beginPath();pts.forEach((p,j)=>{if(j===0)ctx.moveTo(sx(p.v),sy(0));ctx.lineTo(sx(p.v),sy(p.f));});
+      ctx.lineTo(sx(pts[pts.length-1].v),sy(0));ctx.closePath();ctx.fillStyle=temps[i].color;ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle=temps[i].color;ctx.fillRect(w-140,mg.top+i*22,12,12);ctx.fillStyle='#888';ctx.font='12px monospace';ctx.fillText(`${temps[i].label} = ${temps[i].T} K`,w-122,mg.top+i*22+11);
+    });
+  }
+  draw();
+  ['mbT1','mbT2','mbT3'].forEach(id=>document.getElementById(id).addEventListener('input',draw));
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));draw();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数理科学 — 計算・ゲーム理論・数理物理 | 数学の世界</title>
+  <link rel="stylesheet" href="mathematics/assets/css/base.css">
+  <link rel="stylesheet" href="mathematics/assets/css/layout.css">
+  <link rel="stylesheet" href="mathematics/assets/css/components.css">
+  <link rel="stylesheet" href="mathematics/assets/css/sections.css">
+  <style>
+    :root { --domain: var(--color-math-sciences); }
+    .payoff-matrix { border-collapse:collapse; width:100%; text-align:center; }
+    .payoff-matrix th, .payoff-matrix td { border:1px solid var(--border); padding:10px; font-family:monospace; }
+    .payoff-matrix th { background:rgba(245,200,66,0.15); color:var(--color-math-sciences); font-size:0.85rem; }
+    .payoff-matrix td { font-size:0.95rem; color:var(--text-primary); cursor:pointer; transition:background 0.2s; }
+    .payoff-matrix td:hover { background:rgba(245,200,66,0.1); }
+    .nash { background:rgba(109,204,152,0.2) !important; color:#86efac !important; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="mathematics.html" class="nav-brand">
+    <span class="brand-symbol">∑</span><span>数学の世界</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="quantity.html">量</a></li>
+    <li><a href="change.html">変化</a></li>
+    <li><a href="structure.html">構造</a></li>
+    <li><a href="space.html">空間</a></li>
+    <li><a href="finite-math.html">有限数学</a></li>
+    <li><a href="math-sciences.html" class="active">数理科学</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">∿</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="mathematics.html">ホーム</a><span class="sep">›</span><span class="current">数理科学</span>
+      </div>
+      <span class="domain-badge">Mathematical Sciences</span>
+      <h1>数理科学 — 計算・ゲーム理論・数理物理</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        数学を現実世界の問題に応用する橋渡し領域。
+        計算科学・数値解析・ゲーム理論・数理物理学・数理生物学。
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="#visualizations" class="btn btn-primary" style="background:var(--color-math-sciences);color:#0d0d1a;">デモを見る</a>
+        <a href="#topics" class="btn btn-outline">トピック一覧</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="topics" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header"><h2>トピック</h2></div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <span class="topic-symbol">⚡</span>
+          <h4>計算科学</h4>
+          <p>アルゴリズム・数値シミュレーション。計算量の理論。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">≈</span>
+          <h4>数値解析</h4>
+          <p>数値微分・積分・行列計算。誤差分析・安定性。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🎮</span>
+          <h4>ゲーム理論</h4>
+          <p>ナッシュ均衡・囚人のジレンマ。戦略的意思決定の数学。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">⚛️</span>
+          <h4>数理物理学</h4>
+          <p>波動方程式・熱方程式・シュレーディンガー方程式。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">📉</span>
+          <h4>数理経済学</h4>
+          <p>最適化・均衡理論。経済モデルの数学的定式化。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🧬</span>
+          <h4>数理生物学</h4>
+          <p>個体群動態・感染症モデル（SIR）。進化ゲーム理論。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">📊</span>
+          <h4>保険数理</h4>
+          <p>リスク・保険の数学。確率過程・生存分析。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">⚙️</span>
+          <h4>数理工学</h4>
+          <p>制御理論・最適化・信号処理の数学的基盤。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="viz-section" id="visualizations">
+    <div class="container">
+      <div class="section-header"><h2>インタラクティブ可視化</h2></div>
+      <div class="viz-grid">
+
+        <!-- コンウェイのライフゲーム -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>コンウェイのライフゲーム — セルオートマトン</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">計算科学</span>
+          </div>
+          <div id="life-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <button class="btn btn-ghost" id="life-start-btn">▶ 開始</button>
+            <button class="btn btn-ghost" id="life-step-btn">ステップ</button>
+            <button class="btn btn-ghost" id="life-reset-btn">リセット</button>
+            <span class="control-value" id="life-gen">世代: 0</span>
+          </div>
+        </div>
+
+        <!-- ゲーム理論 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>囚人のジレンマ — ナッシュ均衡</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">ゲーム理論</span>
+          </div>
+          <div class="viz-body">
+            <p style="font-size:0.85rem;margin-bottom:1rem;">利得行列 (プレイヤーA, プレイヤーB)。緑ハイライト=ナッシュ均衡</p>
+            <table class="payoff-matrix" id="payoff-table"></table>
+            <div id="nash-info" style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);"></div>
+          </div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>協調コスト R</label>
+              <input type="range" id="gt-r" min="1" max="5" value="3" step="0.5">
+              <span class="control-value" id="gt-r-val">3</span>
+            </div>
+            <div class="control-group">
+              <label>裏切り利得 T</label>
+              <input type="range" id="gt-t" min="3" max="8" value="5" step="0.5">
+              <span class="control-value" id="gt-t-val">5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIRモデル -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>SIR感染症モデル — 数理生物学</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">数理生物</span>
+          </div>
+          <div id="sir-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>感染率 β</label>
+              <input type="range" id="sir-beta" min="0.05" max="0.5" value="0.2" step="0.01">
+              <span class="control-value" id="sir-beta-val">0.20</span>
+            </div>
+            <div class="control-group">
+              <label>回復率 γ</label>
+              <input type="range" id="sir-gamma" min="0.01" max="0.2" value="0.05" step="0.01">
+              <span class="control-value" id="sir-gamma-val">0.05</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ニュートン法 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ニュートン法 — 数値解析</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">数値解析</span>
+          </div>
+          <div id="newton-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>初期値 x₀</label>
+              <input type="range" id="newton-x0" min="-3" max="3" value="2" step="0.1">
+              <span class="control-value" id="newton-x0-val">2.0</span>
+            </div>
+            <div class="control-group">
+              <label>関数</label>
+              <select id="newton-fn" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="x3x">x³ − x</option>
+                <option value="sin">sin(x)</option>
+                <option value="x2-2">x² − 2</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ロトカ・ヴォルテラ -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ロトカ・ヴォルテラ方程式 — 捕食者と被食者</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">数理生物</span>
+          </div>
+          <div id="lotka-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>α (被食者増殖率)</label>
+              <input type="range" id="lv-alpha" min="0.1" max="2" value="1.0" step="0.05">
+              <span class="control-value" id="lv-alpha-val">1.00</span>
+            </div>
+            <div class="control-group">
+              <label>γ (捕食者死亡率)</label>
+              <input type="range" id="lv-gamma" min="0.1" max="2" value="0.5" step="0.05">
+              <span class="control-value" id="lv-gamma-val">0.50</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ソートアルゴリズム -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ソートアルゴリズムの比較</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">計算科学</span>
+          </div>
+          <div id="sort-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>アルゴリズム</label>
+              <select id="sort-algo" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="bubble">バブルソート O(n²)</option>
+                <option value="selection">選択ソート O(n²)</option>
+                <option value="insertion">挿入ソート O(n²)</option>
+                <option value="merge">マージソート O(n log n)</option>
+              </select>
+            </div>
+            <button class="btn btn-ghost" id="sort-start-btn">▶ 開始</button>
+            <button class="btn btn-ghost" id="sort-reset-btn">リセット</button>
+          </div>
+        </div>
+
+        <!-- 波動方程式 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>波動方程式 ∂²u/∂t² = c²∂²u/∂x²</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">数理物理</span>
+          </div>
+          <div id="wave-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>波速 c</label>
+              <input type="range" id="wave-c" min="0.5" max="3" value="1.5" step="0.1">
+              <span class="control-value" id="wave-c-val">1.5</span>
+            </div>
+            <div class="control-group">
+              <label>初期波形</label>
+              <select id="wave-init" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="gaussian">ガウシアン</option>
+                <option value="sin">正弦波</option>
+                <option value="step">矩形波</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 線型計画法 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>線型計画法（最適化）</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">数理最適化</span>
+          </div>
+          <div id="lp-viz" style="height:380px;"></div>
+          <div class="viz-controls" style="flex-wrap:wrap;gap:var(--space-sm);">
+            <div class="control-group">
+              <label>目的関数 c₁ (x 係数)</label>
+              <input type="range" id="lp-c1" min="-3" max="3" value="1" step="0.5">
+              <span class="control-value" id="lp-c1-val">1</span>
+            </div>
+            <div class="control-group">
+              <label>目的関数 c₂ (y 係数)</label>
+              <input type="range" id="lp-c2" min="-3" max="3" value="2" step="0.5">
+              <span class="control-value" id="lp-c2-val">2</span>
+            </div>
+            <div class="control-group">
+              <label>制約 b₁ (x + 2y ≤ b₁)</label>
+              <input type="range" id="lp-b1" min="2" max="10" value="6" step="0.5">
+              <span class="control-value" id="lp-b1-val">6</span>
+            </div>
+            <div class="control-group">
+              <label>制約 b₂ (3x + y ≤ b₂)</label>
+              <input type="range" id="lp-b2" min="2" max="12" value="9" step="0.5">
+              <span class="control-value" id="lp-b2-val">9</span>
+            </div>
+          </div>
+          <div id="lp-result" style="text-align:center;margin-top:8px;font-size:0.9rem;color:var(--text-secondary);min-height:1.5em;"></div>
+        </div>
+
+        <!-- 整数計画法 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>整数計画法 — 格子点と分岐限定</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">整数最適化</span>
+          </div>
+          <div id="ilp-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>LP緩和を表示</label>
+              <input type="checkbox" id="ilp-show-lp" checked style="width:auto;">
+            </div>
+            <div class="control-group">
+              <label>目的係数 c₁</label>
+              <input type="range" id="ilp-c1" min="-2" max="3" value="1" step="0.5">
+              <span class="control-value" id="ilp-c1-val">1</span>
+            </div>
+            <div class="control-group">
+              <label>目的係数 c₂</label>
+              <input type="range" id="ilp-c2" min="-2" max="3" value="2" step="0.5">
+              <span class="control-value" id="ilp-c2-val">2</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">整数計画法(ILP)は連続緩和(LP)の最適解が非整数の場合、格子点の中から最適解を探す。金色★がILP最適、白丸がLP最適</p>
+        </div>
+
+        <!-- 量子ウォーク -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>量子ウォーク — 古典との確率分布の違い</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">量子情報</span>
+          </div>
+          <div id="qwalk-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>ステップ数</label>
+              <input type="range" id="qw-steps" min="5" max="60" value="20" step="1">
+              <span class="control-value" id="qw-steps-val">20</span>
+            </div>
+            <div class="control-group">
+              <label>表示</label>
+              <select id="qw-mode" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="both">量子 + 古典 比較</option>
+                <option value="quantum">量子ウォークのみ</option>
+                <option value="classical">古典ランダムウォークのみ</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">古典ウォーク: 中心付近に集中(正規分布)。量子ウォーク: 端付近に山が現れ、√N ≈ N倍速く拡散する</p>
+        </div>
+
+        <!-- 混合戦略ゲーム -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>混合戦略ナッシュ均衡 — 利得平面の可視化</h4>
+            <span class="badge" style="background:rgba(245,200,66,0.15);color:var(--color-math-sciences);">ゲーム理論</span>
+          </div>
+          <div id="mixed-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>ゲームの種類</label>
+              <select id="mix-game" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="matching_pennies">マッチングペニー</option>
+                <option value="rps">じゃんけん</option>
+                <option value="chicken">チキンゲーム</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>Player 1 の戦略 p</label>
+              <input type="range" id="mix-p" min="0" max="100" value="50" step="1">
+              <span class="control-value" id="mix-p-val">0.50</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">各プレイヤーの期待利得を混合戦略の確率 p に対してプロット。交点がナッシュ均衡。均衡では単独の戦略変更で利得改善できない</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-sm">
+      <div class="section-header"><h2>主要な公式・定理</h2></div>
+      <div class="grid-2" style="gap:var(--space-md);">
+        <div class="info-card">
+          <h4>ニュートン法の反復</h4>
+          <div class="math-block">x_{n+1} = xₙ − f(xₙ)/f'(xₙ)</div>
+          <p style="font-size:0.85rem;">超2次収束。方程式の数値解を求める最も重要な手法の一つ。</p>
+        </div>
+        <div class="info-card">
+          <h4>SIRモデル</h4>
+          <div class="math-block">dI/dt = βSI − γI</div>
+          <p style="font-size:0.85rem;">基本再生産数 R₀ = β/γ &gt; 1 のとき感染爆発</p>
+        </div>
+        <div class="info-card">
+          <h4>ナッシュ均衡条件</h4>
+          <div class="math-block">uᵢ(s*) ≥ uᵢ(sᵢ, s*₋ᵢ)</div>
+          <p style="font-size:0.85rem;">一方的に戦略を変えても利得が改善しない均衡状態</p>
+        </div>
+        <div class="info-card">
+          <h4>熱方程式</h4>
+          <div class="math-block">∂u/∂t = α ∂²u/∂x²</div>
+          <p style="font-size:0.85rem;">温度分布の時間発展。フーリエ級数で解析解が得られる。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 応用分野 -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>応用分野</h2>
+        <p>「数理科学」が現代社会のどこで活きているか</p>
+      </div>
+      <div class="application-grid">
+        <div class="application-card">
+          <span class="app-icon">💊</span>
+          <h4>医学・公衆衛生</h4>
+          <p>SIR/SIRSモデルはCOVID-19等の感染症拡大予測に活用。医学統計（臨床試験の有意差検定・生存時間解析）は新薬承認の基準。ベイズ推定はがん早期診断の精度向上に寄与。</p>
+          <div class="app-tags"><span class="app-tag">疫学モデル</span><span class="app-tag">臨床試験</span><span class="app-tag">ベイズ診断</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">💰</span>
+          <h4>金融工学・リスク管理</h4>
+          <p>VaR（バリュー・アット・リスク）は確率・統計で定量化。モンテカルロ法はデリバティブ価格計算に使用。ポートフォリオ最適化（マーコウィッツ）は分散・共分散の最小化問題。</p>
+          <div class="app-tags"><span class="app-tag">VaR</span><span class="app-tag">モンテカルロ</span><span class="app-tag">ポートフォリオ最適化</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🌿</span>
+          <h4>生態学・環境科学</h4>
+          <p>ロトカ–ヴォルテラ方程式は捕食者–被食者ダイナミクス、漁業資源管理の上限漁獲量設定に応用。個体群動態モデルは絶滅危惧種の保護政策の立案に活用。</p>
+          <div class="app-tags"><span class="app-tag">個体群動態</span><span class="app-tag">漁業管理</span><span class="app-tag">種の保護</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">⚛️</span>
+          <h4>量子情報・量子コンピューティング</h4>
+          <p>量子ウォークはグローバーの探索アルゴリズムの高速化版。量子誤り訂正符号（スタビライザー符号）は確率・線形代数の融合。量子ゲームは古典ゲーム理論の拡張。</p>
+          <div class="app-tags"><span class="app-tag">量子アルゴリズム</span><span class="app-tag">量子誤り訂正</span><span class="app-tag">量子優位</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🏭</span>
+          <h4>オペレーションズリサーチ・物流</h4>
+          <p>整数計画法・線形計画法はサプライチェーン最適化・工場の生産計画・航空会社の乗務員スケジューリングに日常的に活用。シンプレックス法は年間兆円規模の節約を実現。</p>
+          <div class="app-tags"><span class="app-tag">線形計画</span><span class="app-tag">物流最適化</span><span class="app-tag">スケジューリング</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🎮</span>
+          <h4>経済学・行動科学</h4>
+          <p>ナッシュ均衡は価格競争・オークション設計・国際交渉の分析に不可欠。進化ゲーム理論は生物の行動戦略・SNSでの情報拡散・市場競争ダイナミクスの予測に応用。</p>
+          <div class="app-tags"><span class="app-tag">ナッシュ均衡</span><span class="app-tag">オークション</span><span class="app-tag">進化ゲーム</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>「数学は科学の女王であり、数論は数学の女王である」— カール・フリードリヒ・ガウス</p>
+  </div>
+</footer>
+
+<script src="mathematics/assets/js/core/math-utils.js"></script>
+<script src="mathematics/assets/js/math-sciences.js"></script>
+</body>
+</html>

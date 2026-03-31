@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>力学 — 運動・力・エネルギー | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="vehicle-physics/assets/css/style.css">
+  <style>:root { --domain: var(--color-mechanics); }</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">🏎</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="mechanics.html" class="active">力学</a></li>
+    <li><a href="thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">F=ma</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="vehicle-physics.html">ホーム</a><span class="sep">›</span>
+        <span class="current">力学</span>
+      </div>
+      <span class="domain-badge">Mechanics</span>
+      <h1>力学 — 運動・力・エネルギー</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        ニュートン力学を基礎とし、物体の運動、力の伝達、エネルギー保存を可視化する。
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. 放物運動 -->
+  <section class="section" id="projectile" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>放物運動シミュレーション</h3>
+        <p>初速と角度を変えて放物線の軌跡を確認。空気抵抗あり/なしの比較が可能。</p>
+        <canvas class="sim-canvas" id="projectileCanvas"></canvas>
+        <div class="controls">
+          <label>初速 v₀:</label>
+          <input type="range" id="projV0" min="10" max="80" value="40">
+          <span class="val" id="projV0Val">40 m/s</span>
+          <label>角度 θ:</label>
+          <input type="range" id="projAngle" min="5" max="85" value="45">
+          <span class="val" id="projAngleVal">45°</span>
+          <label><input type="checkbox" id="projDrag"> 空気抵抗</label>
+          <button id="projFire">発射</button>
+          <button id="projClear">クリア</button>
+        </div>
+        <div class="info-panel" id="projInfo">パラメータを設定して「発射」を押してください。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. バネ-質点系 -->
+  <section class="section" id="spring">
+    <div class="container">
+      <div class="viz-card">
+        <h3>バネ-質点系（単振動）</h3>
+        <p>フックの法則 F = -kx による単振動。減衰振動の挙動を可視化。</p>
+        <canvas class="sim-canvas" id="springCanvas" style="height:300px;"></canvas>
+        <div class="controls">
+          <label>バネ定数 k:</label>
+          <input type="range" id="springK" min="1" max="50" value="10">
+          <span class="val" id="springKVal">10 N/m</span>
+          <label>質量 m:</label>
+          <input type="range" id="springM" min="1" max="20" value="5">
+          <span class="val" id="springMVal">5 kg</span>
+          <label>減衰 c:</label>
+          <input type="range" id="springC" min="0" max="10" value="0" step="0.5">
+          <span class="val" id="springCVal">0</span>
+          <button id="springReset">リセット</button>
+        </div>
+        <div class="info-panel" id="springInfo">ω = √(k/m), 周期 T = 2π/ω</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 衝突シミュレーション -->
+  <section class="section" id="collision" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>弾性衝突・非弾性衝突</h3>
+        <p>運動量保存則とエネルギー保存則を2物体の衝突で可視化。反発係数を変更可能。</p>
+        <canvas class="sim-canvas" id="collisionCanvas" style="height:250px;"></canvas>
+        <div class="controls">
+          <label>質量₁:</label>
+          <input type="range" id="colM1" min="1" max="10" value="3">
+          <span class="val" id="colM1Val">3 kg</span>
+          <label>質量₂:</label>
+          <input type="range" id="colM2" min="1" max="10" value="5">
+          <span class="val" id="colM2Val">5 kg</span>
+          <label>反発係数 e:</label>
+          <input type="range" id="colE" min="0" max="100" value="100">
+          <span class="val" id="colEVal">1.0</span>
+          <button id="colStart">開始</button>
+        </div>
+        <div class="info-panel" id="colInfo">運動量保存: m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 振り子 -->
+  <section class="section" id="pendulum">
+    <div class="container">
+      <div class="viz-card">
+        <h3>単振り子・二重振り子</h3>
+        <p>単振り子の周期性と、二重振り子のカオス的挙動を比較。</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+          <div>
+            <h4 style="color:var(--text-secondary);margin-bottom:8px;font-size:0.9rem;">単振り子</h4>
+            <canvas class="sim-canvas" id="pendulumCanvas" style="height:350px;"></canvas>
+          </div>
+          <div>
+            <h4 style="color:var(--text-secondary);margin-bottom:8px;font-size:0.9rem;">二重振り子（カオス）</h4>
+            <canvas class="sim-canvas" id="doublePendulumCanvas" style="height:350px;"></canvas>
+          </div>
+        </div>
+        <div class="controls">
+          <label>振り子長 L:</label>
+          <input type="range" id="pendL" min="50" max="200" value="120">
+          <span class="val" id="pendLVal">120 px</span>
+          <label>初期角度:</label>
+          <input type="range" id="pendAngle" min="10" max="170" value="45">
+          <span class="val" id="pendAngleVal">45°</span>
+          <button id="pendReset">リセット</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+function setupCanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w: rect.width, h: rect.height };
+}
+function bindSlider(id, valId, suffix, transform) {
+  const s = document.getElementById(id), d = document.getElementById(valId);
+  const u = () => { d.textContent = (transform ? transform(+s.value) : +s.value) + ' ' + suffix; };
+  s.addEventListener('input', u); u(); return s;
+}
+
+// ---- 放物運動 ----
+(function(){
+  const canvas = document.getElementById('projectileCanvas');
+  let {ctx,w,h} = setupCanvas(canvas);
+  const trails=[], g=9.81, scale=4;
+  const groundY = () => h - 40;
+
+  function drawGrid(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='#1a1a40'; ctx.lineWidth=1;
+    for(let x=0;x<w;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    for(let y=0;y<h;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+    ctx.strokeStyle='#2a2a60';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(0,groundY());ctx.lineTo(w,groundY());ctx.stroke();
+  }
+  function drawTrails(){
+    drawGrid();
+    const colors=['#e07030','#30a0e0','#30e070','#e0e030','#e030e0'];
+    trails.forEach((trail,i)=>{
+      ctx.strokeStyle=colors[i%colors.length];ctx.lineWidth=2;ctx.beginPath();
+      trail.points.forEach((p,j)=>{if(j===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);});
+      ctx.stroke();
+      if(trail.points.length>0){const last=trail.points[trail.points.length-1];
+        ctx.beginPath();ctx.arc(last.x,last.y,5,0,Math.PI*2);ctx.fillStyle=colors[i%colors.length];ctx.fill();}
+    });
+  }
+  bindSlider('projV0','projV0Val','m/s');
+  bindSlider('projAngle','projAngleVal','°');
+
+  document.getElementById('projFire').addEventListener('click',()=>{
+    const v0=+document.getElementById('projV0').value;
+    const angle=+document.getElementById('projAngle').value*Math.PI/180;
+    const drag=document.getElementById('projDrag').checked;
+    const cd=drag?0.01:0;
+    const trail={points:[]};trails.push(trail);if(trails.length>5)trails.shift();
+    let x=30,y=groundY(),vx=v0*Math.cos(angle),vy=-v0*Math.sin(angle),t=0,maxH=0;
+    const dt=0.05;
+    function step(){
+      for(let i=0;i<3;i++){
+        const speed=Math.sqrt(vx*vx+vy*vy);
+        vx+=-cd*speed*vx*dt; vy+=(g-cd*speed*vy)*dt;
+        x+=vx*scale*dt; y+=vy*scale*dt; t+=dt;
+        if(y<0)y=0; maxH=Math.max(maxH,groundY()-y);
+        trail.points.push({x,y});
+        if(y>=groundY()){trail.points[trail.points.length-1].y=groundY();drawTrails();
+          const range=trail.points[trail.points.length-1].x-30;
+          document.getElementById('projInfo').innerHTML=
+            `飛距離: <span class="highlight">${(range/scale).toFixed(1)} m</span> | 最高点: <span class="highlight">${(maxH/scale).toFixed(1)} m</span> | 滞空時間: <span class="highlight">${t.toFixed(2)} s</span>`+(drag?' | 空気抵抗あり':'');
+          return;}
+      }
+      drawTrails(); requestAnimationFrame(step);
+    }
+    step();
+  });
+  document.getElementById('projClear').addEventListener('click',()=>{trails.length=0;drawGrid();document.getElementById('projInfo').textContent='パラメータを設定して「発射」を押してください。';});
+  drawGrid();
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));drawTrails();});
+})();
+
+// ---- バネ-質点系 ----
+(function(){
+  const canvas=document.getElementById('springCanvas');
+  let {ctx,w,h}=setupCanvas(canvas);
+  bindSlider('springK','springKVal','N/m');
+  bindSlider('springM','springMVal','kg');
+  bindSlider('springC','springCVal','');
+  let x,v=0,history=[];
+  function reset(){x=w/2+100;v=0;history.length=0;}
+  reset();
+  function drawSpring(sx,ex,cy){
+    ctx.strokeStyle='#888';ctx.lineWidth=2;ctx.beginPath();
+    const coils=12,amp=10,len=ex-sx;
+    for(let i=0;i<=coils*4;i++){
+      const f=i/(coils*4),px=sx+len*f,py=cy+(i%2===0?0:(i%4===1?amp:-amp));
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  function update(){
+    const k=+document.getElementById('springK').value,m=+document.getElementById('springM').value,c=+document.getElementById('springC').value;
+    const dt=0.016,eq=w/2,disp=x-eq;
+    const a=(-k*disp-c*v)/m; v+=a*dt; x+=v*dt;
+    history.push(disp); if(history.length>300)history.shift();
+    ctx.clearRect(0,0,w,h);
+    const cy=h/2-30;
+    ctx.fillStyle='#2a2a50';ctx.fillRect(0,cy-30,10,60);
+    drawSpring(10,x-20,cy);
+    const ms=20+m;
+    ctx.fillStyle='#e07030';ctx.fillRect(x-ms/2,cy-ms/2,ms,ms);
+    ctx.strokeStyle='#ff9060';ctx.strokeRect(x-ms/2,cy-ms/2,ms,ms);
+    ctx.setLineDash([5,5]);ctx.strokeStyle='#3a3a60';ctx.beginPath();ctx.moveTo(eq,cy-40);ctx.lineTo(eq,cy+40);ctx.stroke();ctx.setLineDash([]);
+    const gy=h-60,gH=50;
+    ctx.strokeStyle='#e07030';ctx.lineWidth=1.5;ctx.beginPath();
+    history.forEach((d,i)=>{const px=w-300+i,py=gy-(d/150)*gH;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});
+    ctx.stroke();
+    const omega=Math.sqrt(k/m),period=(2*Math.PI/omega).toFixed(2);
+    document.getElementById('springInfo').innerHTML=`ω = √(k/m) = <span class="highlight">${omega.toFixed(2)} rad/s</span> | 周期 T = <span class="highlight">${period} s</span> | 変位 x = <span class="highlight">${disp.toFixed(1)}</span>`;
+    requestAnimationFrame(update);
+  }
+  update();
+  document.getElementById('springReset').addEventListener('click',reset);
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));});
+})();
+
+// ---- 衝突 ----
+(function(){
+  const canvas=document.getElementById('collisionCanvas');
+  let {ctx,w,h}=setupCanvas(canvas);
+  bindSlider('colM1','colM1Val','kg');
+  bindSlider('colM2','colM2Val','kg');
+  bindSlider('colE','colEVal','',v=>(v/100).toFixed(2));
+  let balls=[],animating=false;
+  function reset(){
+    const m1=+document.getElementById('colM1').value,m2=+document.getElementById('colM2').value,cy=h/2;
+    balls=[{x:w*0.2,y:cy,vx:3,m:m1,r:15+m1*3,color:'#e07030'},{x:w*0.7,y:cy,vx:-1,m:m2,r:15+m2*3,color:'#30a0e0'}];
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    balls.forEach(b=>{
+      ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=b.color;ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='12px monospace';ctx.textAlign='center';ctx.fillText(b.m+'kg',b.x,b.y+4);
+      ctx.strokeStyle=b.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x,b.y-b.r-5);ctx.lineTo(b.x+b.vx*20,b.y-b.r-5);ctx.stroke();
+    });
+  }
+  function step(){
+    if(!animating)return;
+    const e=+document.getElementById('colE').value/100;
+    const [a,b]=balls;
+    a.x+=a.vx;b.x+=b.vx;
+    if(a.x+a.r>=b.x-b.r&&a.vx>b.vx){
+      const v1=((a.m-e*b.m)*a.vx+(1+e)*b.m*b.vx)/(a.m+b.m);
+      const v2=((b.m-e*a.m)*b.vx+(1+e)*a.m*a.vx)/(a.m+b.m);
+      a.vx=v1;b.vx=v2;a.x=b.x-b.r-a.r;
+      document.getElementById('colInfo').innerHTML=
+        `衝突後: v₁'= <span class="highlight">${v1.toFixed(2)}</span>, v₂'= <span class="highlight">${v2.toFixed(2)}</span> | 運動量 p = <span class="highlight">${(a.m*a.vx+b.m*b.vx).toFixed(2)}</span>`;
+    }
+    if(a.x-a.r<0){a.x=a.r;a.vx*=-1;}
+    if(b.x+b.r>w){b.x=w-b.r;b.vx*=-1;}
+    if(a.x+a.r>w){a.x=w-a.r;a.vx*=-1;}
+    if(b.x-b.r<0){b.x=b.r;b.vx*=-1;}
+    draw();requestAnimationFrame(step);
+  }
+  document.getElementById('colStart').addEventListener('click',()=>{reset();animating=true;step();});
+  reset();draw();
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));reset();draw();});
+})();
+
+// ---- 単振り子 ----
+(function(){
+  const canvas=document.getElementById('pendulumCanvas');
+  let {ctx,w,h}=setupCanvas(canvas);
+  bindSlider('pendL','pendLVal','px');
+  bindSlider('pendAngle','pendAngleVal','°');
+  let angle,angVel=0; const grav=0.4;
+  function reset(){angle=+document.getElementById('pendAngle').value*Math.PI/180;angVel=0;}
+  reset();
+  function update(){
+    const L=+document.getElementById('pendL').value,dt=0.3;
+    angVel+=-(grav/L)*Math.sin(angle)*100*dt; angVel*=0.999; angle+=angVel*dt;
+    ctx.clearRect(0,0,w,h);
+    const ox=w/2,oy=30,bx=ox+L*Math.sin(angle),by=oy+L*Math.cos(angle);
+    ctx.strokeStyle='#888';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(bx,by);ctx.stroke();
+    ctx.beginPath();ctx.arc(ox,oy,4,0,Math.PI*2);ctx.fillStyle='#666';ctx.fill();
+    ctx.beginPath();ctx.arc(bx,by,14,0,Math.PI*2);ctx.fillStyle='#e07030';ctx.fill();
+    ctx.strokeStyle='#ff9060';ctx.lineWidth=2;ctx.stroke();
+    requestAnimationFrame(update);
+  }
+  update();
+  document.getElementById('pendReset').addEventListener('click',reset);
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));});
+})();
+
+// ---- 二重振り子 ----
+(function(){
+  const canvas=document.getElementById('doublePendulumCanvas');
+  let {ctx,w,h}=setupCanvas(canvas);
+  const grav=1,m1=10,m2=10,l1=80,l2=80;
+  let a1,a2,a1v=0,a2v=0; const trail=[];
+  function reset(){
+    const initA=+document.getElementById('pendAngle').value*Math.PI/180;
+    a1=initA;a2=initA*0.8;a1v=0;a2v=0;trail.length=0;
+  }
+  reset();
+  function update(){
+    const dt=0.2;
+    for(let i=0;i<2;i++){
+      const n1=-grav*(2*m1+m2)*Math.sin(a1), n2=-m2*grav*Math.sin(a1-2*a2);
+      const n3=-2*Math.sin(a1-a2)*m2, n4=a2v*a2v*l2+a1v*a1v*l1*Math.cos(a1-a2);
+      const den=l1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
+      const a1a=(n1+n2+n3*n4)/den;
+      const d1=2*Math.sin(a1-a2)*(a1v*a1v*l1*(m1+m2)+grav*(m1+m2)*Math.cos(a1)+a2v*a2v*l2*m2*Math.cos(a1-a2));
+      const d2=l2*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
+      const a2a=d1/d2;
+      a1v+=a1a*dt;a2v+=a2a*dt;a1+=a1v*dt;a2+=a2v*dt;
+    }
+    const ox=w/2,oy=40;
+    const x1=ox+l1*Math.sin(a1),y1=oy+l1*Math.cos(a1);
+    const x2=x1+l2*Math.sin(a2),y2=y1+l2*Math.cos(a2);
+    trail.push({x:x2,y:y2});if(trail.length>500)trail.shift();
+    ctx.clearRect(0,0,w,h);
+    ctx.lineWidth=1;
+    trail.forEach((p,i)=>{if(i===0)return;ctx.strokeStyle=`rgba(224,112,48,${i/trail.length*0.6})`;
+      ctx.beginPath();ctx.moveTo(trail[i-1].x,trail[i-1].y);ctx.lineTo(p.x,p.y);ctx.stroke();});
+    ctx.strokeStyle='#888';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(x1,y1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    ctx.beginPath();ctx.arc(ox,oy,4,0,Math.PI*2);ctx.fillStyle='#666';ctx.fill();
+    ctx.beginPath();ctx.arc(x1,y1,10,0,Math.PI*2);ctx.fillStyle='#e07030';ctx.fill();
+    ctx.beginPath();ctx.arc(x2,y2,10,0,Math.PI*2);ctx.fillStyle='#ff9060';ctx.fill();
+    requestAnimationFrame(update);
+  }
+  update();
+  document.getElementById('pendReset').addEventListener('click',reset);
+  window.addEventListener('resize',()=>{({ctx,w,h}=setupCanvas(canvas));trail.length=0;});
+})();
+</script>
+</body>
+</html>

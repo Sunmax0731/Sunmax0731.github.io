@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>変化 — 微積分と動的システム | 数学の世界</title>
+  <link rel="stylesheet" href="mathematics/assets/css/base.css">
+  <link rel="stylesheet" href="mathematics/assets/css/layout.css">
+  <link rel="stylesheet" href="mathematics/assets/css/components.css">
+  <link rel="stylesheet" href="mathematics/assets/css/sections.css">
+  <style>
+    :root { --domain: var(--color-change); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="mathematics.html" class="nav-brand">
+    <span class="brand-symbol">∑</span>
+    <span>数学の世界</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="quantity.html">量</a></li>
+    <li><a href="change.html" class="active">変化</a></li>
+    <li><a href="structure.html">構造</a></li>
+    <li><a href="space.html">空間</a></li>
+    <li><a href="finite-math.html">有限数学</a></li>
+    <li><a href="math-sciences.html">数理科学</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <section class="section-hero">
+    <div class="hero-bg-text">∂</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="mathematics.html">ホーム</a>
+        <span class="sep">›</span>
+        <span class="current">変化</span>
+      </div>
+      <span class="domain-badge">Change</span>
+      <h1>変化 — 微積分と動的システム</h1>
+      <p style="max-width: 600px; margin: 1rem 0 1.5rem; font-size: 1.1rem;">
+        ニュートンとライプニッツが独立に発見した微積分学から、現代の力学系・カオス理論まで。
+        「変化」を記述する数学の核心。
+      </p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="#visualizations" class="btn btn-primary" style="background: var(--color-change);">デモを見る</a>
+        <a href="#topics" class="btn btn-outline">トピック一覧</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- トピック -->
+  <section class="section" id="topics" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header"><h2>トピック</h2></div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <span class="topic-symbol">∑</span>
+          <h4>算術・数列</h4>
+          <p>等差数列・等比数列。級数の収束と発散。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">∂</span>
+          <h4>微積分学</h4>
+          <p>極限・微分・積分。微積分の基本定理。テイラー展開。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">∇</span>
+          <h4>ベクトル解析</h4>
+          <p>勾配・発散・回転。グリーン定理・ストークス定理。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">𝑑</span>
+          <h4>微分方程式</h4>
+          <p>常微分方程式・偏微分方程式。物理現象のモデリング。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🔄</span>
+          <h4>力学系</h4>
+          <p>固定点・周期軌道・分岐。アトラクター。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🦋</span>
+          <h4>カオス理論</h4>
+          <p>バタフライ効果。ローレンツアトラクター。リャプノフ指数。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">f(x)</span>
+          <h4>関数論</h4>
+          <p>複素解析。正則関数。コーシーの積分定理。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">∫∫</span>
+          <h4>解析学</h4>
+          <p>実解析・測度論。ルベーグ積分。フーリエ解析。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 可視化 -->
+  <section class="viz-section" id="visualizations">
+    <div class="container">
+      <div class="section-header"><h2>インタラクティブ可視化</h2></div>
+      <div class="viz-grid">
+
+        <!-- 微分 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>微分 — 接線の傾き</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">微積分</span>
+          </div>
+          <div id="derivative-viz" style="height: 300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>接点 x₀</label>
+              <input type="range" id="deriv-x" min="-3" max="3" value="1" step="0.1">
+              <span class="control-value" id="deriv-x-val">1.0</span>
+            </div>
+            <div class="control-group">
+              <label>関数</label>
+              <select id="deriv-fn" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="sin">sin(x)</option>
+                <option value="x2">x²</option>
+                <option value="x3">x³</option>
+                <option value="exp">eˣ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 積分 (リーマン和) -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>積分 — リーマン和の極限</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">微積分</span>
+          </div>
+          <div id="integral-viz" style="height: 300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>分割数 n</label>
+              <input type="range" id="riemann-n" min="1" max="50" value="8" step="1">
+              <span class="control-value" id="riemann-n-val">8</span>
+            </div>
+            <div class="control-group">
+              <label>近似値</label>
+              <span class="control-value" id="riemann-approx">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ローレンツアトラクター -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ローレンツアトラクター — カオス</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">力学系</span>
+          </div>
+          <div id="lorenz-viz" style="height: 350px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>σ (シグマ)</label>
+              <input type="range" id="lorenz-sigma" min="1" max="20" value="10" step="0.5">
+              <span class="control-value" id="lorenz-sigma-val">10</span>
+            </div>
+            <div class="control-group">
+              <label>ρ (ロー)</label>
+              <input type="range" id="lorenz-rho" min="10" max="40" value="28" step="0.5">
+              <span class="control-value" id="lorenz-rho-val">28</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">ドラッグで回転・スクロールでズーム。σ=10, ρ=28, β=8/3 でバタフライ型アトラクターが出現する</p>
+        </div>
+
+        <!-- ベクトル場 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ベクトル場の可視化</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">ベクトル解析</span>
+          </div>
+          <div id="vector-field-viz" style="height: 300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>フィールド</label>
+              <select id="vf-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="rotation">回転場 (-y, x)</option>
+                <option value="gradient">勾配場 (x, y)</option>
+                <option value="saddle">鞍点 (x, -y)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- フーリエ級数 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>フーリエ級数 — 波形の合成</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">解析学</span>
+          </div>
+          <div id="fourier-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>次数 N</label>
+              <input type="range" id="fourier-n" min="1" max="30" value="5" step="1">
+              <span class="control-value" id="fourier-n-val">5</span>
+            </div>
+            <div class="control-group">
+              <label>波形</label>
+              <select id="fourier-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="square">方形波</option>
+                <option value="sawtooth">鋸歯波</option>
+                <option value="triangle">三角波</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- テイラー展開 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>テイラー展開 — 多項式近似</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">解析学</span>
+          </div>
+          <div id="taylor-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>項数 N</label>
+              <input type="range" id="taylor-n" min="1" max="12" value="4" step="1">
+              <span class="control-value" id="taylor-n-val">4</span>
+            </div>
+            <div class="control-group">
+              <label>関数</label>
+              <select id="taylor-fn" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="sin">sin(x)</option>
+                <option value="exp">eˣ</option>
+                <option value="cos">cos(x)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ロジスティック写像 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ロジスティック写像 — カオスへの道</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">力学系・カオス</span>
+          </div>
+          <div id="logistic-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>パラメータ r</label>
+              <input type="range" id="logistic-r" min="1" max="4" value="3.5" step="0.01">
+              <span class="control-value" id="logistic-r-val">3.50</span>
+            </div>
+            <div class="control-group">
+              <label>表示モード</label>
+              <select id="logistic-mode" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="time">時系列</option>
+                <option value="cobweb">クモの巣図</option>
+                <option value="bifurcation">分岐図</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 振り子の微分方程式 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>振り子の運動方程式 — 非線形ODE</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">微分方程式</span>
+          </div>
+          <div id="pendulum-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>初期角度 θ₀</label>
+              <input type="range" id="pend-theta" min="5" max="175" value="30" step="5">
+              <span class="control-value" id="pend-theta-val">30°</span>
+            </div>
+            <div class="control-group">
+              <label>減衰 γ</label>
+              <input type="range" id="pend-damp" min="0" max="0.5" value="0.05" step="0.01">
+              <span class="control-value" id="pend-damp-val">0.05</span>
+            </div>
+            <button class="btn btn-ghost" id="pend-reset-btn">リセット</button>
+          </div>
+        </div>
+
+        <!-- 複素関数の可視化 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>複素関数 f(z) — ドメイン着色法</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">関数論</span>
+          </div>
+          <div id="complex-fn-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>関数</label>
+              <select id="cfn-select" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="z2">f(z) = z²</option>
+                <option value="z3">f(z) = z³</option>
+                <option value="1z">f(z) = 1/z</option>
+                <option value="ez">f(z) = eᶻ</option>
+                <option value="sinz">f(z) = sin(z)</option>
+              </select>
+            </div>
+            <button class="btn btn-ghost" id="cfn-render-btn">描画</button>
+          </div>
+        </div>
+
+        <!-- 等差・等比数列 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>等差数列・等比数列と級数の収束</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">算術・数列</span>
+          </div>
+          <div id="sequence-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>種類</label>
+              <select id="seq-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="arith">等差数列 aₙ=a+(n-1)d</option>
+                <option value="geo">等比数列 aₙ=arⁿ⁻¹</option>
+                <option value="geosum">等比級数 Σarⁿ</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>公差/公比</label>
+              <input type="range" id="seq-r" min="-0.99" max="0.99" value="0.5" step="0.01">
+              <span class="control-value" id="seq-r-val">0.50</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 測度論・ルベーグ積分 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ルベーグ積分 vs リーマン積分</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">測度論</span>
+          </div>
+          <div id="lebesgue-viz" style="height:260px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>モード</label>
+              <select id="leb-mode" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="riemann">リーマン積分（縦に切る）</option>
+                <option value="lebesgue">ルベーグ積分（横に切る）</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>分割数 N</label>
+              <input type="range" id="leb-n" min="4" max="30" value="10" step="1">
+              <span class="control-value" id="leb-n-val">10</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">リーマンは「x軸で切る」、ルベーグは「y軸の値域で切って逆像の測度を取る」。ディリクレ関数など非可測な関数に対応できる</p>
+        </div>
+
+        <!-- ラプラス変換 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ラプラス変換 — s平面の極と時間応答</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">複素解析</span>
+          </div>
+          <div id="laplace-viz" style="height:260px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>極の実部 σ</label>
+              <input type="range" id="lap-sigma" min="-3" max="0" value="-1" step="0.1">
+              <span class="control-value" id="lap-sigma-val">-1.0</span>
+            </div>
+            <div class="control-group">
+              <label>極の虚部 ω</label>
+              <input type="range" id="lap-omega" min="0" max="5" value="2" step="0.1">
+              <span class="control-value" id="lap-omega-val">2.0</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">左半平面(σ&lt;0)の極 → 安定・減衰。虚部ωが振動数。σ=0で持続振動、σ&gt;0で発散</p>
+        </div>
+
+        <!-- 熱方程式 3D解曲面 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>熱方程式 u(x,t) — 3D解曲面</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">偏微分方程式</span>
+          </div>
+          <div id="heat-viz" style="height:380px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>最大時刻 T</label>
+              <input type="range" id="heat-t" min="0.1" max="2.0" value="1.0" step="0.05">
+              <span class="control-value" id="heat-t-val">1.00</span>
+            </div>
+            <div class="control-group">
+              <label>拡散係数 α</label>
+              <input type="range" id="heat-alpha" min="0.05" max="1.0" value="0.3" step="0.05">
+              <span class="control-value" id="heat-alpha-val">0.30</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">∂u/∂t = α·∂²u/∂x²。境界条件 u(0,t)=u(π,t)=0。高温部(赤)→低温部(青)へ拡散する様子。ドラッグで回転可能</p>
+        </div>
+
+        <!-- 微分形式 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>微分形式 dx∧dy — 向き付き面積要素</h4>
+            <span class="badge" style="background:rgba(248,112,108,0.15);color:var(--color-change);">微分幾何</span>
+          </div>
+          <div id="diffform-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>ベクトル u の角度</label>
+              <input type="range" id="df-angle1" min="0" max="360" value="30" step="5">
+              <span class="control-value" id="df-angle1-val">30°</span>
+            </div>
+            <div class="control-group">
+              <label>ベクトル v の角度</label>
+              <input type="range" id="df-angle2" min="0" max="360" value="120" step="5">
+              <span class="control-value" id="df-angle2-val">120°</span>
+            </div>
+            <div class="control-group">
+              <label>グリッド密度</label>
+              <input type="range" id="df-grid" min="3" max="8" value="5" step="1">
+              <span class="control-value" id="df-grid-val">5</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">dx∧dy(u,v) = det[u,v] — 2つのベクトルが張る向き付き面積。反対称性: dx∧dy = −dy∧dx</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 主要公式 -->
+  <section class="section">
+    <div class="container-sm">
+      <div class="section-header"><h2>主要な公式・定理</h2></div>
+      <div class="grid-2" style="gap: var(--space-md);">
+        <div class="info-card">
+          <h4>微積分の基本定理</h4>
+          <div class="math-block">∫<sub>a</sub><sup>b</sup> f'(x)dx = f(b) − f(a)</div>
+          <p style="font-size:0.85rem;">微分と積分が互いに逆演算であるという根本的定理</p>
+        </div>
+        <div class="info-card">
+          <h4>テイラー展開</h4>
+          <div class="math-block">f(x) = Σ f<sup>(n)</sup>(a)/n! · (x−a)<sup>n</sup></div>
+          <p style="font-size:0.85rem;">滑らかな関数を冪級数として表現する</p>
+        </div>
+        <div class="info-card">
+          <h4>オイラーの公式</h4>
+          <div class="math-block">e<sup>iθ</sup> = cos θ + i sin θ</div>
+          <p style="font-size:0.85rem;">指数関数と三角関数の深い関係を示す</p>
+        </div>
+        <div class="info-card">
+          <h4>ストークスの定理</h4>
+          <div class="math-block">∮<sub>∂Σ</sub> F·dr = ∬<sub>Σ</sub> (∇×F)·dS</div>
+          <p style="font-size:0.85rem;">線積分と面積分を結ぶベクトル解析の統一定理</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+  <!-- 応用分野 -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>応用分野</h2>
+        <p>「変化」の数学が現代社会のどこで活きているか</p>
+      </div>
+      <div class="application-grid">
+        <div class="application-card">
+          <span class="app-icon">🚀</span>
+          <h4>物理学・工学</h4>
+          <p>ニュートン力学・電磁気学・量子力学はすべて微分方程式で記述される。橋・航空機・ロケットの設計にも微積分が不可欠。</p>
+          <div class="app-tags"><span class="app-tag">力学</span><span class="app-tag">電気回路</span><span class="app-tag">流体力学</span><span class="app-tag">材料工学</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">📈</span>
+          <h4>経済学・金融</h4>
+          <p>Black–Scholesオプション価格モデルは確率微分方程式。最適制御理論（ポンリャーギン）は資源配分・投資戦略に活用。</p>
+          <div class="app-tags"><span class="app-tag">デリバティブ</span><span class="app-tag">最適制御</span><span class="app-tag">マクロ経済</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🧠</span>
+          <h4>機械学習・AI</h4>
+          <p>勾配降下法は多変数微積分そのもの。誤差逆伝播アルゴリズム（バックプロパゲーション）は連鎖律の繰り返し適用。</p>
+          <div class="app-tags"><span class="app-tag">深層学習</span><span class="app-tag">最適化</span><span class="app-tag">強化学習</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🌤️</span>
+          <h4>気象・気候科学</h4>
+          <p>大気・海洋のシミュレーションはナビエ–ストークス方程式（偏微分方程式）。カオス理論はバタフライ効果（ローレンツ方程式）を説明。</p>
+          <div class="app-tags"><span class="app-tag">数値シミュレーション</span><span class="app-tag">カオス</span><span class="app-tag">気候モデル</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🔊</span>
+          <h4>信号処理・通信</h4>
+          <p>フーリエ変換・ラプラス変換は音声圧縮（MP3）、画像圧縮（JPEG）、無線通信のフィルタ設計の基盤。</p>
+          <div class="app-tags"><span class="app-tag">音声処理</span><span class="app-tag">画像処理</span><span class="app-tag">5G通信</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">💊</span>
+          <h4>医学・生命科学</h4>
+          <p>薬物動態モデル（血中濃度の変化）、感染症の拡大モデル（SIR）、神経活動電位（ホジキン–ハクスリー方程式）。</p>
+          <div class="app-tags"><span class="app-tag">薬物動態</span><span class="app-tag">疫学</span><span class="app-tag">神経科学</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>「流率法（微積分）は神が世界を書いた言語である」— ニュートン (伝)</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.0/examples/js/controls/OrbitControls.js"></script>
+<script src="mathematics/assets/js/core/math-utils.js"></script>
+<script src="mathematics/assets/js/change.js"></script>
+</body>
+</html>

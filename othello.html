@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>オセロ</title>
+    <link rel="stylesheet" href="3DGames/shared.css" />
+    <link rel="stylesheet" href="3DGames/Othello/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
+  </head>
+  <body>
+    <nav class="portfolio-nav" aria-label="グローバルナビゲーション">
+      <a href="./">トップページ</a>
+      <details class="portfolio-menu">
+        <summary>成果物</summary>
+        <div class="portfolio-dropdown">
+          <a href="vehicle-physics.html">車両の物理シミュ</a>
+          <a href="mathematics.html">数学の可視化</a>
+        </div>
+      </details>
+      <details class="portfolio-menu">
+        <summary>3Dゲーム</summary>
+        <div class="portfolio-dropdown">
+          <a href="2048.html">2048</a>
+          <a href="Breakout2D.html">Breakout</a>
+          <a href="LifeGame.html">Life Game</a>
+          <a href="MergeGame.html">Merge Game</a>
+          <a href="Minesweeper.html">Minesweeper</a>
+          <a href="othello.html">Othello</a>
+          <a href="CrowdRunner.html">Crowd Runner</a>
+          <a href="SameGame3D.html">SameGame 3D</a>
+          <a href="ColorSort.html">Color Sort</a>
+        </div>
+      </details>
+      <a href="blog/">ブログ</a>
+      <a href="contact.html">問い合わせ</a>
+    </nav>
+
+    <div class="screen" id="screen-settings">
+      <div class="settings-card">
+        <h1>オセロ</h1>
+        <p class="settings-subtitle">CPU 対戦 / 2D・3D 切り替え対応</p>
+
+        <div class="setting-group">
+          <label>CPU の難易度</label>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-diff="easy">やさしい</button>
+            <button class="mode-btn" data-diff="normal">ふつう</button>
+            <button class="mode-btn" data-diff="hard">むずかしい</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label>モード</label>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="2d">2D</button>
+            <button class="mode-btn" data-mode="3d">3D</button>
+          </div>
+        </div>
+
+        <button id="start-btn">ゲームスタート</button>
+      </div>
+    </div>
+
+    <div class="screen hidden" id="screen-coin">
+      <div class="coin-scene">
+        <p class="coin-title" id="coin-title">コインを投げて先手後手を決めます</p>
+        <div class="coin-wrapper">
+          <div class="coin" id="coin">
+            <div class="coin-face omote"><span class="coin-kanji">表</span><span class="coin-sub">先手</span></div>
+            <div class="coin-face ura"><span class="coin-kanji">裏</span><span class="coin-sub">後手</span></div>
+          </div>
+        </div>
+        <div class="coin-result" id="coin-result"></div>
+      </div>
+    </div>
+
+    <div class="screen hidden" id="screen-game">
+      <div class="game-container">
+        <div class="scoreboard">
+          <div class="score-half" id="score-black-half">
+            <div class="score-disc black"></div>
+            <div class="score-num" id="score-black">2</div>
+          </div>
+          <div class="score-sep"></div>
+          <div class="score-half" id="score-white-half">
+            <div class="score-disc white"></div>
+            <div class="score-num" id="score-white">2</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="turn-banner player" id="turn-banner">あなたのターン</div>
+          <span class="diff-badge" id="diff-badge">やさしい</span>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board"></div>
+          <canvas id="board-3d" style="display: none"></canvas>
+          <div id="overlay">
+            <div class="overlay-box">
+              <div class="overlay-title">ゲーム終了</div>
+              <div class="overlay-score" id="overlay-score"></div>
+              <div class="overlay-winner" id="overlay-winner"></div>
+              <button class="replay-btn" id="btn-replay">もう一度プレイ</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-footer">
+          <button class="back-btn" id="btn-back">設定に戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="nav.js"></script>
+    <script src="3DGames/Othello/constants.js"></script>
+    <script src="3DGames/Othello/model.js"></script>
+    <script src="3DGames/Othello/model3d.js"></script>
+    <script src="3DGames/Othello/view.js"></script>
+    <script src="3DGames/Othello/view_flat3d.js"></script>
+    <script src="3DGames/Othello/view3d.js"></script>
+    <script src="3DGames/Othello/controller.js"></script>
+    <script src="3DGames/Othello/controller3d.js"></script>
+    <script src="3DGames/Othello/settings.js"></script>
+
+    <footer class="game-site-footer">
+      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

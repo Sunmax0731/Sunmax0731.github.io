@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安全・衝突物理 | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="vehicle-physics/assets/css/style.css">
+  <style>
+    :root { --domain: #e0a030; }
+    .controls button.active { background: var(--domain); color: #fff; }
+    .injury-badge {
+      display:inline-block; padding:4px 12px; border-radius:4px;
+      font-weight:700; font-size:0.9rem; margin:2px 4px;
+    }
+    .safe   { background:#1a3a1a; color:#4caf50; border:1px solid #4caf50; }
+    .risk   { background:#3a2e00; color:#ffc107; border:1px solid #ffc107; }
+    .severe { background:#3a0a0a; color:#f44336; border:1px solid #f44336; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">&#x1F3CE;</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="mechanics.html">力学</a></li>
+    <li><a href="thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html" class="active">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">&#x26A0;</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="vehicle-physics.html">ホーム</a><span class="sep">&#x203A;</span>
+        <span class="current">安全・衝突</span>
+      </div>
+      <span class="domain-badge">Safety &amp; Crash Physics</span>
+      <h1>安全・衝突物理シミュレーション</h1>
+      <p style="max-width:640px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        クラッシャブルゾーンによるエネルギー吸収とシートベルト・エアバッグによる乗員保護の
+        物理を可視化。衝突安全技術の基礎を理解する。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 1: Crumple Zone ===================== -->
+  <section class="section" id="crumple" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>クラッシャブルゾーン — エネルギー吸収シミュレーション</h3>
+        <p>前面衝突時にクラッシャブルゾーンが変形してエネルギーを吸収し、乗員に加わる減速度 (G) を低減するメカニズムを示す。</p>
+
+        <canvas id="crumpleCanvas" style="width:100%;height:220px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <canvas id="crumpleGraphCanvas" style="width:100%;height:220px;background:#0a0a18;border-radius:8px;display:block;margin-top:8px;"></canvas>
+
+        <div class="controls" style="margin-top:12px;">
+          <button id="czModeRigid">剛体（ゾーンなし）</button>
+          <button id="czModeCrumple" class="active">クラッシャブルゾーンあり</button>
+          &nbsp;
+          <button id="czStart">&#x25B6; スタート</button>
+          <button id="czReset">&#x21BA; リセット</button>
+        </div>
+        <div class="controls" style="margin-top:10px;">
+          <label>衝突速度:</label>
+          <input type="range" id="czSpeed" min="20" max="100" value="60" step="5">
+          <span class="val" id="czSpeedVal">60</span> km/h
+          &nbsp;&nbsp;
+          <label>車両質量:</label>
+          <input type="range" id="czMass" min="1000" max="2500" value="1500" step="100">
+          <span class="val" id="czMassVal">1500</span> kg
+          &nbsp;&nbsp;
+          <label>クラッシャブルゾーン長:</label>
+          <input type="range" id="czLength" min="0.3" max="1.2" value="0.6" step="0.05">
+          <span class="val" id="czLengthVal">0.60</span> m
+        </div>
+
+        <div class="info-panel" id="czInfo" style="margin-top:12px;">
+          <strong>計算結果:</strong>
+          <span id="czResults">スタートボタンを押してシミュレーションを開始してください。</span>
+          <br><br>
+          <strong>物理式:</strong>
+          E<sub>k</sub> = &frac12;mv&sup2; &nbsp;|&nbsp;
+          F<sub>avg</sub> = E<sub>k</sub> / d &nbsp;|&nbsp;
+          G<sub>peak</sub> = F<sub>avg</sub> / (m&middot;g) &nbsp;|&nbsp;
+          t<sub>crash</sub> = 2d / v
+          <br>
+          クラッシャブルゾーンは変形距離 d を増やすことで平均力を下げ、乗員への衝撃を緩和する。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2: Seatbelt & Airbag ===================== -->
+  <section class="section" id="restraint">
+    <div class="container">
+      <div class="viz-card">
+        <h3>シートベルト・エアバッグ — 乗員拘束シミュレーション</h3>
+        <p>衝突イベント（150ms）における乗員の動きと各拘束システムの保護効果を比較する。</p>
+
+        <canvas id="restraintCanvas" style="width:100%;height:260px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <canvas id="restraintGraphCanvas" style="width:100%;height:220px;background:#0a0a18;border-radius:8px;display:block;margin-top:8px;"></canvas>
+
+        <div class="controls" style="margin-top:12px;">
+          <button id="rModeNone" class="active">拘束なし</button>
+          <button id="rModeBelt">シートベルトのみ</button>
+          <button id="rModeBoth">シートベルト＋エアバッグ</button>
+          &nbsp;
+          <button id="rStart">&#x25B6; スタート</button>
+          <button id="rReset">&#x21BA; リセット</button>
+        </div>
+        <div class="controls" style="margin-top:10px;">
+          <label>衝突速度:</label>
+          <input type="range" id="rSpeed" min="20" max="80" value="50" step="5">
+          <span class="val" id="rSpeedVal">50</span> km/h
+          &nbsp;&nbsp;
+          <label>乗員体重:</label>
+          <input type="range" id="rMass" min="50" max="100" value="70" step="5">
+          <span class="val" id="rMassVal">70</span> kg
+        </div>
+
+        <div class="info-panel" style="margin-top:12px;">
+          <strong>傷害リスク評価 (胸部 G 基準):</strong><br>
+          <span id="rInjuryNone" class="injury-badge severe">拘束なし: —</span>
+          <span id="rInjuryBelt" class="injury-badge risk">ベルトのみ: —</span>
+          <span id="rInjuryBoth" class="injury-badge safe">ベルト＋AB: —</span>
+          <br><br>
+          <strong>タイムライン:</strong>
+          0ms 衝突開始 &rarr; 15ms センサ検出 &rarr; 30ms エアバッグ展開開始 &rarr;
+          40ms ベルトプリテンショナ作動 &rarr; 60ms 乗員接触 &rarr; 150ms 終了
+          <br>
+          <span style="color:#aaa;font-size:0.85rem;">
+            ピーク G: &lt;30G=安全(緑), 30–60G=リスク(黄), &gt;60G=重傷(赤) の目安。
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ============================================================
+//  Utilities
+// ============================================================
+function setupCanvas(id) {
+  var c = document.getElementById(id);
+  var dpr = window.devicePixelRatio || 1;
+  var rect = c.getBoundingClientRect();
+  c.width = rect.width * dpr;
+  c.height = rect.height * dpr;
+  var ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+}
+
+function bindSlider(id, cb) {
+  var s = document.getElementById(id);
+  var v = document.getElementById(id + 'Val');
+  function update() { if (v) v.textContent = s.value; if (cb) cb(+s.value); }
+  s.addEventListener('input', update);
+  update();
+  return s;
+}
+
+// ============================================================
+//  SECTION 1 — CRUMPLE ZONE
+// ============================================================
+(function () {
+  var czSpeed = 60, czMass = 1500, czLength = 0.6;
+  var czMode = 'crumple';
+  var animRunning = false;
+  var animId = null;
+  var animDuration = 3000;
+  var animStart = null;
+
+  function computeResults(mode) {
+    var v = czSpeed / 3.6;
+    var m = czMass;
+    var d = (mode === 'crumple') ? czLength : 0.05;
+    var Ek = 0.5 * m * v * v;
+    var Favg = Ek / d;
+    var Gpeak = Favg / (m * 9.81);
+    var tCrash = 2 * d / v * 1000;
+    return { Ek: Ek, Favg: Favg, Gpeak: Gpeak, tCrash: tCrash, d: d, v: v, m: m };
+  }
+
+  function buildGCurve(mode) {
+    var r = computeResults(mode);
+    var pts = [];
+    var steps = 300;
+    var tTotal = r.tCrash * 1.8;
+    for (var i = 0; i <= steps; i++) {
+      var t = (i / steps) * tTotal;
+      var g = (t <= r.tCrash) ? r.Gpeak * Math.sin((t / r.tCrash) * Math.PI) : 0;
+      pts.push({ t: t, g: g });
+    }
+    return { pts: pts, r: r, tTotal: tTotal };
+  }
+
+  function drawCar(id, progress) {
+    var s = setupCanvas(id);
+    var ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#0e0e22');
+    bg.addColorStop(1, '#0a0a18');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    var groundY = h * 0.78;
+    ctx.strokeStyle = '#334';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, groundY);
+    ctx.lineTo(w, groundY);
+    ctx.stroke();
+
+    // Road surface
+    ctx.fillStyle = '#111122';
+    ctx.fillRect(0, groundY, w, h - groundY);
+
+    // Wall
+    var wallX = w * 0.80;
+    ctx.fillStyle = '#445566';
+    ctx.fillRect(wallX, h * 0.08, 20, groundY - h * 0.08);
+    ctx.strokeStyle = '#556677';
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 12; i++) {
+      ctx.beginPath();
+      ctx.moveTo(wallX, h * 0.08 + i * 16);
+      ctx.lineTo(wallX + 20, h * 0.08 + i * 16 + 16);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#7799bb';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('壁', wallX + 10, h * 0.08 - 6);
+
+    var carH = h * 0.26;
+    var carBodyY = groundY - carH - 14;
+    var wheelR = 18;
+
+    var maxDeform = (czMode === 'crumple') ? Math.min(czLength * 90, 100) : 38;
+    var deform = progress * maxDeform;
+
+    var rearX = w * 0.12;
+    var cabinW = w * 0.30;
+    var czPx = (czMode === 'crumple') ? w * 0.17 : w * 0.05;
+    var czWNow = Math.max(czPx - deform * (czMode === 'crumple' ? 1.0 : 0.75), 4);
+    var travel = deform;
+    var frontX = rearX + cabinW + czWNow + travel;
+
+    // Crumple zone
+    if (czMode === 'crumple') {
+      var czLeft = rearX + cabinW + travel;
+      ctx.fillStyle = '#8b4513';
+      ctx.fillRect(czLeft, carBodyY, czWNow, carH);
+      // Accordion fold lines
+      ctx.strokeStyle = '#e07830';
+      ctx.lineWidth = 1.5;
+      var folds = Math.max(3, Math.floor(deform / 7));
+      for (var f = 0; f <= folds; f++) {
+        var fx = czLeft + (f / folds) * czWNow;
+        var amp = Math.min(9, deform / 4);
+        ctx.beginPath();
+        ctx.moveTo(fx, carBodyY);
+        ctx.lineTo(fx + (f % 2 === 0 ? amp : -amp), carBodyY + carH * 0.5);
+        ctx.lineTo(fx, carBodyY + carH);
+        ctx.stroke();
+      }
+      // Label
+      if (czWNow > 20) {
+        ctx.fillStyle = '#e07830';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('CZ', czLeft + czWNow / 2, carBodyY - 6);
+      }
+    } else {
+      ctx.fillStyle = '#5577aa';
+      ctx.fillRect(rearX + cabinW + travel, carBodyY, czWNow, carH);
+    }
+
+    // Cabin body
+    ctx.fillStyle = '#1e44aa';
+    ctx.fillRect(rearX + travel, carBodyY, cabinW, carH);
+
+    // Roof
+    ctx.fillStyle = '#2255cc';
+    ctx.beginPath();
+    ctx.moveTo(rearX + travel + cabinW * 0.04, carBodyY);
+    ctx.lineTo(rearX + travel + cabinW * 0.18, carBodyY - carH * 0.50);
+    ctx.lineTo(rearX + travel + cabinW * 0.78, carBodyY - carH * 0.50);
+    ctx.lineTo(rearX + travel + cabinW * 0.96, carBodyY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Windows
+    ctx.fillStyle = 'rgba(120,170,255,0.25)';
+    ctx.fillRect(rearX + travel + cabinW * 0.20, carBodyY - carH * 0.46, cabinW * 0.24, carH * 0.38);
+    ctx.fillRect(rearX + travel + cabinW * 0.52, carBodyY - carH * 0.46, cabinW * 0.24, carH * 0.38);
+    ctx.strokeStyle = 'rgba(150,190,255,0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(rearX + travel + cabinW * 0.20, carBodyY - carH * 0.46, cabinW * 0.24, carH * 0.38);
+    ctx.strokeRect(rearX + travel + cabinW * 0.52, carBodyY - carH * 0.46, cabinW * 0.24, carH * 0.38);
+
+    // Wheels
+    var wPos = [rearX + travel + cabinW * 0.18, rearX + travel + cabinW * 0.80];
+    for (var wi = 0; wi < 2; wi++) {
+      ctx.fillStyle = '#222';
+      ctx.strokeStyle = '#999';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(wPos[wi], groundY, wheelR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#777';
+      ctx.beginPath();
+      ctx.arc(wPos[wi], groundY, wheelR * 0.38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Speed & G readout during animation
+    if (progress > 0 && progress < 1) {
+      var r2 = computeResults(czMode);
+      var curG = r2.Gpeak * Math.sin(progress * Math.PI);
+      ctx.font = 'bold 13px monospace';
+      ctx.fillStyle = curG > 60 ? '#f44336' : curG > 30 ? '#ffc107' : '#4caf50';
+      ctx.textAlign = 'left';
+      ctx.fillText('減速度: ' + curG.toFixed(1) + ' G', 16, 26);
+      var curV = czSpeed * (1 - progress);
+      ctx.fillStyle = '#88aaff';
+      ctx.fillText('速度: ' + curV.toFixed(0) + ' km/h', 16, 44);
+    }
+
+    // Mode label
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = czMode === 'crumple' ? '#4caf50' : '#f44336';
+    ctx.textAlign = 'right';
+    ctx.fillText(czMode === 'crumple' ? 'クラッシャブルゾーンあり' : '剛体（ゾーンなし）', w - 12, 20);
+  }
+
+  function drawCrumpleGraph(id) {
+    var s = setupCanvas(id);
+    var ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#0e0e22');
+    bg.addColorStop(1, '#0a0a18');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    var padL = 62, padR = 20, padT = 32, padB = 42;
+    var gw = w - padL - padR;
+    var gh = h - padT - padB;
+
+    var crumpleData = buildGCurve('crumple');
+    var rigidData = buildGCurve('rigid');
+    var maxG = Math.max(crumpleData.r.Gpeak, rigidData.r.Gpeak) * 1.25;
+    if (maxG < 1) maxG = 1;
+    var maxT = Math.max(crumpleData.tTotal, rigidData.tTotal);
+
+    // Grid
+    ctx.strokeStyle = '#1e2244';
+    ctx.lineWidth = 1;
+    for (var gi = 0; gi <= 5; gi++) {
+      var gy = padT + gh - (gi / 5) * gh;
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(padL + gw, gy);
+      ctx.stroke();
+      ctx.fillStyle = '#667';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText((maxG * gi / 5).toFixed(0) + 'G', padL - 4, gy + 4);
+    }
+    for (var ti = 0; ti <= 5; ti++) {
+      var tx = padL + (ti / 5) * gw;
+      ctx.beginPath();
+      ctx.moveTo(tx, padT);
+      ctx.lineTo(tx, padT + gh);
+      ctx.stroke();
+      ctx.fillStyle = '#667';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText((maxT * ti / 5).toFixed(0) + 'ms', tx, padT + gh + 14);
+    }
+
+    // Axes
+    ctx.strokeStyle = '#445';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + gh);
+    ctx.lineTo(padL + gw, padT + gh);
+    ctx.stroke();
+
+    ctx.fillStyle = '#aaa';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('時間 (ms)', padL + gw / 2, h - 4);
+    ctx.save();
+    ctx.translate(14, padT + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('減速度 (G)', 0, 0);
+    ctx.restore();
+
+    function plotCurve(data, color, labelText, legRow) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      var pts = data.pts;
+      for (var pi = 0; pi < pts.length; pi++) {
+        var px = padL + (pts[pi].t / maxT) * gw;
+        var py = padT + gh - (pts[pi].g / maxG) * gh;
+        if (pi === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 0.10;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(padL, padT + gh);
+      for (var pi2 = 0; pi2 < pts.length; pi2++) {
+        var px2 = padL + (pts[pi2].t / maxT) * gw;
+        var py2 = padT + gh - (pts[pi2].g / maxG) * gh;
+        ctx.lineTo(px2, py2);
+      }
+      ctx.lineTo(padL + gw, padT + gh);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      // Legend
+      var ly = padT + 14 + legRow * 18;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(padL + 14, ly, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ccc';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(labelText, padL + 24, ly + 4);
+    }
+
+    plotCurve(crumpleData, '#4caf50',
+      'クラッシャブルゾーンあり: ' + crumpleData.r.Gpeak.toFixed(1) + 'G / ' + crumpleData.r.tCrash.toFixed(1) + 'ms', 0);
+    plotCurve(rigidData, '#f44336',
+      '剛体（ゾーンなし）: ' + rigidData.r.Gpeak.toFixed(1) + 'G / ' + rigidData.r.tCrash.toFixed(1) + 'ms', 1);
+
+    ctx.fillStyle = '#e0a030';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('減速度 G vs 時間', padL + gw, padT + 12);
+  }
+
+  function updateResultsText() {
+    var cr = computeResults('crumple');
+    var rr = computeResults('rigid');
+    document.getElementById('czResults').innerHTML =
+      '<br>【クラッシャブルゾーンあり】 ピークG: <strong style="color:#4caf50">' + cr.Gpeak.toFixed(1) + ' G</strong>' +
+      ' &nbsp;| 衝突継続時間: ' + cr.tCrash.toFixed(1) + ' ms' +
+      ' &nbsp;| 吸収エネルギー: ' + (cr.Ek / 1000).toFixed(1) + ' kJ' +
+      '<br>【剛体（ゾーンなし）】 ピークG: <strong style="color:#f44336">' + rr.Gpeak.toFixed(1) + ' G</strong>' +
+      ' &nbsp;| 衝突継続時間: ' + rr.tCrash.toFixed(1) + ' ms' +
+      '<br>G 低減率: <strong>' + ((1 - cr.Gpeak / rr.Gpeak) * 100).toFixed(0) + '%</strong>';
+  }
+
+  function redrawStatic(progress) {
+    progress = progress || 0;
+    drawCar('crumpleCanvas', progress);
+    drawCrumpleGraph('crumpleGraphCanvas');
+    updateResultsText();
+  }
+
+  function tick(ts) {
+    if (!animStart) animStart = ts;
+    var elapsed = ts - animStart;
+    var progress = Math.min(elapsed / animDuration, 1);
+    drawCar('crumpleCanvas', progress);
+    if (progress < 1) {
+      animId = requestAnimationFrame(tick);
+    } else {
+      animRunning = false;
+      animId = null;
+    }
+  }
+
+  function startAnim() {
+    if (animRunning) return;
+    animRunning = true;
+    animStart = null;
+    animId = requestAnimationFrame(tick);
+  }
+
+  function resetAnim() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    animRunning = false;
+    animStart = null;
+    redrawStatic(0);
+  }
+
+  document.getElementById('czModeRigid').addEventListener('click', function () {
+    czMode = 'rigid';
+    document.getElementById('czModeRigid').classList.add('active');
+    document.getElementById('czModeCrumple').classList.remove('active');
+    resetAnim();
+  });
+  document.getElementById('czModeCrumple').addEventListener('click', function () {
+    czMode = 'crumple';
+    document.getElementById('czModeCrumple').classList.add('active');
+    document.getElementById('czModeRigid').classList.remove('active');
+    resetAnim();
+  });
+  document.getElementById('czStart').addEventListener('click', function () {
+    resetAnim();
+    startAnim();
+  });
+  document.getElementById('czReset').addEventListener('click', resetAnim);
+
+  bindSlider('czSpeed', function (v) { czSpeed = v; resetAnim(); });
+  bindSlider('czMass', function (v) { czMass = v; resetAnim(); });
+
+  // Custom bind for czLength to show 2 decimals
+  (function () {
+    var s = document.getElementById('czLength');
+    var vEl = document.getElementById('czLengthVal');
+    function upd() {
+      czLength = parseFloat(s.value);
+      vEl.textContent = czLength.toFixed(2);
+      resetAnim();
+    }
+    s.addEventListener('input', upd);
+    upd();
+  })();
+
+  redrawStatic(0);
+
+  window.addEventListener('resize', function () {
+    if (!animRunning) redrawStatic(0);
+  });
+})();
+
+// ============================================================
+//  SECTION 2 — SEATBELT & AIRBAG
+// ============================================================
+(function () {
+  var rSpeed = 50, rMass = 70;
+  var rMode = 'none';
+  var animRunning = false;
+  var animId = null;
+  var animDuration = 3000;
+  var animStart = null;
+
+  var scenarios = {
+    none: { color: '#f44336', label: '拘束なし',           maxFwdFrac: 0.80, peakG: 0 },
+    belt: { color: '#ffc107', label: 'シートベルトのみ',   maxFwdFrac: 0.28, peakG: 0 },
+    both: { color: '#4caf50', label: 'ベルト＋エアバッグ', maxFwdFrac: 0.10, peakG: 0 }
+  };
+
+  function calcPeakG(mode) {
+    var v = rSpeed / 3.6;
+    var m = rMass;
+    var d = (mode === 'none') ? 0.10 : (mode === 'belt') ? 0.35 : 0.55;
+    var Ek = 0.5 * m * v * v;
+    return (Ek / d) / (m * 9.81);
+  }
+
+  function updateScenarioPeaks() {
+    scenarios.none.peakG = calcPeakG('none');
+    scenarios.belt.peakG = calcPeakG('belt');
+    scenarios.both.peakG = calcPeakG('both');
+  }
+
+  function injuryClass(g) {
+    if (g < 30) return 'safe';
+    if (g < 60) return 'risk';
+    return 'severe';
+  }
+  function injuryText(g) {
+    if (g < 30) return '安全';
+    if (g < 60) return 'リスク';
+    return '重傷危険';
+  }
+
+  function updateInjuryBadges() {
+    updateScenarioPeaks();
+    var map = { none: 'rInjuryNone', belt: 'rInjuryBelt', both: 'rInjuryBoth' };
+    var modes = ['none', 'belt', 'both'];
+    for (var i = 0; i < modes.length; i++) {
+      var m = modes[i];
+      var g = scenarios[m].peakG;
+      var badge = document.getElementById(map[m]);
+      badge.className = 'injury-badge ' + injuryClass(g);
+      badge.textContent = scenarios[m].label + ': ' + g.toFixed(1) + 'G (' + injuryText(g) + ')';
+    }
+  }
+
+  function occupantProgress(mode, simT) {
+    if (mode === 'none') {
+      return Math.min((simT / 150) * 1.25, 1);
+    } else if (mode === 'belt') {
+      if (simT < 40) return (simT / 40) * 0.12;
+      return 0.12 + (1 - 0.12) * Math.min((simT - 40) / 110, 1) * 0.72;
+    } else {
+      if (simT < 30) return (simT / 30) * 0.04;
+      if (simT < 60) return 0.04 + (simT - 30) / 30 * 0.06;
+      return Math.min(0.10, 0.10 * (1 + Math.sin((simT - 60) / 90 * Math.PI) * 0.08));
+    }
+  }
+
+  function gAtTime(mode, simT) {
+    var peak = scenarios[mode].peakG;
+    if (mode === 'none') {
+      if (simT < 10 || simT > 70) return 0;
+      return peak * Math.sin((simT - 10) / 60 * Math.PI);
+    } else if (mode === 'belt') {
+      if (simT < 40 || simT > 120) return 0;
+      return peak * Math.sin((simT - 40) / 80 * Math.PI);
+    } else {
+      if (simT < 30 || simT > 130) return 0;
+      return peak * Math.sin((simT - 30) / 100 * Math.PI);
+    }
+  }
+
+  function drawInterior(id, simT) {
+    var s = setupCanvas(id);
+    var ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#0e0e22');
+    bg.addColorStop(1, '#0a0a18');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    var floorY = h * 0.80;
+    var ceilY = h * 0.08;
+    var dashX = w * 0.76;
+    var seatCX = w * 0.28;
+
+    // Floor
+    ctx.fillStyle = '#111128';
+    ctx.fillRect(0, floorY, w, h - floorY);
+
+    // Ceiling
+    ctx.fillStyle = '#0f0f20';
+    ctx.fillRect(0, 0, w, ceilY);
+
+    // A-pillar
+    ctx.fillStyle = '#1a1a38';
+    ctx.beginPath();
+    ctx.moveTo(dashX - 20, ceilY);
+    ctx.lineTo(dashX + 4, floorY);
+    ctx.lineTo(dashX + 20, floorY);
+    ctx.lineTo(dashX + 2, ceilY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Dashboard body
+    ctx.fillStyle = '#1e2040';
+    ctx.fillRect(dashX, ceilY, w - dashX, floorY - ceilY);
+    // Dash top panel
+    ctx.fillStyle = '#2a2e54';
+    ctx.fillRect(dashX, floorY - h * 0.26, w - dashX, h * 0.10);
+    // Dash lower panel
+    ctx.fillStyle = '#252848';
+    ctx.fillRect(dashX, floorY - h * 0.16, w - dashX, h * 0.16);
+
+    // Instrument cluster
+    ctx.fillStyle = '#0a0a20';
+    ctx.beginPath();
+    ctx.roundRect(dashX + 8, floorY - h * 0.24, w - dashX - 16, h * 0.08, 4);
+    ctx.fill();
+    // speedometer
+    ctx.strokeStyle = '#00aaff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(dashX + 28, floorY - h * 0.20, 14, Math.PI, 2 * Math.PI);
+    ctx.stroke();
+    ctx.strokeStyle = '#ff4444';
+    ctx.lineWidth = 2;
+    var ang = Math.PI + (1 - simT / 150) * 0.8 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(dashX + 28, floorY - h * 0.20);
+    ctx.lineTo(dashX + 28 + Math.cos(ang) * 12, floorY - h * 0.20 + Math.sin(ang) * 12);
+    ctx.stroke();
+
+    // Seat back
+    var seatW = w * 0.18;
+    var seatH = h * 0.36;
+    var seatTop = floorY - seatH;
+    ctx.fillStyle = '#1e2050';
+    ctx.fillRect(seatCX - seatW / 2, ceilY + h * 0.02, seatW, seatTop - ceilY - h * 0.02);
+    ctx.fillStyle = '#252860';
+    ctx.fillRect(seatCX - seatW / 2 + 3, ceilY + h * 0.02 + 3,
+                 seatW - 6, seatTop - ceilY - h * 0.02 - 6);
+
+    // Seat cushion
+    ctx.fillStyle = '#1e2050';
+    ctx.fillRect(seatCX - seatW / 2, seatTop, seatW * 1.3, seatH * 0.22);
+
+    // Airbag (mode='both', simT >= 30)
+    if (rMode === 'both' && simT >= 30) {
+      var abProg = (simT <= 60) ? (simT - 30) / 30 : Math.max(0, 1 - (simT - 90) / 60);
+      abProg = Math.max(0, Math.min(1, abProg));
+      if (abProg > 0.02) {
+        var abCx = dashX - 12;
+        var abCy = floorY - h * 0.42;
+        var abRx = 60 * abProg;
+        var abRy = 48 * abProg;
+        var abG = ctx.createRadialGradient(abCx, abCy, 0, abCx, abCy, abRx);
+        abG.addColorStop(0, 'rgba(200,215,255,0.88)');
+        abG.addColorStop(0.6, 'rgba(140,165,240,0.55)');
+        abG.addColorStop(1, 'rgba(80,110,200,0.10)');
+        ctx.fillStyle = abG;
+        ctx.beginPath();
+        ctx.ellipse(abCx, abCy, abRx, abRy, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(160,185,255,0.50)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        if (abProg > 0.4) {
+          ctx.fillStyle = 'rgba(160,185,255,0.75)';
+          ctx.font = '10px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('エアバッグ', abCx, abCy + abRy + 13);
+        }
+      }
+    }
+
+    // Occupant position
+    var occProg = occupantProgress(rMode, simT);
+    var sc = scenarios[rMode];
+    // travel range: from seat area toward dashboard
+    var occStartX = seatCX + w * 0.07;
+    var occEndX = dashX - 18;
+    var occX = occStartX + occProg * sc.maxFwdFrac * (occEndX - occStartX);
+    var occY = floorY - h * 0.42;
+    var headR = 18;
+
+    // Seatbelt strap
+    if ((rMode === 'belt' || rMode === 'both') && simT >= 40) {
+      ctx.strokeStyle = '#e0a030';
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(seatCX - seatW / 2 + 8, ceilY + h * 0.12);
+      ctx.quadraticCurveTo(occX - 20, occY - 10, occX + 5, occY + 14);
+      ctx.lineTo(occX - 4, occY + 44);
+      ctx.stroke();
+      ctx.lineCap = 'butt';
+    }
+
+    // Torso
+    ctx.fillStyle = '#3355bb';
+    ctx.strokeStyle = '#5577dd';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(occX - 14, occY, 28, 46, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Head
+    ctx.fillStyle = '#ffcda0';
+    ctx.strokeStyle = '#cc9966';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(occX, occY - headR + 4, headR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Eyes
+    ctx.fillStyle = '#442200';
+    ctx.beginPath();
+    ctx.arc(occX - 6, occY - headR + 2, 2.5, 0, Math.PI * 2);
+    ctx.arc(occX + 6, occY - headR + 2, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Collision flash at t=0-15ms
+    if (simT < 15) {
+      var flashAlpha = (1 - simT / 15) * 0.3;
+      ctx.fillStyle = 'rgba(255,180,60,' + flashAlpha + ')';
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // Timeline bar
+    var barL = 16, barW2 = w - 32, barY2 = h - 16, barH2 = 7;
+    ctx.fillStyle = '#1a1e3a';
+    ctx.fillRect(barL, barY2, barW2, barH2);
+    ctx.fillStyle = '#e0a030';
+    ctx.fillRect(barL, barY2, barW2 * (simT / 150), barH2);
+
+    var milestones = [
+      { t: 0, label: '衝突' }, { t: 15, label: 'センサ' }, { t: 30, label: 'AB' },
+      { t: 40, label: 'ベルト' }, { t: 60, label: '接触' }, { t: 150, label: '終' }
+    ];
+    for (var mi = 0; mi < milestones.length; mi++) {
+      var ms = milestones[mi];
+      var mx = barL + barW2 * (ms.t / 150);
+      ctx.strokeStyle = '#334455';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mx, barY2 - 3);
+      ctx.lineTo(mx, barY2 + barH2 + 3);
+      ctx.stroke();
+      ctx.fillStyle = '#778899';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(ms.label, mx, barY2 - 5);
+    }
+
+    // HUD
+    ctx.font = 'bold 12px monospace';
+    ctx.fillStyle = '#e0a030';
+    ctx.textAlign = 'left';
+    ctx.fillText('t = ' + simT.toFixed(0) + ' ms', 12, 22);
+
+    ctx.fillStyle = sc.color;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(sc.label, w - 12, 22);
+
+    var cG = gAtTime(rMode, simT);
+    ctx.fillStyle = cG > 60 ? '#f44336' : cG > 30 ? '#ffc107' : '#4caf50';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('胸部G: ' + cG.toFixed(1) + ' G', w - 12, 40);
+  }
+
+  function drawRestraintGraph(id) {
+    updateScenarioPeaks();
+    var s = setupCanvas(id);
+    var ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#0e0e22');
+    bg.addColorStop(1, '#0a0a18');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+
+    var padL = 62, padR = 20, padT = 46, padB = 42;
+    var gw = w - padL - padR;
+    var gh = h - padT - padB;
+
+    var maxG = Math.max(scenarios.none.peakG, scenarios.belt.peakG, scenarios.both.peakG) * 1.25;
+    if (maxG < 10) maxG = 10;
+    var maxT = 150;
+
+    // Grid
+    ctx.strokeStyle = '#1e2244';
+    ctx.lineWidth = 1;
+    for (var gi = 0; gi <= 5; gi++) {
+      var gy = padT + gh - (gi / 5) * gh;
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(padL + gw, gy);
+      ctx.stroke();
+      ctx.fillStyle = '#667';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText((maxG * gi / 5).toFixed(0) + 'G', padL - 4, gy + 4);
+    }
+
+    // Threshold lines
+    var thresholds = [{ g: 30, color: '#ffc107', label: 'リスク 30G' }, { g: 60, color: '#f44336', label: '重傷 60G' }];
+    for (var ti2 = 0; ti2 < thresholds.length; ti2++) {
+      var th = thresholds[ti2];
+      var thy = padT + gh - (th.g / maxG) * gh;
+      if (thy > padT && thy < padT + gh) {
+        ctx.strokeStyle = th.color + '44';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padL, thy);
+        ctx.lineTo(padL + gw, thy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = th.color + 'aa';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(th.label, padL + 4, thy - 2);
+      }
+    }
+
+    for (var ti = 0; ti <= 5; ti++) {
+      var tx = padL + (ti / 5) * gw;
+      ctx.strokeStyle = '#1e2244';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(tx, padT);
+      ctx.lineTo(tx, padT + gh);
+      ctx.stroke();
+      ctx.fillStyle = '#667';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText((maxT * ti / 5).toFixed(0) + 'ms', tx, padT + gh + 14);
+    }
+
+    // Axes
+    ctx.strokeStyle = '#445';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT);
+    ctx.lineTo(padL, padT + gh);
+    ctx.lineTo(padL + gw, padT + gh);
+    ctx.stroke();
+
+    ctx.fillStyle = '#aaa';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('時間 (ms)', padL + gw / 2, h - 4);
+    ctx.save();
+    ctx.translate(14, padT + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('胸部減速度 (G)', 0, 0);
+    ctx.restore();
+
+    var modeOrder = ['none', 'belt', 'both'];
+    var steps = 250;
+    for (var mi = 0; mi < modeOrder.length; mi++) {
+      var m = modeOrder[mi];
+      var sc = scenarios[m];
+      ctx.strokeStyle = sc.color;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.9;
+      ctx.beginPath();
+      for (var pi = 0; pi <= steps; pi++) {
+        var t = (pi / steps) * maxT;
+        var g = gAtTime(m, t);
+        var px = padL + (t / maxT) * gw;
+        var py = padT + gh - (g / maxG) * gh;
+        if (pi === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 0.08;
+      ctx.fillStyle = sc.color;
+      ctx.beginPath();
+      ctx.moveTo(padL, padT + gh);
+      for (var pi3 = 0; pi3 <= steps; pi3++) {
+        var t3 = (pi3 / steps) * maxT;
+        var g3 = gAtTime(m, t3);
+        var px3 = padL + (t3 / maxT) * gw;
+        var py3 = padT + gh - (g3 / maxG) * gh;
+        ctx.lineTo(px3, py3);
+      }
+      ctx.lineTo(padL + gw, padT + gh);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Legend
+      var ly = padT + 14 + mi * 18;
+      ctx.fillStyle = sc.color;
+      ctx.beginPath();
+      ctx.arc(padL + 14, ly, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ccc';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(sc.label + ': ' + sc.peakG.toFixed(1) + ' G', padL + 24, ly + 4);
+    }
+
+    ctx.fillStyle = '#e0a030';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('胸部 G vs 時間 (全シナリオ重畳)', padL + gw, padT - 8);
+  }
+
+  function redrawStatic(simT) {
+    simT = simT || 0;
+    drawInterior('restraintCanvas', simT);
+    drawRestraintGraph('restraintGraphCanvas');
+    updateInjuryBadges();
+  }
+
+  function tick(ts) {
+    if (!animStart) animStart = ts;
+    var elapsed = ts - animStart;
+    var simT = Math.min((elapsed / animDuration) * 150, 150);
+    drawInterior('restraintCanvas', simT);
+    if (simT < 150) {
+      animId = requestAnimationFrame(tick);
+    } else {
+      animRunning = false;
+      animId = null;
+    }
+  }
+
+  function startAnim() {
+    if (animRunning) return;
+    updateScenarioPeaks();
+    animRunning = true;
+    animStart = null;
+    animId = requestAnimationFrame(tick);
+  }
+
+  function resetAnim() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    animRunning = false;
+    animStart = null;
+    redrawStatic(0);
+  }
+
+  function setMode(m) {
+    rMode = m;
+    document.getElementById('rModeNone').classList.remove('active');
+    document.getElementById('rModeBelt').classList.remove('active');
+    document.getElementById('rModeBoth').classList.remove('active');
+    var idMap = { none: 'rModeNone', belt: 'rModeBelt', both: 'rModeBoth' };
+    document.getElementById(idMap[m]).classList.add('active');
+    resetAnim();
+  }
+
+  document.getElementById('rModeNone').addEventListener('click', function () { setMode('none'); });
+  document.getElementById('rModeBelt').addEventListener('click', function () { setMode('belt'); });
+  document.getElementById('rModeBoth').addEventListener('click', function () { setMode('both'); });
+  document.getElementById('rStart').addEventListener('click', function () { resetAnim(); startAnim(); });
+  document.getElementById('rReset').addEventListener('click', resetAnim);
+
+  bindSlider('rSpeed', function (v) { rSpeed = v; resetAnim(); });
+  bindSlider('rMass', function (v) { rMass = v; resetAnim(); });
+
+  redrawStatic(0);
+
+  window.addEventListener('resize', function () {
+    if (!animRunning) redrawStatic(0);
+  });
+})();
+</script>
+</body>
+</html>

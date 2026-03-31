@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>空間 — 幾何学・位相・フラクタル | 数学の世界</title>
+  <link rel="stylesheet" href="mathematics/assets/css/base.css">
+  <link rel="stylesheet" href="mathematics/assets/css/layout.css">
+  <link rel="stylesheet" href="mathematics/assets/css/components.css">
+  <link rel="stylesheet" href="mathematics/assets/css/sections.css">
+  <style>
+    :root { --domain: var(--color-space); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="mathematics.html" class="nav-brand">
+    <span class="brand-symbol">∑</span><span>数学の世界</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="quantity.html">量</a></li>
+    <li><a href="change.html">変化</a></li>
+    <li><a href="structure.html">構造</a></li>
+    <li><a href="space.html" class="active">空間</a></li>
+    <li><a href="finite-math.html">有限数学</a></li>
+    <li><a href="math-sciences.html">数理科学</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">△</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="mathematics.html">ホーム</a><span class="sep">›</span><span class="current">空間</span>
+      </div>
+      <span class="domain-badge">Space</span>
+      <h1>空間 — 幾何学・位相・フラクタル</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        ユークリッド幾何学から非ユークリッド幾何学・位相幾何学・フラクタル幾何学まで。
+        「形」「距離」「連続性」の概念がどのように深化してきたかを探る。
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="#visualizations" class="btn btn-primary" style="background:var(--color-space);">デモを見る</a>
+        <a href="#topics" class="btn btn-outline">トピック一覧</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="topics" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header"><h2>トピック</h2></div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <span class="topic-symbol">📐</span>
+          <h4>解析幾何学</h4>
+          <p>座標を用いた幾何学。デカルト座標・極座標・円錐曲線。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">≅</span>
+          <h4>位相幾何学</h4>
+          <p>連続変形で変わらない性質の研究。コーヒーカップ ≅ ドーナツ。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">sin</span>
+          <h4>三角法</h4>
+          <p>三角関数の定義から応用まで。フーリエ解析の基盤。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">𝒦</span>
+          <h4>微分幾何学</h4>
+          <p>曲線・曲面の曲率。リーマン幾何学・相対性理論への応用。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🌀</span>
+          <h4>フラクタル幾何</h4>
+          <p>自己相似性を持つ複雑な図形。マンデルブロ集合・コッホ雪片。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">⟂</span>
+          <h4>線型代数学 (幾何)</h4>
+          <p>ベクトル空間の幾何学的解釈。内積・外積・射影。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">📊</span>
+          <h4>解析幾何 (代数)</h4>
+          <p>代数方程式と幾何図形の対応。射影幾何・アフィン幾何。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🔵</span>
+          <h4>図形の一覧</h4>
+          <p>多角形・多面体・曲線・曲面。正多面体はなぜ5つだけ？</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="viz-section" id="visualizations">
+    <div class="container">
+      <div class="section-header"><h2>インタラクティブ可視化</h2></div>
+      <div class="viz-grid">
+
+        <!-- 単位円と三角関数 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>単位円と三角関数</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">三角法</span>
+          </div>
+          <div id="trig-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>角度 θ</label>
+              <input type="range" id="trig-angle" min="0" max="360" value="45" step="1">
+              <span class="control-value" id="trig-angle-val">45°</span>
+            </div>
+            <button class="btn btn-ghost" id="trig-animate-btn">▶ アニメーション</button>
+          </div>
+        </div>
+
+        <!-- マンデルブロ集合 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>マンデルブロ集合</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">フラクタル</span>
+          </div>
+          <div id="mandelbrot-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>最大反復回数</label>
+              <input type="range" id="mandel-iter" min="20" max="150" value="60" step="10">
+              <span class="control-value" id="mandel-iter-val">60</span>
+            </div>
+            <button class="btn btn-ghost" id="mandel-render-btn">再描画</button>
+          </div>
+        </div>
+
+        <!-- コッホ雪片 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>コッホ雪片 — 有限の面積、無限の周長</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">フラクタル</span>
+          </div>
+          <div id="koch-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>反復回数</label>
+              <input type="range" id="koch-iter" min="0" max="6" value="3" step="1">
+              <span class="control-value" id="koch-iter-val">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 円錐曲線 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>円錐曲線 — 楕円・放物線・双曲線</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">解析幾何</span>
+          </div>
+          <div id="conic-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>離心率 e</label>
+              <input type="range" id="conic-e" min="0" max="1.8" value="0.5" step="0.05">
+              <span class="control-value" id="conic-e-val">0.50</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- リサージュ曲線 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>リサージュ曲線</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">解析幾何</span>
+          </div>
+          <div id="lissajous-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>周波数比 a</label>
+              <input type="range" id="lis-a" min="1" max="7" value="3" step="1">
+              <span class="control-value" id="lis-a-val">3</span>
+            </div>
+            <div class="control-group">
+              <label>周波数比 b</label>
+              <input type="range" id="lis-b" min="1" max="7" value="2" step="1">
+              <span class="control-value" id="lis-b-val">2</span>
+            </div>
+            <div class="control-group">
+              <label>位相差 δ</label>
+              <input type="range" id="lis-delta" min="0" max="360" value="90" step="5">
+              <span class="control-value" id="lis-delta-val">90°</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 極座標曲線 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>極座標曲線</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">解析幾何</span>
+          </div>
+          <div id="polar-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>曲線の種類</label>
+              <select id="polar-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="rose3">バラ曲線 r=cos(3θ)</option>
+                <option value="rose4">バラ曲線 r=cos(2θ)</option>
+                <option value="cardioid">カージオイド r=1+cos(θ)</option>
+                <option value="archimedes">アルキメデス螺旋 r=θ/2π</option>
+                <option value="lemniscate">レムニスケート r²=cos(2θ)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 正多面体 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>正多面体 — プラトンの立体 (5種類のみ)</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">幾何学</span>
+          </div>
+          <div id="polyhedron-viz" style="height:340px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>立体</label>
+              <select id="poly-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="tetra">正四面体 (V4,E6,F4)</option>
+                <option value="cube">立方体 (V8,E12,F6)</option>
+                <option value="octa">正八面体 (V6,E12,F8)</option>
+                <option value="dodeca">正十二面体 (V20,E30,F12)</option>
+                <option value="icosa">正二十面体 (V12,E30,F20)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- メビウスの帯・トーラス -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>メビウスの帯とトーラス — 位相幾何学</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">位相幾何学</span>
+          </div>
+          <div id="topology-viz" style="height:340px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>曲面</label>
+              <select id="topo-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="mobius">メビウスの帯 (向きなし曲面)</option>
+                <option value="torus">トーラス T² (χ=0)</option>
+                <option value="sphere">球面 S² (χ=2)</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>回転速度</label>
+              <input type="range" id="topo-speed" min="0" max="3" value="1" step="0.1">
+              <span class="control-value" id="topo-speed-val">1.0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 曲率の可視化 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>曲率 κ — 微分幾何学</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">微分幾何学</span>
+          </div>
+          <div id="curvature-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>曲線</label>
+              <select id="curv-fn" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="sin">y = sin(x)</option>
+                <option value="x2">y = x²</option>
+                <option value="x3">y = x³</option>
+                <option value="circle">円 r=1</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>接触点 t</label>
+              <input type="range" id="curv-t" min="-3" max="3" value="1" step="0.05">
+              <span class="control-value" id="curv-t-val">1.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 双曲幾何 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>双曲幾何 — ポアンカレ円盤モデル</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">非ユークリッド幾何</span>
+          </div>
+          <div id="hyperbolic-viz" style="height:300px;cursor:crosshair;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>表示</label>
+              <select id="hyp-mode" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="geodesics">測地線（平行線公理の破れ）</option>
+                <option value="tiling">タイリング {5,4}</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">双曲平面: 直線(測地線)は円盤の境界に直交する円弧。1本の直線の外の点を通る「平行線」が無数に存在する</p>
+        </div>
+
+        <!-- ホモトピー -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>ホモトピー — ループの連続変形</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">代数的トポロジー</span>
+          </div>
+          <div id="homotopy-viz" style="height:300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>変形パラメータ t</label>
+              <input type="range" id="homo-t" min="0" max="100" value="0" step="1">
+              <span class="control-value" id="homo-t-val">0%</span>
+            </div>
+            <div class="control-group">
+              <label>空間</label>
+              <select id="homo-space" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="plane">ℝ² (単連結: ループ縮小可)</option>
+                <option value="annulus">環状領域 (穴あり: 縮小不可)</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">ℝ²では全てのループが点に縮小できる(π₁=0)。穴があると「穴を巻く」ループは縮小不可(π₁=ℤ)</p>
+        </div>
+
+        <!-- ガウス曲率 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>ガウス曲率 — 曲面の分類 (K &gt; 0 / K = 0 / K &lt; 0)</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">微分幾何</span>
+          </div>
+          <div id="gaussian-viz" style="height:380px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>表示曲面</label>
+              <select id="gauss-surface" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="all">3曲面を並列表示</option>
+                <option value="sphere">球面 K = 1/R² &gt; 0</option>
+                <option value="plane">平面 K = 0</option>
+                <option value="saddle">鞍面 K &lt; 0</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>ワイヤーフレーム</label>
+              <input type="range" id="gauss-wire" min="0" max="1" value="0" step="1">
+              <span class="control-value" id="gauss-wire-val">OFF</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">K=κ₁·κ₂（主曲率の積）。球面: 両方向に同符号の曲がり。鞍面: 逆符号の主曲率。平面: 曲率ゼロ。ガウスの驚異の定理: Kは等長変換不変</p>
+        </div>
+
+        <!-- リーマン面 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>リーマン面 — 複素関数の多価性</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">複素解析</span>
+          </div>
+          <div id="riemann-surface-viz" style="height:380px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>関数</label>
+              <select id="rs-func" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="sqrt">√z — 2枚のシート</option>
+                <option value="log">log z — 無限枚のシート (2枚表示)</option>
+                <option value="cbrt">∛z — 3枚のシート</option>
+              </select>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">複素関数の多価性をリーマン面で可視化。√z は z を一周すると別のシートへ移動する。分岐点は原点</p>
+        </div>
+
+        <!-- ファイバー束 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>ファイバー束 — 局所積・大域的ねじれ</h4>
+            <span class="badge" style="background:rgba(74,184,216,0.15);color:var(--color-space);">微分幾何</span>
+          </div>
+          <div id="fiberbundle-viz" style="height:280px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>束の種類</label>
+              <select id="fb-type" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="trivial">自明束 S¹ × ℝ (円柱)</option>
+                <option value="mobius">メビウス束 (ねじれあり)</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label>回転</label>
+              <input type="range" id="fb-rot" min="0" max="360" value="0" step="1">
+              <span class="control-value" id="fb-rot-val">0°</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">底空間S¹の各点にファイバーℝが付いている。自明束は円柱、ねじれた束はメビウスの帯に対応する</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-sm">
+      <div class="section-header"><h2>主要な公式・定理</h2></div>
+      <div class="grid-2" style="gap:var(--space-md);">
+        <div class="info-card">
+          <h4>ピタゴラスの定理</h4>
+          <div class="math-block">a² + b² = c²</div>
+          <p style="font-size:0.85rem;">直角三角形の辺の関係。内積の定義にも繋がる。</p>
+        </div>
+        <div class="info-card">
+          <h4>オイラーの多面体定理</h4>
+          <div class="math-block">V − E + F = 2</div>
+          <p style="font-size:0.85rem;">頂点・辺・面の数の関係。位相不変量の先駆け。</p>
+        </div>
+        <div class="info-card">
+          <h4>ガウス曲率</h4>
+          <div class="math-block">K = κ₁ · κ₂</div>
+          <p style="font-size:0.85rem;">曲面の内在的な曲がり方を表す。ガウスの驚異の定理。</p>
+        </div>
+        <div class="info-card">
+          <h4>フラクタル次元</h4>
+          <div class="math-block">d = log N / log(1/r)</div>
+          <p style="font-size:0.85rem;">自己相似な図形の「次元」は整数とは限らない。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 応用分野 -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>応用分野</h2>
+        <p>「空間」の数学が現代社会のどこで活きているか</p>
+      </div>
+      <div class="application-grid">
+        <div class="application-card">
+          <span class="app-icon">🎮</span>
+          <h4>コンピュータグラフィックス・ゲーム</h4>
+          <p>3Dレンダリングは射影幾何学の直接応用。四元数は3D回転をジンバルロックなしに表現するため、ゲームエンジン（Unity/Unreal）で標準使用。フラクタルは地形・雲の自然生成に活用。</p>
+          <div class="app-tags"><span class="app-tag">3Dレンダリング</span><span class="app-tag">四元数</span><span class="app-tag">フラクタル地形</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🧭</span>
+          <h4>GPS・地図・ナビゲーション</h4>
+          <p>地球は球面（リーマン幾何）。測地線（最短経路）計算・球面三角法は航空路設計に不可欠。地図投影（メルカトル・ランベルト）は微分幾何の応用。</p>
+          <div class="app-tags"><span class="app-tag">測地線</span><span class="app-tag">球面幾何</span><span class="app-tag">地図投影</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🏥</span>
+          <h4>医療画像・MRI</h4>
+          <p>MRIは位相空間（k空間）でのフーリエ変換を使用。CT（コンピュータ断層撮影）はラドン変換（逆問題）。医療画像の3D再構成は幾何学的アルゴリズムを要する。</p>
+          <div class="app-tags"><span class="app-tag">MRI</span><span class="app-tag">CT</span><span class="app-tag">3D再構成</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🤖</span>
+          <h4>ロボティクス・自動運転</h4>
+          <p>ロボットアームの逆運動学は Lie 群 SE(3) 上の最適化問題。点群処理（LiDAR）は位相的データ解析（TDA）を活用。SLAM（自己位置推定）は幾何学的推論の塊。</p>
+          <div class="app-tags"><span class="app-tag">SLAM</span><span class="app-tag">Lie群</span><span class="app-tag">点群処理</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🌌</span>
+          <h4>宇宙物理学・相対性理論</h4>
+          <p>一般相対性理論はリーマン多様体上の幾何学。重力波は時空の曲率の変動。ブラックホールの境界（事象の地平面）はホモトピー的な概念で理解できる。</p>
+          <div class="app-tags"><span class="app-tag">一般相対論</span><span class="app-tag">重力波</span><span class="app-tag">リーマン幾何</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🧠</span>
+          <h4>トポロジカルデータ解析（TDA）</h4>
+          <p>パーシステントホモロジーはデータの「穴」の構造を検出。がんの組織形態解析・脳ネットワーク分析・材料科学での多孔質構造解析に応用される。</p>
+          <div class="app-tags"><span class="app-tag">パーシステントホモロジー</span><span class="app-tag">医用画像</span><span class="app-tag">材料科学</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>「幾何学には王道なし」— ユークリッド</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.132.0/examples/js/controls/OrbitControls.js"></script>
+<script src="mathematics/assets/js/core/math-utils.js"></script>
+<script src="mathematics/assets/js/space.js"></script>
+</body>
+</html>
