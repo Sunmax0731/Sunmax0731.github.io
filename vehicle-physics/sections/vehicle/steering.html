@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ステアリング幾何学・トラクションサークル | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    :root { --domain: #50b0d0; }
+    .controls button.active { background: var(--domain); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="../../vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">&#x1F3CE;</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../mechanics/mechanics.html">力学</a></li>
+    <li><a href="../thermodynamics/thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html" class="active">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">&#x1F3CE;</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../vehicle-physics.html">ホーム</a><span class="sep">&#x203A;</span>
+        <span class="current">ステアリング</span>
+      </div>
+      <span class="domain-badge">Steering &amp; Traction</span>
+      <h1>ステアリング幾何学・トラクションサークル</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        アッカーマン幾何学、ホイールアライメント、トラクションサークルを可視化。
+        操舵とグリップの物理を統合的に理解する。
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. アッカーマンステアリング -->
+  <section class="section" id="ackermann" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>アッカーマンステアリング幾何学</h3>
+        <p>旋回時に内輪と外輪の転舵角を異ならせ、全車輪が共通の瞬間回転中心を持つようにする幾何学。</p>
+        <canvas id="ackerCanvas" style="width:100%;height:400px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="controls">
+          <label>転舵角 δ:</label>
+          <input type="range" id="ackAngle" min="0" max="40" value="15" step="0.5">
+          <span class="val" id="ackAngleVal">15°</span>
+          <label>ホイールベース L:</label>
+          <input type="range" id="ackWB" min="2.0" max="3.5" value="2.7" step="0.1">
+          <span class="val" id="ackWBVal">2.7 m</span>
+          <label>トレッド幅 T:</label>
+          <input type="range" id="ackTrack" min="1.2" max="2.0" value="1.5" step="0.05">
+          <span class="val" id="ackTrackVal">1.5 m</span>
+        </div>
+        <div class="info-panel" id="ackInfo">
+          アッカーマン条件: cot(δ<sub>o</sub>) − cot(δ<sub>i</sub>) = T / L<br>
+          内輪転舵角 δ<sub>i</sub> = atan(L / (R − T/2)), 外輪転舵角 δ<sub>o</sub> = atan(L / (R + T/2))<br>
+          旋回半径 R は転舵角が大きいほど小さくなる。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. キャスター・キャンバー・トー -->
+  <section class="section" id="alignment">
+    <div class="container">
+      <div class="viz-card">
+        <h3>キャスター・キャンバー・トー（ホイールアライメント）</h3>
+        <p>3つのアライメント要素を同時に可視化。各パラメータがタイヤ接地とハンドリングに与える影響を理解する。</p>
+        <canvas id="alignCanvas" style="width:100%;height:400px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="controls">
+          <label>キャンバー角:</label>
+          <input type="range" id="alCamber" min="-5" max="5" value="0" step="0.5">
+          <span class="val" id="alCamberVal">0°</span>
+          <label>キャスター角:</label>
+          <input type="range" id="alCaster" min="0" max="12" value="5" step="0.5">
+          <span class="val" id="alCasterVal">5°</span>
+          <label>トー角:</label>
+          <input type="range" id="alToe" min="-3" max="3" value="0" step="0.25">
+          <span class="val" id="alToeVal">0°</span>
+        </div>
+        <div class="info-panel">
+          <strong>キャンバー:</strong> タイヤ上部の傾き。ネガティブキャンバーはコーナリンググリップ向上、摩耗偏り。<br>
+          <strong>キャスター:</strong> キングピン軸の後傾角。大きいほどセルフアライニングトルク増加、直進安定性向上。<br>
+          <strong>トー:</strong> 前方から見た車輪の向き。トーインは直進安定性、トーアウトはターンイン応答性向上。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. トラクションサークル -->
+  <section class="section" id="traction" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>トラクションサークル（摩擦円）</h3>
+        <p>縦方向力（加減速）と横方向力（コーナリング）の合力がタイヤグリップ限界を超えられないことを示す摩擦円。</p>
+        <canvas id="tractionCanvas" style="width:100%;height:500px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="controls">
+          <label>摩擦係数 μ:</label>
+          <input type="range" id="trMu" min="0.5" max="1.5" value="1.0" step="0.05">
+          <span class="val" id="trMuVal">1.0</span>
+          <label>荷重 F<sub>z</sub>:</label>
+          <input type="range" id="trFz" min="5000" max="15000" value="10000" step="500">
+          <span class="val" id="trFzVal">10000 N</span>
+          <label>スロットル/ブレーキ:</label>
+          <input type="range" id="trThrottle" min="-100" max="100" value="0" step="5">
+          <span class="val" id="trThrottleVal">0%</span>
+          <label>ステアリング（横G）:</label>
+          <input type="range" id="trSteer" min="-100" max="100" value="0" step="5">
+          <span class="val" id="trSteerVal">0%</span>
+          <button id="trAutoBtn">自動ラップ再生</button>
+          <button id="trResetBtn">リセット</button>
+        </div>
+        <div class="info-panel" id="trInfo">
+          トラクションサークル: F<sub>combined</sub> = √(F<sub>x</sub>² + F<sub>y</sub>²) ≤ μ × F<sub>z</sub><br>
+          ブレーキングしながらコーナリングすると、使える横力が減少する。<br>
+          グリップ利用率100%に近いほど、タイヤの性能を最大限に引き出している。
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== Section 1: Ackermann ===== -->
+<script>
+(function() {
+  function setupCanvas(id) {
+    var c = document.getElementById(id);
+    var dpr = window.devicePixelRatio || 1;
+    var rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    var ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+  }
+  function bindSlider(id, cb) {
+    var s = document.getElementById(id);
+    var v = document.getElementById(id + 'Val');
+    function update() { if(v) v.textContent = s.value + (id === 'ackAngle' ? '°' : ' m'); if(cb) cb(+s.value); }
+    s.addEventListener('input', update);
+    update();
+    return s;
+  }
+
+  var canvasId = 'ackerCanvas';
+  var s = setupCanvas(canvasId);
+  var ctx = s.ctx, w = s.w, h = s.h;
+
+  var steerAngle = 15, wheelbase = 2.7, trackWidth = 1.5;
+
+  bindSlider('ackAngle', function(v) { steerAngle = v; draw(); });
+  bindSlider('ackWB', function(v) { wheelbase = v; draw(); });
+  bindSlider('ackTrack', function(v) { trackWidth = v; draw(); });
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var scale = Math.min(w, h) * 0.18;
+    var cx = w * 0.45, cy = h * 0.5;
+    var L = wheelbase * scale;
+    var T = trackWidth * scale;
+
+    // car body
+    ctx.strokeStyle = '#667';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(cx - T / 2 - 8, cy - L / 2 - 5, T + 16, L + 10);
+
+    // rear axle
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx - T / 2, cy + L / 2); ctx.lineTo(cx + T / 2, cy + L / 2); ctx.stroke();
+    // front axle
+    ctx.beginPath(); ctx.moveTo(cx - T / 2, cy - L / 2); ctx.lineTo(cx + T / 2, cy - L / 2); ctx.stroke();
+
+    var delta = steerAngle * Math.PI / 180;
+
+    if (delta < 0.001) {
+      // straight ahead - draw wheels with no turn
+      drawWheel(ctx, cx - T / 2, cy - L / 2, 0, scale);
+      drawWheel(ctx, cx + T / 2, cy - L / 2, 0, scale);
+      drawWheel(ctx, cx - T / 2, cy + L / 2, 0, scale);
+      drawWheel(ctx, cx + T / 2, cy + L / 2, 0, scale);
+      // info
+      ctx.fillStyle = '#ccc';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('転舵角 = 0° (直進)', 15, 25);
+      ctx.fillText('旋回半径 = ∞', 15, 45);
+      return;
+    }
+
+    // Ackermann geometry: turning left
+    var R = wheelbase / Math.tan(delta); // turning radius to center (m)
+    var Rm = R; // in meters
+    var Rpx = R * scale; // in pixels
+
+    var deltaI = Math.atan(wheelbase / (R - trackWidth / 2)); // inner (left)
+    var deltaO = Math.atan(wheelbase / (R + trackWidth / 2)); // outer (right)
+
+    // instantaneous center (on rear axle line extended, to the left)
+    var icx = cx - Rpx;
+    var icy = cy + L / 2;
+
+    // draw turning circle (dashed)
+    ctx.save();
+    ctx.setLineDash([6, 4]);
+    ctx.strokeStyle = 'rgba(80,176,208,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(icx, icy, Rpx, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Ackermann geometry lines: from rear axle ends through front pivots to IC
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(80,176,208,0.5)';
+    ctx.lineWidth = 1;
+    // left rear to IC
+    ctx.beginPath(); ctx.moveTo(cx - T / 2, cy + L / 2); ctx.lineTo(icx, icy); ctx.stroke();
+    // right rear to IC
+    ctx.beginPath(); ctx.moveTo(cx + T / 2, cy + L / 2); ctx.lineTo(icx, icy); ctx.stroke();
+    // lines from front pivots to IC
+    ctx.strokeStyle = 'rgba(255,200,80,0.5)';
+    ctx.beginPath(); ctx.moveTo(cx - T / 2, cy - L / 2); ctx.lineTo(icx, icy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + T / 2, cy - L / 2); ctx.lineTo(icx, icy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // rear axle line extended to IC
+    ctx.save();
+    ctx.setLineDash([2, 3]);
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - T / 2 - 10, cy + L / 2); ctx.lineTo(icx - 10, icy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // IC point
+    if (icx > -w && icx < w * 3) {
+      ctx.fillStyle = '#ff6060';
+      ctx.beginPath(); ctx.arc(icx, icy, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff8080';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('瞬間回転中心', icx - 40, icy - 12);
+    }
+
+    // wheels
+    drawWheel(ctx, cx - T / 2, cy - L / 2, -deltaI, scale); // left front (inner)
+    drawWheel(ctx, cx + T / 2, cy - L / 2, -deltaO, scale); // right front (outer)
+    drawWheel(ctx, cx - T / 2, cy + L / 2, 0, scale); // left rear
+    drawWheel(ctx, cx + T / 2, cy + L / 2, 0, scale); // right rear
+
+    // angle arcs
+    drawAngleArc(ctx, cx - T / 2, cy - L / 2, -deltaI, 'δi=' + (deltaI * 180 / Math.PI).toFixed(1) + '°', '#50d0ff');
+    drawAngleArc(ctx, cx + T / 2, cy - L / 2, -deltaO, 'δo=' + (deltaO * 180 / Math.PI).toFixed(1) + '°', '#ffc850');
+
+    // info text
+    var ackerRatio = (deltaO / deltaI * 100).toFixed(1);
+    ctx.fillStyle = '#ccc';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('旋回半径 R = ' + Rm.toFixed(2) + ' m', 15, 25);
+    ctx.fillText('内輪角 δi = ' + (deltaI * 180 / Math.PI).toFixed(2) + '°', 15, 45);
+    ctx.fillText('外輪角 δo = ' + (deltaO * 180 / Math.PI).toFixed(2) + '°', 15, 65);
+    ctx.fillText('アッカーマン比 = ' + ackerRatio + '%', 15, 85);
+  }
+
+  function drawWheel(ctx, x, y, angle, scale) {
+    var ww = 8, wh = scale * 0.22;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.fillStyle = '#50b0d0';
+    ctx.fillRect(-ww / 2, -wh / 2, ww, wh);
+    ctx.strokeStyle = '#80d0e8';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(-ww / 2, -wh / 2, ww, wh);
+    // direction line
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -wh / 2 - 5); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawAngleArc(ctx, x, y, angle, label, color) {
+    if (Math.abs(angle) < 0.001) return;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    var r = 25;
+    ctx.beginPath();
+    var startA = -Math.PI / 2;
+    ctx.arc(0, 0, r, startA, startA + angle, angle > 0);
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.font = '11px sans-serif';
+    ctx.fillText(label, r + 4, -5);
+    ctx.restore();
+  }
+
+  draw();
+
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvasId); ctx = ns.ctx; w = ns.w; h = ns.h; draw();
+  });
+})();
+</script>
+
+<!-- ===== Section 2: Alignment ===== -->
+<script>
+(function() {
+  function setupCanvas(id) {
+    var c = document.getElementById(id);
+    var dpr = window.devicePixelRatio || 1;
+    var rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    var ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+  }
+  function bindSlider(id, cb) {
+    var s = document.getElementById(id);
+    var v = document.getElementById(id + 'Val');
+    function update() { if(v) v.textContent = s.value + '°'; if(cb) cb(+s.value); }
+    s.addEventListener('input', update);
+    update();
+    return s;
+  }
+
+  var canvasId = 'alignCanvas';
+  var s = setupCanvas(canvasId);
+  var ctx = s.ctx, w = s.w, h = s.h;
+
+  var camber = 0, caster = 5, toe = 0;
+  bindSlider('alCamber', function(v) { camber = v; draw(); });
+  bindSlider('alCaster', function(v) { caster = v; draw(); });
+  bindSlider('alToe', function(v) { toe = v; draw(); });
+
+  function angleColor(v) {
+    if (Math.abs(v) < 0.1) return '#50d080';
+    return v < 0 ? '#50a0f0' : '#f0a050';
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var pw = w / 3;
+
+    // dividers
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pw, 0); ctx.lineTo(pw, h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pw * 2, 0); ctx.lineTo(pw * 2, h); ctx.stroke();
+
+    // panel titles
+    ctx.fillStyle = '#aaa';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('キャンバー（正面図）', pw * 0.5, 22);
+    ctx.fillText('キャスター（側面図）', pw * 1.5, 22);
+    ctx.fillText('トー（上面図）', pw * 2.5, 22);
+    ctx.textAlign = 'left';
+
+    drawCamber(pw * 0.5, h * 0.55, pw, h);
+    drawCaster(pw * 1.5, h * 0.55, pw, h);
+    drawToe(pw * 2.5, h * 0.55, pw, h);
+  }
+
+  function drawCamber(cx, cy, pw, ph) {
+    var groundY = cy + 80;
+    var wheelH = 120, wheelW = 24;
+    var rad = camber * Math.PI / 180;
+
+    // ground
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx - pw * 0.4, groundY); ctx.lineTo(cx + pw * 0.4, groundY); ctx.stroke();
+
+    // vertical reference
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, groundY - wheelH - 30); ctx.lineTo(cx, groundY + 10); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // wheel
+    ctx.save();
+    ctx.translate(cx, groundY);
+    ctx.rotate(rad);
+    var color = angleColor(camber);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.7;
+    ctx.fillRect(-wheelW / 2, -wheelH, wheelW, wheelH);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-wheelW / 2, -wheelH, wheelW, wheelH);
+
+    // axle
+    ctx.fillStyle = '#ccc';
+    ctx.beginPath(); ctx.arc(0, -wheelH / 2, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // contact patch shift
+    var shift = Math.sin(rad) * wheelH * 0.3;
+    ctx.fillStyle = 'rgba(255,200,80,0.5)';
+    ctx.fillRect(cx + shift - 8, groundY - 3, 16, 6);
+
+    // angle arc
+    if (Math.abs(camber) > 0.1) {
+      ctx.save();
+      ctx.translate(cx, groundY - wheelH * 0.7);
+      ctx.strokeStyle = angleColor(camber);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 30, -Math.PI / 2, -Math.PI / 2 + rad, rad < 0);
+      ctx.stroke();
+      ctx.fillStyle = angleColor(camber);
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(camber.toFixed(1) + '°', 0, -40);
+      ctx.restore();
+    }
+
+    ctx.fillStyle = '#888';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('接地面', cx, groundY + 20);
+  }
+
+  function drawCaster(cx, cy, pw, ph) {
+    var groundY = cy + 80;
+    var wheelR = 50;
+    var rad = caster * Math.PI / 180;
+
+    // ground
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx - pw * 0.4, groundY); ctx.lineTo(cx + pw * 0.4, groundY); ctx.stroke();
+
+    // vertical reference
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, groundY - wheelR * 2 - 40); ctx.lineTo(cx, groundY + 10); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // wheel (side view = circle)
+    var color = angleColor(caster > 0 ? caster : -1);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, groundY - wheelR, wheelR, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // kingpin axis (steering axis)
+    var axisLen = wheelR * 2.5;
+    ctx.save();
+    ctx.translate(cx, groundY);
+    ctx.strokeStyle = '#ff8060';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(Math.sin(rad) * 10, 0);
+    ctx.lineTo(-Math.sin(rad) * axisLen, -Math.cos(rad) * axisLen);
+    ctx.stroke();
+    ctx.restore();
+
+    // trail (distance on ground between axis contact and wheel contact)
+    var trail = Math.sin(rad) * (wheelR * 0.6 + 10);
+    ctx.fillStyle = 'rgba(80,176,208,0.4)';
+    ctx.fillRect(cx - trail, groundY - 2, trail, 4);
+    ctx.fillStyle = '#50b0d0';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('トレール', cx - trail / 2, groundY + 16);
+
+    // angle arc
+    if (caster > 0.1) {
+      ctx.save();
+      ctx.translate(cx, groundY - wheelR);
+      ctx.strokeStyle = '#ff8060';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 35, -Math.PI / 2, -Math.PI / 2 - rad, true);
+      ctx.stroke();
+      ctx.fillStyle = '#ff8060';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(caster.toFixed(1) + '°', -45, -10);
+      ctx.restore();
+    }
+
+    // arrow for forward direction
+    ctx.fillStyle = '#666';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('← 前方', cx - pw * 0.25, groundY - wheelR * 2 - 10);
+  }
+
+  function drawToe(cx, cy, pw, ph) {
+    var rad = toe * Math.PI / 180;
+    var carW = pw * 0.5;
+    var wheelLen = 40, wheelW = 12;
+    var wheelSpacing = carW * 0.4;
+
+    // forward arrow
+    ctx.fillStyle = '#666';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('↑ 前方', cx, cy - 100);
+
+    // car body outline (top view)
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cx - wheelSpacing - 15, cy - 70, wheelSpacing * 2 + 30, 140);
+
+    // centerline
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, cy - 80); ctx.lineTo(cx, cy + 80); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // left wheel
+    drawToeWheel(cx - wheelSpacing, cy - 30, rad, wheelLen, wheelW);
+    // right wheel
+    drawToeWheel(cx + wheelSpacing, cy - 30, -rad, wheelLen, wheelW);
+
+    // rear wheels (fixed)
+    ctx.fillStyle = '#666';
+    ctx.fillRect(cx - wheelSpacing - wheelW / 2, cy + 40, wheelW, wheelLen);
+    ctx.fillRect(cx + wheelSpacing - wheelW / 2, cy + 40, wheelW, wheelLen);
+
+    // toe label
+    var label = toe === 0 ? 'ゼロトー' : (toe > 0 ? 'トーイン' : 'トーアウト');
+    ctx.fillStyle = angleColor(toe);
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label + ' ' + Math.abs(toe).toFixed(1) + '°', cx, cy + 100);
+  }
+
+  function drawToeWheel(x, y, angle, len, wid) {
+    var color = angleColor(toe);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.7;
+    ctx.fillRect(-wid / 2, -len / 2, wid, len);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-wid / 2, -len / 2, wid, len);
+    // direction
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -len / 2 - 8); ctx.stroke();
+    ctx.restore();
+  }
+
+  draw();
+
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvasId); ctx = ns.ctx; w = ns.w; h = ns.h; draw();
+  });
+})();
+</script>
+
+<!-- ===== Section 3: Traction Circle ===== -->
+<script>
+(function() {
+  function setupCanvas(id) {
+    var c = document.getElementById(id);
+    var dpr = window.devicePixelRatio || 1;
+    var rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    var ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+  }
+  function bindSlider(id, cb) {
+    var s = document.getElementById(id);
+    var v = document.getElementById(id + 'Val');
+    function update() {
+      var suffix = '';
+      if (id === 'trMu') suffix = '';
+      else if (id === 'trFz') suffix = ' N';
+      else if (id === 'trThrottle' || id === 'trSteer') suffix = '%';
+      if(v) v.textContent = s.value + suffix;
+      if(cb) cb(+s.value);
+    }
+    s.addEventListener('input', update);
+    update();
+    return s;
+  }
+
+  var canvasId = 'tractionCanvas';
+  var ns = setupCanvas(canvasId);
+  var ctx = ns.ctx, w = ns.w, h = ns.h;
+
+  var mu = 1.0, fz = 10000, throttle = 0, steer = 0;
+  var autoMode = false;
+  var autoTime = 0;
+  var trail = [];
+  var maxTrail = 200;
+
+  var sThrottle = bindSlider('trMu', function(v) { mu = v; });
+  bindSlider('trFz', function(v) { fz = v; });
+  var slThrottle = bindSlider('trThrottle', function(v) { throttle = v; });
+  var slSteer = bindSlider('trSteer', function(v) { steer = v; });
+
+  document.getElementById('trAutoBtn').addEventListener('click', function() {
+    autoMode = !autoMode;
+    this.textContent = autoMode ? '手動モードに戻す' : '自動ラップ再生';
+    if (autoMode) { autoTime = 0; trail = []; }
+  });
+  document.getElementById('trResetBtn').addEventListener('click', function() {
+    trail = [];
+    throttle = 0; steer = 0;
+    document.getElementById('trThrottle').value = 0;
+    document.getElementById('trSteer').value = 0;
+    document.getElementById('trThrottleVal').textContent = '0%';
+    document.getElementById('trSteerVal').textContent = '0%';
+    autoMode = false;
+    document.getElementById('trAutoBtn').textContent = '自動ラップ再生';
+  });
+
+  function getAutoForces(t) {
+    // simulate a lap: straight accel -> brake -> corner -> combined -> exit accel
+    var cycle = t % 10;
+    var th = 0, st = 0;
+    if (cycle < 2) { th = cycle / 2 * 100; st = 0; } // accelerate
+    else if (cycle < 3) { th = 100 - (cycle - 2) * 200; st = (cycle - 2) * 40; } // transition to braking + turn-in
+    else if (cycle < 4.5) { th = -100; st = 40 + (cycle - 3) * 40; } // trail braking into corner
+    else if (cycle < 6) { th = -20 + (cycle - 4.5) * 40; st = 100; } // mid-corner
+    else if (cycle < 7.5) { th = 40 + (cycle - 6) * 40; st = 100 - (cycle - 6) * 66; } // corner exit + acceleration
+    else if (cycle < 9) { th = 100; st = (7.5 - cycle + 7.5) > 0 ? 10 : 0; st = 10 - (cycle - 7.5) * 6.67; } // straight accel
+    else { th = 100 - (cycle - 9) * 50; st = 0; } // lift
+    return { throttle: th, steer: st };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    var maxF = mu * fz;
+    var centerX = w * 0.5, centerY = h * 0.48;
+    var radius = Math.min(w, h) * 0.35;
+
+    // auto mode update
+    if (autoMode) {
+      autoTime += 0.016;
+      var af = getAutoForces(autoTime);
+      throttle = af.throttle;
+      steer = af.steer;
+    }
+
+    // compute forces
+    var fx = (throttle / 100) * maxF; // longitudinal
+    var fy = (steer / 100) * maxF;    // lateral
+    var combined = Math.sqrt(fx * fx + fy * fy);
+
+    // clamp to circle
+    if (combined > maxF && combined > 0) {
+      fx = fx / combined * maxF;
+      fy = fy / combined * maxF;
+      combined = maxF;
+    }
+
+    var utilization = maxF > 0 ? (combined / maxF * 100) : 0;
+
+    // trail
+    trail.push({ x: fx, y: fy });
+    if (trail.length > maxTrail) trail.shift();
+
+    // grid
+    ctx.strokeStyle = '#1a1a30';
+    ctx.lineWidth = 1;
+    for (var i = 1; i <= 4; i++) {
+      var gr = radius * i / 4;
+      ctx.beginPath(); ctx.arc(centerX, centerY, gr, 0, Math.PI * 2); ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(centerX - radius - 20, centerY); ctx.lineTo(centerX + radius + 20, centerY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(centerX, centerY - radius - 20); ctx.lineTo(centerX, centerY + radius + 20); ctx.stroke();
+
+    // axis labels
+    ctx.fillStyle = '#888';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('横力 Fy (コーナリング) →', centerX + radius * 0.6, centerY + radius + 35);
+    ctx.fillText('← 横力', centerX - radius * 0.6, centerY + radius + 35);
+    ctx.save();
+    ctx.translate(centerX - radius - 35, centerY);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('加速 ↑ / ↓ 制動', 0, 0);
+    ctx.restore();
+
+    // friction circle boundary
+    ctx.strokeStyle = '#50b0d0';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // scale factor
+    var sf = maxF > 0 ? radius / maxF : 1;
+
+    // trail
+    for (var i = 0; i < trail.length - 1; i++) {
+      var alpha = (i / trail.length) * 0.6;
+      ctx.fillStyle = 'rgba(80,176,208,' + alpha + ')';
+      var tx = centerX + trail[i].y * sf;
+      var ty = centerY - trail[i].x * sf;
+      ctx.beginPath(); ctx.arc(tx, ty, 2, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // current point
+    var px = centerX + fy * sf;
+    var py = centerY - fx * sf;
+
+    // vector from origin
+    var vecColor = '#50d080'; // green
+    if (utilization > 80) vecColor = '#f0c040'; // yellow
+    if (utilization > 95) vecColor = '#f06050'; // red
+
+    ctx.strokeStyle = vecColor;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.lineTo(px, py); ctx.stroke();
+
+    // arrowhead
+    var angle = Math.atan2(py - centerY, px - centerX);
+    ctx.fillStyle = vecColor;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(px - 10 * Math.cos(angle - 0.3), py - 10 * Math.sin(angle - 0.3));
+    ctx.lineTo(px - 10 * Math.cos(angle + 0.3), py - 10 * Math.sin(angle + 0.3));
+    ctx.closePath();
+    ctx.fill();
+
+    // current point dot
+    ctx.fillStyle = vecColor;
+    ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.stroke();
+
+    // info display
+    var longG = fx / (fz > 0 ? fz : 1);
+    var latG = fy / (fz > 0 ? fz : 1);
+    var combG = combined / (fz > 0 ? fz : 1);
+
+    ctx.fillStyle = '#ccc';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'left';
+    var infoX = 15, infoY = 25;
+    ctx.fillText('最大グリップ力: ' + maxF.toFixed(0) + ' N', infoX, infoY);
+    ctx.fillText('縦方向G: ' + longG.toFixed(2) + ' G', infoX, infoY + 22);
+    ctx.fillText('横方向G: ' + latG.toFixed(2) + ' G', infoX, infoY + 44);
+    ctx.fillText('合成G: ' + combG.toFixed(2) + ' G', infoX, infoY + 66);
+
+    ctx.fillStyle = vecColor;
+    ctx.fillText('グリップ利用率: ' + utilization.toFixed(1) + '%', infoX, infoY + 88);
+
+    // μ label on circle
+    ctx.fillStyle = '#50b0d0';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('μFz = ' + maxF.toFixed(0) + ' N', centerX + radius * 0.7, centerY - radius - 8);
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener('resize', function() {
+    var nns = setupCanvas(canvasId); ctx = nns.ctx; w = nns.w; h = nns.h;
+  });
+})();
+</script>
+
+</body>
+</html>

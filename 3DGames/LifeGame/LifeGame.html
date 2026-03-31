@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conway's Life Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../shared.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="portfolio-nav" aria-label="グローバルナビゲーション">
+      <a href="../../index.html">トップページ</a>
+      <details class="portfolio-menu">
+        <summary>成果物</summary>
+        <div class="portfolio-dropdown">
+          <a href="../../vehicle-physics/vehicle-physics.html">車両の物理シミュ</a>
+          <a href="../../mathematics/mathematics.html">数学の可視化</a>
+        </div>
+      </details>
+      <details class="portfolio-menu">
+        <summary>3Dゲーム</summary>
+        <div class="portfolio-dropdown">
+          <a href="../../3DGames/2048/2048.html">2048</a>
+          <a href="../../3DGames/Breakout/Breakout2D.html">Breakout</a>
+          <a href="../../3DGames/LifeGame/LifeGame.html">Life Game</a>
+          <a href="../../3DGames/MergeGame/MergeGame.html">Merge Game</a>
+          <a href="../../3DGames/Minesweeper/Minesweeper.html">Minesweeper</a>
+          <a href="../../3DGames/Othello/othello.html">Othello</a>
+          <a href="../../3DGames/RunnerGame/CrowdRunner.html">Crowd Runner</a>
+          <a href="../../3DGames/SameGame/SameGame3D.html">SameGame 3D</a>
+          <a href="../../3DGames/SortGame/ColorSort.html">Color Sort</a>
+        </div>
+      </details>
+      <a href="../../contact.html">問い合わせ</a>
+    </nav>
+
+    <div id="settings-screen">
+      <div class="settings-card">
+        <h1>Life Game</h1>
+
+        <div class="setting-group">
+          <label>モード</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn dim-btn active" data-dim="2d">2D</button>
+            <button type="button" class="mode-btn dim-btn" data-dim="3d">3D</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label>グリッドサイズ</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn size-btn" data-size="small">小</button>
+            <button type="button" class="mode-btn size-btn active" data-size="medium">中</button>
+            <button type="button" class="mode-btn size-btn" data-size="large">大</button>
+          </div>
+          <p class="diff-desc" id="size-desc"></p>
+        </div>
+
+        <div class="setting-group">
+          <label>速度</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn speed-btn" data-speed="slow">ゆっくり</button>
+            <button type="button" class="mode-btn speed-btn active" data-speed="normal">ふつう</button>
+            <button type="button" class="mode-btn speed-btn" data-speed="fast">はやい</button>
+            <button type="button" class="mode-btn speed-btn" data-speed="turbo">最速</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <label>初期パターン</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn pattern-btn active" data-pattern="random">ランダム</button>
+            <button type="button" class="mode-btn pattern-btn" data-pattern="glider">グライダー</button>
+            <button type="button" class="mode-btn pattern-btn" data-pattern="blank">空白</button>
+          </div>
+        </div>
+
+        <div class="how-to-play">
+          <p>クリック / ドラッグでセルを編集できます。</p>
+          <p>再生、一時停止、ステップ実行を切り替えられます。</p>
+          <p>ランダム配置とクリアも利用できます。</p>
+        </div>
+
+        <button id="start-btn">ゲームスタート</button>
+      </div>
+    </div>
+
+    <div id="game-screen">
+      <div id="hud">
+        <div id="gen-display">世代: 0</div>
+        <div id="pop-display">生存: 0</div>
+        <div id="controls">
+          <button id="play-pause-btn" title="再生 / 一時停止">▶</button>
+          <button id="step-btn" title="1ステップ進める">⏭</button>
+          <button id="random-btn" title="ランダム">⟳</button>
+          <button id="clear-btn" title="クリア">✕</button>
+        </div>
+        <button id="back-btn">設定に戻る</button>
+      </div>
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <script src="../../nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="constants.js"></script>
+    <script src="model.js"></script>
+    <script src="model3d.js"></script>
+    <script src="view.js"></script>
+    <script src="view3d.js"></script>
+    <script src="controller.js"></script>
+    <script src="controller3d.js"></script>
+    <script src="settings.js"></script>
+
+    <footer class="game-site-footer">
+      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

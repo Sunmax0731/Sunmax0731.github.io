@@ -1,0 +1,209 @@
+/* ============================================================
+   SameGame 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+/* ---- body: スクロール制御をゆるめる ---- */
+body { overflow-x: hidden; height: auto; }
+
+/* ---- Firefox スライダー対応 ---- */
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: var(--md-primary-container);
+  border-radius: 2px;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-primary);
+  border: none;
+}
+
+/* ---- モードトグル padding 上書き ---- */
+.mode-btn { padding: 8px 32px; }
+
+/* ---- カラープレビュー ---- */
+.color-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--md-shape-xs);
+  border: 2px solid rgba(255,255,255,.15);
+  transition: transform 150ms, box-shadow 150ms;
+}
+.color-swatch:hover {
+  transform: scale(1.18);
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+
+#score-display {
+  letter-spacing: 0.006rem;
+  min-width: 150px;
+}
+
+#info-display {
+  background: var(--md-surface-container);
+  color: var(--md-on-surface-variant);
+  padding: 8px 18px;
+  border-radius: var(--md-shape-full);
+  font-size: 0.875rem;
+  box-shadow: var(--md-elev-1);
+  min-width: 200px;
+  text-align: center;
+}
+
+/* ---- 残りブロック数パネル（左） ---- */
+#color-counter {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.cc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--md-surface-container-high);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-shape-sm);
+  padding: 6px 12px 6px 8px;
+  box-shadow: var(--md-elev-1);
+  transition: opacity 350ms;
+}
+.cc-item.zero { opacity: 0.3; }
+
+.cc-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--md-shape-xs);
+  flex-shrink: 0;
+}
+
+.cc-label {
+  font-size: 0.7rem;
+  color: var(--md-on-surface-variant);
+}
+
+.cc-count {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--md-on-surface);
+  min-width: 22px;
+  text-align: right;
+}
+
+/* ---- ゲームオーバーカード上書き ---- */
+.game-over-card { width: min(460px, 100%); }
+.game-over-card h2 { font-size: 2rem; }
+
+#game-over-title.normal  { color: var(--md-error); }
+#game-over-title.perfect { color: var(--md-tertiary); }
+
+#final-score { display: inline; }
+
+/* ---- 残りブロック情報 ---- */
+#remaining-blocks {
+  font-size: 0.875rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 14px;
+}
+
+#go-color-counts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.go-cc-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--md-surface-container);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-shape-sm);
+  padding: 5px 12px 5px 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--md-on-surface);
+}
+
+.go-cc-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.go-divider {
+  height: 1px;
+  background: var(--md-outline-variant);
+  margin: 20px 0;
+}
+
+/* ============================================================
+   レスポンシブ — タブレット (〜768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .settings-card { padding: 32px 28px; }
+  .settings-card h1 { font-size: 1.9rem; margin-bottom: 28px; }
+}
+
+/* ============================================================
+   レスポンシブ — スマートフォン (〜600px)
+   ============================================================ */
+@media (max-width: 600px) {
+  #settings-screen { align-items: flex-start; padding: 16px 12px; }
+  .settings-card { border-radius: var(--md-shape-lg); }
+  .settings-card h1 { font-size: 1.6rem; margin-bottom: 20px; }
+  .color-swatch { width: 24px; height: 24px; }
+  #start-btn { padding: 12px 24px; font-size: 0.95rem; }
+
+  #hud { justify-content: space-between; }
+  #score-display { order: 1; min-width: 0; font-size: 0.9rem; padding: 7px 14px; }
+  #restart-btn { order: 2; padding: 7px 12px; font-size: 0.78rem; }
+  #info-display { order: 3; width: 100%; min-width: 0; font-size: 0.8rem; padding: 6px 12px; }
+
+  #color-counter {
+    left: 0; right: 0; top: auto; bottom: 0;
+    transform: none;
+    flex-direction: row; flex-wrap: wrap;
+    justify-content: center;
+    padding: 6px 8px; gap: 4px;
+    background: var(--md-surface-container-high);
+    border-top: 1px solid var(--md-outline-variant);
+  }
+  .cc-item { padding: 4px 8px 4px 6px; gap: 5px; }
+  .cc-swatch { width: 13px; height: 13px; }
+  .cc-label { display: none; }
+  .cc-count { font-size: 0.8rem; min-width: 14px; }
+
+  .game-over-card { padding: 28px 20px; border-radius: var(--md-shape-lg); }
+  .game-over-card h2 { font-size: 1.6rem; }
+  #final-score { font-size: 2.2rem; }
+  .btn-group { gap: 10px; }
+  #retry-btn, #back-btn { padding: 10px 20px; }
+}
+
+/* ============================================================
+   レスポンシブ — 小型スマートフォン (〜380px)
+   ============================================================ */
+@media (max-width: 380px) {
+  .settings-card { padding: 20px 14px; }
+  .settings-card h1 { font-size: 1.4rem; }
+  .color-swatch { width: 20px; height: 20px; }
+  #score-display { font-size: 0.82rem; padding: 6px 10px; }
+}

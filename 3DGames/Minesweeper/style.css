@@ -1,0 +1,51 @@
+/* ============================================================
+   Minesweeper 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+#settings-screen .settings-card {
+  width: min(760px, 100%);
+}
+
+#settings-screen .mode-toggle {
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#settings-screen .mode-btn {
+  flex: 1 1 140px;
+  text-align: center;
+}
+
+#game-canvas { cursor: pointer; }
+
+#mines-display,
+#timer-display {
+  min-width: 90px;
+  font-variant-numeric: tabular-nums;
+}
+
+#flag-toggle-btn {
+  pointer-events: all;
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+  border-radius: var(--md-shape-full);
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: var(--md-elev-1);
+  transition: background 200ms, color 200ms, box-shadow 200ms;
+}
+#flag-toggle-btn:hover  { box-shadow: var(--md-elev-2); }
+#flag-toggle-btn.active {
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  box-shadow: var(--md-elev-2);
+}
+
+@media (max-width: 600px) {
+  #settings-screen .settings-card { width: min(100%, 560px); }
+  .settings-card h1 { font-size: 1.8rem; }
+  .mode-btn { padding: 8px 8px; font-size: 0.8rem; }
+  #flag-toggle-btn, #restart-btn { padding: 6px 10px; font-size: 0.75rem; }
+}

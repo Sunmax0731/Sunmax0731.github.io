@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ラップタイムシミュレーション | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    :root { --domain: #c0a000; }
+    .lap-two-col { display:flex; gap:1.2rem; flex-wrap:wrap; }
+    .lap-track-panel { flex:0 0 60%; min-width:280px; }
+    .lap-graph-panel { flex:1 1 0; min-width:220px; }
+    .lap-panel-label { font-size:0.82rem; color:var(--domain); font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.4rem; }
+    .sector-chart-wrap { display:flex; gap:1.2rem; flex-wrap:wrap; }
+    .sector-bars { flex:1 1 340px; }
+    .sector-table { flex:0 0 320px; overflow-x:auto; }
+    table.lap-table { border-collapse:collapse; width:100%; font-size:.88rem; }
+    table.lap-table th, table.lap-table td { border:1px solid #333; padding:.35rem .7rem; text-align:right; }
+    table.lap-table th { background:#1a1a2e; color:var(--domain); text-align:center; }
+    table.lap-table td:first-child { text-align:left; }
+    .pit-row { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin:.6rem 0; }
+    .pit-row label { font-size:.9rem; }
+    .pit-row input[type=number] { width:64px; padding:.25rem .4rem; background:#1a1a2e; border:1px solid #444; color:#fff; border-radius:4px; font-size:.9rem; }
+    .strategy-result { display:flex; gap:1.5rem; flex-wrap:wrap; margin-top:.8rem; }
+    .strategy-card { background:#0d0d20; border:1px solid #333; border-radius:8px; padding:.8rem 1.2rem; min-width:160px; flex:1; }
+    .strategy-card h5 { margin:0 0 .4rem; font-size:.9rem; color:var(--domain); }
+    .strategy-card .s-val { font-size:1.3rem; font-weight:700; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="../../vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">&#x1F3CE;</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../mechanics/mechanics.html">力学</a></li>
+    <li><a href="../thermodynamics/thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+    <li><a href="control.html">制御系</a></li>
+    <li><a href="laptime.html" class="active">ラップタイム</a></li>
+    <li><a href="bsfc.html">BSFCマップ</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- Hero -->
+  <section class="section-hero">
+    <div class="hero-bg-text">&#x1F3C1;</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../vehicle-physics.html">ホーム</a><span class="sep">&#x203A;</span>
+        <span class="current">ラップタイム</span>
+      </div>
+      <span class="domain-badge">Lap Time Simulation</span>
+      <h1>ラップタイムシミュレーション</h1>
+      <p style="max-width:640px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        ポイントマス法による速度プロファイル計算・セクタータイム比較・タイヤ摩耗モデルで
+        サーキット走行の物理を深く理解する。
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Section 1: Track & Speed Profile ===== -->
+  <section class="section" id="track-section" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>コース＆速度プロファイル</h3>
+        <p>ポイントマス法でサーキットの速度プロファイルを計算。コーナーは横力限界、加速はエンジン出力、
+           制動は摩擦係数で制限される。コース上の色は速度を示す（赤=低速／緑=高速）。</p>
+
+        <div class="lap-two-col">
+          <div class="lap-track-panel">
+            <div class="lap-panel-label">トップビュー コース図</div>
+            <canvas id="trackCanvas" style="width:100%;height:500px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+          </div>
+          <div class="lap-graph-panel">
+            <div class="lap-panel-label">速度プロファイル（距離 vs 速度）</div>
+            <canvas id="speedCanvas" style="width:100%;height:500px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+          </div>
+        </div>
+
+        <div class="controls" style="margin-top:1rem;">
+          <label>エンジン出力:</label>
+          <input type="range" id="slPower" min="100" max="600" value="200" step="10">
+          <span class="val" id="slPowerVal">200</span> kW
+          &nbsp;&nbsp;
+          <label>車両質量:</label>
+          <input type="range" id="slMass" min="600" max="2000" value="1200" step="50">
+          <span class="val" id="slMassVal">1200</span> kg
+          &nbsp;&nbsp;
+          <label>グリップ μ:</label>
+          <input type="range" id="slMu" min="0.8" max="2.5" value="1.2" step="0.05">
+          <span class="val" id="slMuVal">1.20</span>
+          &nbsp;&nbsp;
+          <button id="btnStartLap">&#x25B6; シミュレーション開始</button>
+          <button id="btnResetLap">リセット</button>
+        </div>
+
+        <div class="info-panel" id="trackInfo" style="margin-top:.8rem;">
+          <strong>計算結果</strong><br>
+          ラップタイム: <span id="dispLapTime" style="color:var(--domain);font-weight:700;">—</span> &nbsp;|&nbsp;
+          最高速度: <span id="dispMaxSpd">—</span> km/h &nbsp;|&nbsp;
+          平均速度: <span id="dispAvgSpd">—</span> km/h &nbsp;|&nbsp;
+          理論最短: <span id="dispTheoTime">—</span>
+        </div>
+      </div>
+
+      <div class="info-panel" style="margin-top:1rem;">
+        <strong>ポイントマス法（Point-Mass Model）とは</strong><br>
+        車両を質点として扱い、各サーキットポイントで①コーナー横力限界 v = √(μgR)、
+        ②エンジン加速限界 a = P/(mv) - C_d v²/m、③制動限界 a = -μg を計算し、
+        前後方向に走査して実現可能な最大速度プロファイルを求める手法。
+        F1やGTカーのラップタイムシミュレーションで広く使われる基本アルゴリズムである。
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 2: Sector Time Analysis ===== -->
+  <section class="section" id="sector-section">
+    <div class="container">
+      <div class="viz-card">
+        <h3>セクタータイム分析</h3>
+        <p>3種類の車両構成についてセクター別タイムを比較。ベース（標準車）からの差分をデルタタイムで可視化する。</p>
+
+        <div class="sector-chart-wrap">
+          <div class="sector-bars">
+            <div class="lap-panel-label">セクタータイム比較 &amp; デルタ</div>
+            <canvas id="sectorCanvas" style="width:100%;height:500px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+          </div>
+          <div class="sector-table">
+            <div class="lap-panel-label">車両データ比較</div>
+            <table class="lap-table" id="sectorTable">
+              <thead>
+                <tr><th>項目</th><th style="color:#ccc;">標準車</th><th style="color:#e8c000;">スポーツ</th><th style="color:#c0a000;">レースカー</th></tr>
+              </thead>
+              <tbody id="sectorTableBody">
+                <tr><td colspan="4" style="text-align:center;color:#666;">計算中…</td></tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top:1.2rem;">
+              <div class="lap-panel-label">車両スペック</div>
+              <table class="lap-table">
+                <thead><tr><th>車両</th><th>出力</th><th>質量</th><th>μ</th></tr></thead>
+                <tbody>
+                  <tr><td>標準車</td><td>150 kW</td><td>1400 kg</td><td>1.0</td></tr>
+                  <tr><td>スポーツ</td><td>250 kW</td><td>1200 kg</td><td>1.3</td></tr>
+                  <tr><td>レースカー</td><td>450 kW</td><td>900 kg</td><td>1.8</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-panel" id="sectorInfo" style="margin-top:.8rem;">
+          セクタータイムは各セクター区間の距離を速度プロファイルで積分して算出。
+          S1=セクター1（メインストレート〜第1コーナー群）、S2=テクニカルセクション、S3=最終コーナー〜フィニッシュ。
+        </div>
+      </div>
+
+      <div class="info-panel" style="margin-top:1rem;">
+        <strong>セクタータイム分析の重要性</strong><br>
+        サーキットをセクターに分割してタイムを比較することで、車両のどの特性（加速力・コーナリング・制動）が
+        ラップタイムに最も寄与しているかを定量的に把握できる。
+        デルタタイム（差分）グラフは累積タイム差を示し、どのセクターで時間を稼いだか・失ったかが一目でわかる。
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 3: Tire Wear Model ===== -->
+  <section class="section" id="tire-section" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>タイヤ摩耗モデル</h3>
+        <p>周回数に伴うタイヤ劣化とラップタイム悪化をシミュレート。ピットストップ戦略を設定して総合レースタイムを比較。</p>
+
+        <canvas id="tireCanvas" style="width:100%;height:500px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+
+        <div class="controls" style="margin-top:.8rem;">
+          <label>レース周回数:</label>
+          <input type="range" id="slLaps" min="10" max="50" value="30" step="1">
+          <span class="val" id="slLapsVal">30</span> 周
+          &nbsp;&nbsp;
+          <label>燃料補正:</label>
+          <input type="range" id="slFuel" min="0" max="3" value="1.0" step="0.1">
+          <span class="val" id="slFuelVal">1.0</span> s/周
+        </div>
+
+        <div class="pit-row">
+          <strong>ピットストップ戦略（2ストップ）:</strong>
+          <label>1回目: <input type="number" id="pit1Lap" value="12" min="1" max="49"> 周</label>
+          <label>2回目: <input type="number" id="pit2Lap" value="24" min="2" max="50"> 周</label>
+          <button id="btnCalcStrategy">戦略計算</button>
+        </div>
+
+        <div class="strategy-result" id="strategyResult">
+          <div class="strategy-card">
+            <h5>ソフト (S)</h5>
+            <div class="s-val" id="sTotalS">—</div>
+            <div style="font-size:.8rem;color:#aaa;">総レースタイム</div>
+          </div>
+          <div class="strategy-card">
+            <h5>ミディアム (M)</h5>
+            <div class="s-val" id="sTotalM">—</div>
+            <div style="font-size:.8rem;color:#aaa;">総レースタイム</div>
+          </div>
+          <div class="strategy-card">
+            <h5>ハード (H)</h5>
+            <div class="s-val" id="sTotalH">—</div>
+            <div style="font-size:.8rem;color:#aaa;">総レースタイム</div>
+          </div>
+          <div class="strategy-card" style="border-color:var(--domain);">
+            <h5>最適戦略</h5>
+            <div class="s-val" id="sOptimal" style="font-size:1rem;">—</div>
+            <div style="font-size:.8rem;color:#aaa;">推奨コンパウンド/戦略</div>
+          </div>
+        </div>
+
+        <div class="info-panel" id="tireInfo" style="margin-top:.8rem;">
+          <strong>凡例:</strong>
+          <span style="color:#e04040;">■</span> ソフト (μ₀=1.4, 摩耗率=0.015) &nbsp;
+          <span style="color:#e8c000;">■</span> ミディアム (μ₀=1.25, 摩耗率=0.008) &nbsp;
+          <span style="color:#ccc;">■</span> ハード (μ₀=1.10, 摩耗率=0.004)
+          <br>破線はピットストップ後のタイヤ交換を示す。ピット時間は25秒として計算。
+        </div>
+      </div>
+
+      <div class="info-panel" style="margin-top:1rem;">
+        <strong>タイヤ摩耗モデル</strong><br>
+        μ_eff(n) = μ₀ × (1 − wear_rate × n) で周回数 n に伴うグリップ係数の劣化を表現。
+        グリップが低下するとコーナー速度が落ち、ラップタイムが伸びる。
+        ソフトタイヤは初期グリップが高く速いが劣化も早い。ハードタイヤは長持ちするが初期ペースで劣る。
+        最適な戦略はタイヤ劣化ペナルティとピットストップ時間ロスのトレードオフで決まる。
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-wrapper -->
+
+<script>
+(function() {
+  'use strict';
+
+  // ─── Utility ─────────────────────────────────────────────────────────────
+  function setupCanvas(id) {
+    var c = document.getElementById(id);
+    var dpr = window.devicePixelRatio || 1;
+    var rect = c.getBoundingClientRect();
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    var ctx = c.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+  }
+  function bindSlider(id, cb) {
+    var s = document.getElementById(id);
+    var v = document.getElementById(id + 'Val');
+    function update() { if(v) v.textContent = (+s.value).toFixed(s.step && s.step < 1 ? 2 : 0); if(cb) cb(+s.value); }
+    s.addEventListener('input', update);
+    update();
+    return s;
+  }
+  function fmtTime(sec) {
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s.toFixed(3);
+  }
+  function fmtTimeInt(sec) {
+    var m = Math.floor(sec / 60);
+    var s = sec - m * 60;
+    return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1);
+  }
+  function speedColor(v, vmax) {
+    var t = Math.min(1, Math.max(0, v / vmax));
+    var r, g, b;
+    if (t < 0.5) {
+      var u = t * 2;
+      r = Math.round(220 + (220 - 220) * u); // red to yellow
+      g = Math.round(30 + (200 - 30) * u);
+      b = 30;
+    } else {
+      var u = (t - 0.5) * 2;
+      r = Math.round(220 - 220 * u);
+      g = Math.round(200 + (240 - 200) * u);
+      b = Math.round(30 + 30 * u);
+    }
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  // ─── Track Definition ────────────────────────────────────────────────────
+  // Waypoints as [x, y] in meters (track-space). Closed loop.
+  // Roughly: main straight, hairpin, chicane, fast corner, back straight, final complex
+  var TRACK_WP = [
+    [0,0],[60,0],[120,0],[180,0],[240,0],[290,-5],       // main straight
+    [320,-25],[330,-55],[320,-85],[290,-100],[260,-105],  // T1-T2 hairpin
+    [220,-100],[180,-90],[150,-70],[130,-45],[120,-20],   // exit T2 / T3
+    [115,10],[120,45],[130,75],[150,100],[180,115],       // T4 chicane entry
+    [220,120],[260,120],[280,110],[290,85],[285,55],      // T5 exit
+    [270,25],[260,0],[240,-5],[210,0],[170,0],[120,0],    // back to straight (will merge)
+  ];
+  // Better: define as closed polygon with corner radii
+  // Use a nicer circuit: oval with chicane
+  var RAW_WP = [
+    // [x, y, cornerR]  R=0 means straight, R>0 means corner
+    {x:  0, y:   0, R:   0},
+    {x: 80, y:   0, R:   0},
+    {x:160, y:   0, R:   0},
+    {x:220, y:  -8, R: 120},
+    {x:270, y: -40, R:  50}, // T1
+    {x:280, y: -80, R:  50}, // T2
+    {x:260, y:-115, R:  60}, // T3
+    {x:220, y:-130, R:   0},
+    {x:160, y:-130, R:   0},
+    {x:110, y:-125, R:  40}, // chicane T4
+    {x: 80, y:-105, R:  35}, // chicane T5
+    {x: 65, y: -80, R:  45}, // T6
+    {x: 55, y: -50, R:   0},
+    {x: 50, y: -20, R:  80}, // T7 fast
+    {x: 55, y:  15, R:  90}, // T8 fast
+    {x: 80, y:  35, R:  70}, // T9
+    {x:120, y:  45, R:   0},
+    {x:180, y:  40, R:   0},
+    {x:230, y:  30, R: 100}, // T10
+    {x:260, y:  10, R: 120}, // T11
+    {x:280, y: -20, R:   0},
+  ];
+
+  // Build closed track samples: interpolate between waypoints, assign radius to each sample
+  function buildTrack(wps) {
+    var pts = [];
+    var n = wps.length;
+    for (var i = 0; i < n; i++) {
+      var a = wps[i];
+      var b = wps[(i+1) % n];
+      var segs = 12;
+      for (var s = 0; s < segs; s++) {
+        var t = s / segs;
+        pts.push({
+          x: a.x + (b.x - a.x) * t,
+          y: a.y + (b.y - a.y) * t,
+          R: a.R * (1-t) + b.R * t
+        });
+      }
+    }
+    return pts;
+  }
+
+  var TRACK_PTS = buildTrack(RAW_WP);
+
+  // Compute arc-length distances
+  function computeDistances(pts) {
+    var d = [0];
+    for (var i = 1; i < pts.length; i++) {
+      var dx = pts[i].x - pts[i-1].x;
+      var dy = pts[i].y - pts[i-1].y;
+      d.push(d[i-1] + Math.sqrt(dx*dx + dy*dy));
+    }
+    return d;
+  }
+
+  var TRACK_DIST = computeDistances(TRACK_PTS);
+  var TRACK_LEN = TRACK_DIST[TRACK_DIST.length - 1];
+
+  // Close the loop distance
+  (function() {
+    var last = TRACK_PTS[TRACK_PTS.length-1];
+    var first = TRACK_PTS[0];
+    var dx = first.x - last.x, dy = first.y - last.y;
+    TRACK_LEN += Math.sqrt(dx*dx + dy*dy);
+  })();
+
+  // Corner labels: find local minima of R (smallest R = tightest corner)
+  var CORNERS = [];
+  (function() {
+    var n = TRACK_PTS.length;
+    for (var i = 1; i < n-1; i++) {
+      var r = TRACK_PTS[i].R;
+      if (r > 0 && r < 100) {
+        var prev = TRACK_PTS[i-1].R;
+        var next = TRACK_PTS[i+1].R;
+        if (r <= prev && r <= next) {
+          CORNERS.push({ idx: i, dist: TRACK_DIST[i], label: 'C'+(CORNERS.length+1) });
+        }
+      }
+    }
+    if (CORNERS.length > 8) CORNERS = CORNERS.slice(0, 8);
+  })();
+
+  // ─── Point-Mass Lap Simulation ───────────────────────────────────────────
+  var G = 9.81;
+  var CD = 0.35, A = 2.0, RHO = 1.2; // drag coeff, frontal area, air density
+
+  function simLap(powerKW, massKg, mu) {
+    var P = powerKW * 1000;
+    var n = TRACK_PTS.length;
+    var vmax_corner = new Array(n);
+
+    // Step 1: corner speed limits
+    for (var i = 0; i < n; i++) {
+      var R = TRACK_PTS[i].R;
+      if (R < 5) R = 9999; // straight
+      vmax_corner[i] = Math.sqrt(mu * G * R);
+    }
+
+    // Step 2: forward pass (acceleration limited by engine + drag)
+    var vfwd = new Array(n);
+    vfwd[0] = Math.min(vmax_corner[0], 30); // start slow
+    for (var i = 1; i < n; i++) {
+      var ds = TRACK_DIST[i] - TRACK_DIST[i-1];
+      if (ds < 0.001) ds = 0.001;
+      var v = vfwd[i-1];
+      var drag = 0.5 * RHO * CD * A * v * v;
+      var Fengine = (v < 1) ? P : P / v;
+      var Fmax = massKg * mu * G; // traction limit
+      Fengine = Math.min(Fengine, Fmax);
+      var a = (Fengine - drag) / massKg;
+      a = Math.max(0, a);
+      var vnew = Math.sqrt(Math.max(0, v*v + 2*a*ds));
+      vfwd[i] = Math.min(vnew, vmax_corner[i]);
+    }
+
+    // Step 3: backward pass (braking limited)
+    var vspeed = new Array(n);
+    vspeed[n-1] = Math.min(vfwd[n-1], vmax_corner[n-1]);
+    for (var i = n-2; i >= 0; i--) {
+      var ds = TRACK_DIST[i+1] - TRACK_DIST[i];
+      if (ds < 0.001) ds = 0.001;
+      var v = vspeed[i+1];
+      var a_brake = mu * G;
+      var vnew = Math.sqrt(Math.max(0, v*v + 2*a_brake*ds));
+      vspeed[i] = Math.min(vfwd[i], vnew, vmax_corner[i]);
+    }
+
+    // Step 4: integrate time
+    var lapTime = 0;
+    for (var i = 1; i < n; i++) {
+      var ds = TRACK_DIST[i] - TRACK_DIST[i-1];
+      var vavg = (vspeed[i] + vspeed[i-1]) / 2;
+      if (vavg < 0.5) vavg = 0.5;
+      lapTime += ds / vavg;
+    }
+    // close the loop
+    (function() {
+      var last = TRACK_PTS[n-1];
+      var first = TRACK_PTS[0];
+      var dx = first.x - last.x, dy = first.y - last.y;
+      var ds = Math.sqrt(dx*dx + dy*dy);
+      var vavg = (vspeed[0] + vspeed[n-1]) / 2;
+      if (vavg < 0.5) vavg = 0.5;
+      lapTime += ds / vavg;
+    })();
+
+    var maxSpd = 0, sumSpd = 0;
+    for (var i = 0; i < n; i++) {
+      if (vspeed[i] > maxSpd) maxSpd = vspeed[i];
+      sumSpd += vspeed[i];
+    }
+    var avgSpd = sumSpd / n;
+
+    return { vspeed: vspeed, lapTime: lapTime, maxSpd: maxSpd, avgSpd: avgSpd };
+  }
+
+  // ─── Section 1: Track Canvas ─────────────────────────────────────────────
+  var lapAnimId = null;
+  var lapAnimT = 0;
+
+  function getTrackBounds(pts) {
+    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      if (pts[i].x < minX) minX = pts[i].x;
+      if (pts[i].x > maxX) maxX = pts[i].x;
+      if (pts[i].y < minY) minY = pts[i].y;
+      if (pts[i].y > maxY) maxY = pts[i].y;
+    }
+    return { minX:minX, maxX:maxX, minY:minY, maxY:maxY };
+  }
+
+  var trackCv, speedCv;
+  var simResult = null;
+  var lapParams = { power: 200, mass: 1200, mu: 1.2 };
+
+  function drawTrack(carFrac) {
+    if (!trackCv) return;
+    var cv = trackCv;
+    var ctx = cv.ctx;
+    var w = cv.w, h = cv.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var bounds = getTrackBounds(TRACK_PTS);
+    var pad = 40;
+    var sx = (w - 2*pad) / (bounds.maxX - bounds.minX);
+    var sy = (h - 2*pad) / (bounds.maxY - bounds.minY);
+    var sc = Math.min(sx, sy);
+    var ox = pad + (w - 2*pad - (bounds.maxX - bounds.minX)*sc) / 2;
+    var oy = pad + (h - 2*pad - (bounds.maxY - bounds.minY)*sc) / 2;
+
+    function tx(x) { return ox + (x - bounds.minX) * sc; }
+    function ty(y) { return oy + (y - bounds.minY) * sc; }
+
+    var n = TRACK_PTS.length;
+    var vspeed = simResult ? simResult.vspeed : null;
+    var vmx = simResult ? simResult.maxSpd : 80;
+
+    // Draw track as thick colored line
+    for (var i = 0; i < n; i++) {
+      var j = (i+1) % n;
+      ctx.beginPath();
+      ctx.moveTo(tx(TRACK_PTS[i].x), ty(TRACK_PTS[i].y));
+      ctx.lineTo(tx(TRACK_PTS[j].x), ty(TRACK_PTS[j].y));
+      var v = vspeed ? vspeed[i] : 40;
+      ctx.strokeStyle = speedColor(v, vmx);
+      ctx.lineWidth = 8;
+      ctx.stroke();
+    }
+
+    // Draw track edge (thin white line)
+    ctx.beginPath();
+    ctx.moveTo(tx(TRACK_PTS[0].x), ty(TRACK_PTS[0].y));
+    for (var i = 1; i < n; i++) {
+      ctx.lineTo(tx(TRACK_PTS[i].x), ty(TRACK_PTS[i].y));
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Draw corner labels
+    for (var c = 0; c < CORNERS.length; c++) {
+      var idx = CORNERS[c].idx;
+      var cx = tx(TRACK_PTS[idx].x);
+      var cy = ty(TRACK_PTS[idx].y);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText(CORNERS[c].label, cx + 6, cy - 6);
+    }
+
+    // Start/finish line
+    ctx.save();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([4, 3]);
+    var sfx = tx(TRACK_PTS[0].x), sfy = ty(TRACK_PTS[0].y);
+    ctx.beginPath();
+    ctx.moveTo(sfx - 8, sfy - 8);
+    ctx.lineTo(sfx + 8, sfy + 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText('S/F', sfx + 5, sfy + 14);
+
+    // Sector boundaries
+    var secColors = ['#4488ff', '#ff8844', '#44ff88'];
+    var secFracs = [0.33, 0.66];
+    for (var s = 0; s < 2; s++) {
+      var distTarget = secFracs[s] * TRACK_LEN;
+      var closest = 0;
+      var minDiff = Infinity;
+      for (var i = 0; i < n; i++) {
+        var diff = Math.abs(TRACK_DIST[i] - distTarget);
+        if (diff < minDiff) { minDiff = diff; closest = i; }
+      }
+      ctx.beginPath();
+      ctx.arc(tx(TRACK_PTS[closest].x), ty(TRACK_PTS[closest].y), 7, 0, Math.PI*2);
+      ctx.fillStyle = secColors[s+1];
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText('S'+(s+2), tx(TRACK_PTS[closest].x)+9, ty(TRACK_PTS[closest].y)+4);
+    }
+
+    // Car dot
+    if (carFrac !== undefined) {
+      var distTarget = carFrac * TRACK_LEN;
+      var carIdx = 0;
+      for (var i = 0; i < n-1; i++) {
+        if (TRACK_DIST[i] <= distTarget && TRACK_DIST[i+1] > distTarget) {
+          carIdx = i;
+          break;
+        }
+      }
+      var cx = tx(TRACK_PTS[carIdx].x);
+      var cy = ty(TRACK_PTS[carIdx].y);
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 7, 0, Math.PI*2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 5, 0, Math.PI*2);
+      ctx.fillStyle = '#ff2244';
+      ctx.fill();
+    }
+
+    // Speed legend
+    var lgx = w - 90, lgy = h - 110;
+    ctx.font = '10px sans-serif';
+    for (var i = 0; i <= 10; i++) {
+      var t = i / 10;
+      ctx.fillStyle = speedColor(t * vmx, vmx);
+      ctx.fillRect(lgx, lgy + (10-i)*8, 12, 8);
+    }
+    ctx.fillStyle = '#aaa';
+    ctx.fillText('高速', lgx + 14, lgy + 4);
+    ctx.fillText('低速', lgx + 14, lgy + 82);
+  }
+
+  function drawSpeedProfile(carFrac) {
+    if (!speedCv) return;
+    var cv = speedCv;
+    var ctx = cv.ctx;
+    var w = cv.w, h = cv.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var pad = { t:30, r:20, b:40, l:55 };
+    var pw = w - pad.l - pad.r;
+    var ph = h - pad.t - pad.b;
+
+    if (!simResult) {
+      ctx.fillStyle = '#555';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('スライダーを動かして計算開始', pad.l + 20, h/2);
+      return;
+    }
+
+    var vspeed = simResult.vspeed;
+    var vmx = simResult.maxSpd;
+    var n = TRACK_PTS.length;
+
+    // Grid
+    ctx.strokeStyle = '#1a1a30';
+    ctx.lineWidth = 1;
+    for (var i = 0; i <= 5; i++) {
+      var y = pad.t + ph * (1 - i/5);
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l+pw, y); ctx.stroke();
+      ctx.fillStyle = '#666';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(vmx * i/5 * 3.6) + '', pad.l - 4, y + 4);
+    }
+    for (var i = 0; i <= 5; i++) {
+      var x = pad.l + pw * i/5;
+      ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t+ph); ctx.stroke();
+      ctx.fillStyle = '#666';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(Math.round(TRACK_LEN * i/5) + 'm', x, pad.t+ph+14);
+    }
+
+    // Axes labels
+    ctx.fillStyle = '#888';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('コース距離 (m)', pad.l + pw/2, h - 4);
+    ctx.save();
+    ctx.translate(12, pad.t + ph/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('速度 (km/h)', 0, 0);
+    ctx.restore();
+
+    // Speed profile line
+    ctx.beginPath();
+    for (var i = 0; i < n; i++) {
+      var px = pad.l + (TRACK_DIST[i] / TRACK_LEN) * pw;
+      var py = pad.t + ph * (1 - vspeed[i] / vmx);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.strokeStyle = 'rgba(100,200,100,0.8)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Fill area under curve
+    ctx.beginPath();
+    for (var i = 0; i < n; i++) {
+      var px = pad.l + (TRACK_DIST[i] / TRACK_LEN) * pw;
+      var py = pad.t + ph * (1 - vspeed[i] / vmx);
+      if (i === 0) ctx.moveTo(px, pad.t+ph);
+      ctx.lineTo(px, py);
+    }
+    ctx.lineTo(pad.l + pw, pad.t+ph);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(60,150,60,0.2)';
+    ctx.fill();
+
+    // Corner markers
+    for (var c = 0; c < CORNERS.length; c++) {
+      var idx = CORNERS[c].idx;
+      var px = pad.l + (TRACK_DIST[idx] / TRACK_LEN) * pw;
+      var py = pad.t + ph * (1 - vspeed[idx] / vmx);
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#ff4444';
+      ctx.fill();
+      ctx.fillStyle = '#ccc';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(CORNERS[c].label, px, py - 8);
+    }
+
+    // Cursor line
+    if (carFrac !== undefined) {
+      var cx = pad.l + carFrac * pw;
+      ctx.beginPath();
+      ctx.moveTo(cx, pad.t);
+      ctx.lineTo(cx, pad.t + ph);
+      ctx.strokeStyle = 'rgba(255,200,50,0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Current speed
+      var distTarget = carFrac * TRACK_LEN;
+      var carIdx = 0;
+      for (var i = 0; i < n-1; i++) {
+        if (TRACK_DIST[i] <= distTarget) carIdx = i;
+      }
+      var curV = vspeed[carIdx] * 3.6;
+      ctx.fillStyle = '#ffe044';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(Math.round(curV) + ' km/h', cx + 4, pad.t + 14);
+    }
+
+    ctx.textAlign = 'left';
+  }
+
+  function runSim() {
+    simResult = simLap(lapParams.power, lapParams.mass, lapParams.mu);
+    document.getElementById('dispLapTime').textContent = fmtTime(simResult.lapTime);
+    document.getElementById('dispMaxSpd').textContent = Math.round(simResult.maxSpd * 3.6);
+    document.getElementById('dispAvgSpd').textContent = Math.round(simResult.avgSpd * 3.6);
+    // Theoretical: use mu=2.5, infinite power
+    var theo = simLap(600, lapParams.mass, 2.5);
+    document.getElementById('dispTheoTime').textContent = fmtTime(theo.lapTime);
+    drawTrack(0);
+    drawSpeedProfile(0);
+  }
+
+  function initSection1() {
+    trackCv = setupCanvas('trackCanvas');
+    speedCv = setupCanvas('speedCanvas');
+    bindSlider('slPower', function(v) { lapParams.power = v; runSim(); });
+    bindSlider('slMass', function(v) { lapParams.mass = v; runSim(); });
+    bindSlider('slMu', function(v) { lapParams.mu = v; runSim(); });
+
+    document.getElementById('btnStartLap').addEventListener('click', function() {
+      if (!simResult) runSim();
+      if (lapAnimId) cancelAnimationFrame(lapAnimId);
+      lapAnimT = 0;
+      var dur = simResult.lapTime; // real time in seconds → animate in ~8s
+      var animDur = 8000; // ms
+      var startTime = null;
+      function frame(ts) {
+        if (!startTime) startTime = ts;
+        var elapsed = ts - startTime;
+        var frac = (elapsed % animDur) / animDur;
+        drawTrack(frac);
+        drawSpeedProfile(frac);
+        lapAnimId = requestAnimationFrame(frame);
+      }
+      lapAnimId = requestAnimationFrame(frame);
+    });
+
+    document.getElementById('btnResetLap').addEventListener('click', function() {
+      if (lapAnimId) { cancelAnimationFrame(lapAnimId); lapAnimId = null; }
+      runSim();
+    });
+
+    runSim();
+  }
+
+  // ─── Section 2: Sector Analysis ──────────────────────────────────────────
+  var CONFIGS = [
+    { name: '標準車',   power: 150, mass: 1400, mu: 1.0, color: '#cccccc' },
+    { name: 'スポーツ', power: 250, mass: 1200, mu: 1.3, color: '#e8c000' },
+    { name: 'レースカー', power: 450, mass: 900, mu: 1.8, color: '#c0a000' },
+  ];
+
+  function calcSectorTimes(vspeed) {
+    var n = TRACK_PTS.length;
+    var s1t = 0, s2t = 0, s3t = 0;
+    for (var i = 1; i < n; i++) {
+      var ds = TRACK_DIST[i] - TRACK_DIST[i-1];
+      var vavg = (vspeed[i] + vspeed[i-1]) / 2;
+      if (vavg < 0.5) vavg = 0.5;
+      var dt = ds / vavg;
+      var frac = TRACK_DIST[i] / TRACK_LEN;
+      if (frac < 0.33) s1t += dt;
+      else if (frac < 0.66) s2t += dt;
+      else s3t += dt;
+    }
+    return [s1t, s2t, s3t];
+  }
+
+  function initSection2() {
+    var cv = setupCanvas('sectorCanvas');
+    var ctx = cv.ctx;
+    var w = cv.w, h = cv.h;
+
+    // Compute results
+    var results = [];
+    for (var i = 0; i < CONFIGS.length; i++) {
+      var cfg = CONFIGS[i];
+      var res = simLap(cfg.power, cfg.mass, cfg.mu);
+      var sectors = calcSectorTimes(res.vspeed);
+      results.push({
+        name: cfg.name, color: cfg.color,
+        s1: sectors[0], s2: sectors[1], s3: sectors[2],
+        lap: res.lapTime, maxSpd: res.maxSpd, avgSpd: res.avgSpd
+      });
+    }
+
+    // Update table
+    var tbody = document.getElementById('sectorTableBody');
+    tbody.innerHTML =
+      '<tr><td>ラップタイム</td>' + results.map(function(r){return '<td>'+fmtTime(r.lap)+'</td>';}).join('') + '</tr>' +
+      '<tr><td>S1タイム</td>'    + results.map(function(r){return '<td>'+r.s1.toFixed(3)+'s</td>';}).join('') + '</tr>' +
+      '<tr><td>S2タイム</td>'    + results.map(function(r){return '<td>'+r.s2.toFixed(3)+'s</td>';}).join('') + '</tr>' +
+      '<tr><td>S3タイム</td>'    + results.map(function(r){return '<td>'+r.s3.toFixed(3)+'s</td>';}).join('') + '</tr>' +
+      '<tr><td>最高速度</td>'    + results.map(function(r){return '<td>'+Math.round(r.maxSpd*3.6)+' km/h</td>';}).join('') + '</tr>' +
+      '<tr><td>平均速度</td>'    + results.map(function(r){return '<td>'+Math.round(r.avgSpd*3.6)+' km/h</td>';}).join('') + '</tr>';
+
+    // Draw bar chart
+    ctx.clearRect(0, 0, w, h);
+
+    var pad = { t:40, r:20, b:50, l:60 };
+    var pw = w - pad.l - pad.r;
+    var topH = (h - pad.t - pad.b) * 0.65;
+    var deltaH = (h - pad.t - pad.b) * 0.30;
+    var gapH = (h - pad.t - pad.b) * 0.05;
+    var barAreaTop = pad.t;
+    var deltaTop = pad.t + topH + gapH;
+
+    // Find max sector time for scale
+    var maxSec = 0;
+    for (var i = 0; i < results.length; i++) {
+      maxSec = Math.max(maxSec, results[i].s1, results[i].s2, results[i].s3);
+    }
+    maxSec *= 1.15;
+
+    // Grid lines for bar area
+    ctx.strokeStyle = '#1a1a30';
+    ctx.lineWidth = 1;
+    for (var gi = 0; gi <= 4; gi++) {
+      var gy = barAreaTop + topH * (1 - gi/4);
+      ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(pad.l+pw, gy); ctx.stroke();
+      ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText((maxSec * gi/4).toFixed(1) + 's', pad.l-4, gy+4);
+    }
+
+    // Sectors: 3 groups × 3 bars
+    var groups = ['S1', 'S2', 'S3'];
+    var groupW = pw / 3;
+    var barW = groupW / (CONFIGS.length + 1);
+
+    for (var g = 0; g < 3; g++) {
+      var gx = pad.l + g * groupW;
+      for (var c = 0; c < CONFIGS.length; c++) {
+        var secTime = [results[c].s1, results[c].s2, results[c].s3][g];
+        var bh = (secTime / maxSec) * topH;
+        var bx = gx + (c + 0.5) * barW;
+        var by = barAreaTop + topH - bh;
+
+        ctx.fillStyle = results[c].color;
+        ctx.globalAlpha = 0.85;
+        ctx.fillRect(bx, by, barW * 0.8, bh);
+        ctx.globalAlpha = 1;
+
+        // Time label
+        ctx.fillStyle = '#ccc'; ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(secTime.toFixed(2), bx + barW*0.4, by - 3);
+      }
+      // Sector label
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(groups[g], gx + groupW/2, barAreaTop + topH + 16);
+    }
+
+    // Delta time graph
+    var baseResult = results[0];
+    var maxDelta = 0;
+    for (var c = 1; c < results.length; c++) {
+      maxDelta = Math.max(maxDelta,
+        Math.abs(results[c].s1 - baseResult.s1),
+        Math.abs(results[c].s2 - baseResult.s2),
+        Math.abs(results[c].s3 - baseResult.s3));
+    }
+    maxDelta = Math.max(maxDelta * 1.3, 1);
+
+    // Delta axis
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, deltaTop); ctx.lineTo(pad.l+pw, deltaTop); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l, deltaTop); ctx.lineTo(pad.l, deltaTop+deltaH); ctx.stroke();
+    ctx.fillStyle = '#888'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText('+' + maxDelta.toFixed(1) + 's', pad.l-4, deltaTop + 8);
+    ctx.fillText('0', pad.l-4, deltaTop + deltaH * 0.5 + 4);
+    ctx.fillText('-' + maxDelta.toFixed(1) + 's', pad.l-4, deltaTop + deltaH - 2);
+
+    ctx.fillStyle = '#888'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('デルタタイム (vs 標準車)', pad.l + pw/2, deltaTop - 4);
+
+    // Zero line
+    ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, deltaTop + deltaH/2); ctx.lineTo(pad.l+pw, deltaTop+deltaH/2); ctx.stroke();
+
+    // Delta bars
+    for (var g = 0; g < 3; g++) {
+      var gx = pad.l + g * groupW;
+      for (var c = 1; c < CONFIGS.length; c++) {
+        var secTime = [results[c].s1, results[c].s2, results[c].s3][g];
+        var baseTime = [baseResult.s1, baseResult.s2, baseResult.s3][g];
+        var delta = secTime - baseTime;
+        var bx = gx + c * barW;
+        var midY = deltaTop + deltaH/2;
+        var dh = (Math.abs(delta) / maxDelta) * (deltaH/2);
+        var by = delta < 0 ? midY - dh : midY;
+
+        ctx.fillStyle = delta < 0 ? '#44cc44' : '#cc4444';
+        ctx.globalAlpha = 0.85;
+        ctx.fillRect(bx, by, barW * 0.7, dh);
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = delta < 0 ? '#88ff88' : '#ff8888';
+        ctx.font = '9px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText((delta > 0 ? '+' : '') + delta.toFixed(2), bx + barW*0.35, delta < 0 ? by - 3 : by + dh + 9);
+      }
+    }
+
+    // Legend
+    var lx = pad.l + 4, ly = barAreaTop + 6;
+    for (var c = 0; c < CONFIGS.length; c++) {
+      ctx.fillStyle = results[c].color;
+      ctx.fillRect(lx + c*80, ly, 12, 10);
+      ctx.fillStyle = '#ccc'; ctx.font = '10px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(CONFIGS[c].name, lx + c*80 + 14, ly + 9);
+    }
+
+    ctx.textAlign = 'left';
+  }
+
+  // ─── Section 3: Tire Wear ─────────────────────────────────────────────────
+  var COMPOUNDS = [
+    { name: 'ソフト',    mu0: 1.4,  wear: 0.015, color: '#e04040' },
+    { name: 'ミディアム', mu0: 1.25, wear: 0.008, color: '#e8c000' },
+    { name: 'ハード',    mu0: 1.10, wear: 0.004, color: '#cccccc' },
+  ];
+  var PIT_TIME = 25; // seconds
+
+  var tireParams = { laps: 30, fuel: 1.0 };
+  var pit1 = 12, pit2 = 24;
+
+  // Base lap time without tire effects (using reference car)
+  var BASE_POWER = 200, BASE_MASS = 1200;
+
+  function lapTimeForMu(mu) {
+    var res = simLap(BASE_POWER, BASE_MASS, mu);
+    return res.lapTime;
+  }
+
+  // Precompute base lap time once
+  var BASE_LAP_TIME = null;
+
+  function getTireData(compound, totalLaps, fuelCorr, stops) {
+    // stops: sorted array of lap numbers where pit occurs
+    var muEff, lapTimes = [];
+    var lapOnCompound = 0;
+    var curMu0 = compound.mu0;
+
+    for (var lap = 1; lap <= totalLaps; lap++) {
+      // Check if pit on this lap
+      var pitted = false;
+      for (var s = 0; s < stops.length; s++) {
+        if (stops[s] === lap) { pitted = true; break; }
+      }
+      if (pitted) lapOnCompound = 0;
+
+      muEff = curMu0 * (1 - compound.wear * lapOnCompound);
+      muEff = Math.max(muEff, 0.3); // minimum grip
+      var lt = lapTimeForMu(muEff) + fuelCorr * (1 - lap/totalLaps);
+      lapTimes.push({ lap: lap, time: lt, pitted: pitted });
+      lapOnCompound++;
+    }
+
+    // Total time including pit stops
+    var total = 0;
+    for (var i = 0; i < lapTimes.length; i++) total += lapTimes[i].time;
+    total += stops.length * PIT_TIME;
+
+    return { lapTimes: lapTimes, total: total };
+  }
+
+  function drawTireCanvas() {
+    var cv = setupCanvas('tireCanvas');
+    var ctx = cv.ctx;
+    var w = cv.w, h = cv.h;
+    ctx.clearRect(0, 0, w, h);
+
+    var totalLaps = tireParams.laps;
+    var fuelCorr = tireParams.fuel;
+    var stops = [];
+    if (pit1 >= 1 && pit1 < totalLaps) stops.push(pit1);
+    if (pit2 > pit1 && pit2 <= totalLaps) stops.push(pit2);
+
+    var pad = { t:40, r:140, b:50, l:70 };
+    var pw = w - pad.l - pad.r;
+    var ph = h - pad.t - pad.b;
+
+    // Compute data
+    var allData = [];
+    for (var c = 0; c < COMPOUNDS.length; c++) {
+      allData.push(getTireData(COMPOUNDS[c], totalLaps, fuelCorr, stops));
+    }
+
+    // Find Y range
+    var minLT = Infinity, maxLT = -Infinity;
+    for (var c = 0; c < COMPOUNDS.length; c++) {
+      for (var i = 0; i < allData[c].lapTimes.length; i++) {
+        var lt = allData[c].lapTimes[i].time;
+        if (lt < minLT) minLT = lt;
+        if (lt > maxLT) maxLT = lt;
+      }
+    }
+    var ltRange = maxLT - minLT;
+    minLT -= ltRange * 0.05;
+    maxLT += ltRange * 0.15;
+
+    function px(lap) { return pad.l + (lap-1) / (totalLaps-1) * pw; }
+    function py(lt) { return pad.t + ph * (1 - (lt - minLT) / (maxLT - minLT)); }
+
+    // Grid
+    ctx.strokeStyle = '#1a1a30'; ctx.lineWidth = 1;
+    for (var gi = 0; gi <= 5; gi++) {
+      var gy = pad.t + ph * gi/5;
+      ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(pad.l+pw, gy); ctx.stroke();
+      var lt = maxLT - (maxLT - minLT) * gi/5;
+      ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText(fmtTime(lt), pad.l-4, gy+4);
+    }
+    for (var gi = 1; gi <= totalLaps; gi += 5) {
+      var gx = px(gi);
+      ctx.beginPath(); ctx.moveTo(gx, pad.t); ctx.lineTo(gx, pad.t+ph); ctx.stroke();
+      ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('L' + gi, gx, pad.t+ph+14);
+    }
+
+    // Pit stop lines
+    for (var s = 0; s < stops.length; s++) {
+      var gx = px(stops[s]);
+      ctx.beginPath(); ctx.moveTo(gx, pad.t); ctx.lineTo(gx, pad.t+ph);
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+      ctx.setLineDash([4, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#888'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('PIT', gx, pad.t - 4);
+    }
+
+    // Draw lines
+    for (var c = 0; c < COMPOUNDS.length; c++) {
+      var data = allData[c].lapTimes;
+      ctx.beginPath();
+      for (var i = 0; i < data.length; i++) {
+        var d = data[i];
+        var x = px(d.lap);
+        var y = py(d.time);
+        if (d.pitted && i > 0) {
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.setLineDash([4,3]);
+          ctx.moveTo(px(data[i-1].lap), py(data[i-1].time));
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = COMPOUNDS[c].color;
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 0.5;
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.globalAlpha = 1;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        } else {
+          if (i === 0 || d.pitted) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      }
+      ctx.strokeStyle = COMPOUNDS[c].color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Dots at pit stops
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].pitted) {
+          ctx.beginPath();
+          ctx.arc(px(data[i].lap), py(data[i].time), 5, 0, Math.PI*2);
+          ctx.fillStyle = COMPOUNDS[c].color;
+          ctx.fill();
+        }
+      }
+    }
+
+    // Axes
+    ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t+ph); ctx.lineTo(pad.l+pw, pad.t+ph); ctx.stroke();
+
+    ctx.fillStyle = '#888'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('周回数', pad.l + pw/2, h - 4);
+    ctx.save();
+    ctx.translate(14, pad.t + ph/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('ラップタイム', 0, 0);
+    ctx.restore();
+
+    // Title
+    ctx.fillStyle = '#ccc'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('タイヤ摩耗によるラップタイム推移', pad.l + pw/2, pad.t - 10);
+
+    // Legend
+    for (var c = 0; c < COMPOUNDS.length; c++) {
+      var lx = pad.l + pw + 10;
+      var ly = pad.t + 20 + c * 60;
+      ctx.fillStyle = COMPOUNDS[c].color;
+      ctx.fillRect(lx, ly, 20, 3);
+      ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(COMPOUNDS[c].name, lx + 24, ly + 4);
+      ctx.fillStyle = '#aaa'; ctx.font = '10px sans-serif';
+      ctx.fillText('総: ' + fmtTimeInt(allData[c].total), lx, ly + 18);
+      ctx.fillText('μ₀=' + COMPOUNDS[c].mu0, lx, ly + 32);
+    }
+
+    ctx.textAlign = 'left';
+
+    // Update strategy cards
+    for (var c = 0; c < COMPOUNDS.length; c++) {
+      var ids = ['sTotalS', 'sTotalM', 'sTotalH'];
+      document.getElementById(ids[c]).textContent = fmtTimeInt(allData[c].total);
+    }
+
+    // Find optimal
+    var bestIdx = 0;
+    for (var c = 1; c < COMPOUNDS.length; c++) {
+      if (allData[c].total < allData[bestIdx].total) bestIdx = c;
+    }
+    var stopStr = stops.length === 0 ? 'ノーストップ' :
+                  stops.length === 1 ? stops[0]+'周でピット' :
+                  stops[0]+'/' + stops[1] + '周でピット';
+    document.getElementById('sOptimal').textContent = COMPOUNDS[bestIdx].name + '\n' + stopStr;
+  }
+
+  function initSection3() {
+    bindSlider('slLaps', function(v) { tireParams.laps = v; drawTireCanvas(); });
+    bindSlider('slFuel', function(v) { tireParams.fuel = v; drawTireCanvas(); });
+
+    document.getElementById('btnCalcStrategy').addEventListener('click', function() {
+      pit1 = parseInt(document.getElementById('pit1Lap').value) || 12;
+      pit2 = parseInt(document.getElementById('pit2Lap').value) || 24;
+      drawTireCanvas();
+    });
+
+    drawTireCanvas();
+  }
+
+  // ─── Init ─────────────────────────────────────────────────────────────────
+  window.addEventListener('load', function() {
+    initSection1();
+    initSection2();
+    initSection3();
+  });
+
+})();
+</script>
+</body>
+</html>

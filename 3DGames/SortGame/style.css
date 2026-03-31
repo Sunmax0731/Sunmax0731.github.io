@@ -1,0 +1,35 @@
+/* ============================================================
+   SortGame 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+:root {
+  --settings-title-size: 2rem;
+  --settings-title-margin: 32px;
+  --game-screen-width: min(1200px, calc(100vw - 32px));
+  --game-screen-height: min(860px, calc(100dvh - 32px));
+}
+
+.slider-limit { min-width: 14px; }
+
+/* ---- ゲーム画面: 縦スタック（HUDバー + キャンバス） ---- */
+#game-screen {
+  flex-direction: column;
+}
+
+/* ---- HUD ---- */
+#hud {
+  flex-shrink: 0;
+}
+
+/* ---- キャンバス ---- */
+#game-canvas { flex: 1; width: 100%; }
+
+.result-card h2 { font-size: 2rem; color: var(--md-error); }
+.result-card h2.result-won { color: var(--md-primary); }
+.result-card p { margin-bottom: 24px; }
+
+/* ============================================================
+   レスポンシブ
+   ============================================================ */
+@media (max-width: 600px) {
+}

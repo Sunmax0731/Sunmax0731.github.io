@@ -1,0 +1,272 @@
+.blog-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.blog-toolbar {
+  display: grid;
+  gap: 1rem;
+}
+
+.blog-toolbar-copy {
+  color: #5f5f5f;
+}
+
+.tag-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tag-filter-button {
+  border: 1px solid var(--border);
+  background: #fffdf7;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tag-filter-button:hover,
+.tag-filter-button.is-active {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(74, 143, 212, 0.24);
+}
+
+.blog-status {
+  color: #666;
+}
+
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.blog-card {
+  display: grid;
+  gap: 0.9rem;
+  background: linear-gradient(180deg, #fffdf6, #fff8e8);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(90, 74, 0, 0.08);
+}
+
+.blog-card-cover {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  object-fit: cover;
+  background: #f2ead0;
+}
+
+.blog-card-body {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1.1rem 1.1rem 1.2rem;
+}
+
+.blog-card-date,
+.blog-post-date {
+  color: #8a6f1d;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.blog-card-title {
+  font-size: 1.2rem;
+  color: var(--accent-dark);
+}
+
+.blog-summary {
+  color: #4a4a4a;
+}
+
+.blog-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.blog-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: var(--accent-dark);
+  padding: 0.28rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.blog-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--accent-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.blog-card-link:hover {
+  text-decoration: underline;
+}
+
+.blog-guide {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.blog-guide code,
+.blog-article code,
+.blog-post-view code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.blog-guide pre,
+.blog-article pre {
+  overflow-x: auto;
+  border-radius: 14px;
+  background: #1e2430;
+  color: #f7f8fb;
+  padding: 1rem 1.1rem;
+}
+
+.blog-back-link {
+  color: var(--accent-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.blog-back-link:hover {
+  text-decoration: underline;
+}
+
+.blog-post-view {
+  display: grid;
+  gap: 1.3rem;
+}
+
+.blog-post-header {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.blog-post-title {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: var(--accent-dark);
+}
+
+.blog-post-cover {
+  width: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: #f2ead0;
+}
+
+.blog-article {
+  display: grid;
+  gap: 1rem;
+}
+
+.blog-article h1,
+.blog-article h2,
+.blog-article h3,
+.blog-article h4 {
+  color: #294f81;
+  line-height: 1.35;
+}
+
+.blog-article h1 {
+  font-size: 2rem;
+}
+
+.blog-article h2 {
+  font-size: 1.5rem;
+  border-bottom: 2px solid #dbe8f7;
+  padding-bottom: 0.35rem;
+}
+
+.blog-article h3 {
+  font-size: 1.2rem;
+}
+
+.blog-article p,
+.blog-article li,
+.blog-article blockquote {
+  color: #3d3d3d;
+  line-height: 1.9;
+}
+
+.blog-article ul,
+.blog-article ol {
+  padding-left: 1.4rem;
+}
+
+.blog-article a {
+  color: var(--accent-dark);
+}
+
+.blog-article blockquote {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: #fff9e7;
+  border-left: 4px solid #e1bb3d;
+  border-radius: 0 12px 12px 0;
+}
+
+.blog-article code {
+  background: #eef3f8;
+  color: #294f81;
+  border-radius: 6px;
+  padding: 0.15rem 0.35rem;
+}
+
+.blog-article pre code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.blog-article hr {
+  border: 0;
+  border-top: 1px solid #d9d9d9;
+}
+
+.markdown-image {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.markdown-image img {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #f2ead0;
+}
+
+.markdown-image figcaption {
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .blog-card-body {
+    padding: 1rem;
+  }
+
+  .blog-post-title {
+    font-size: 1.7rem;
+  }
+}

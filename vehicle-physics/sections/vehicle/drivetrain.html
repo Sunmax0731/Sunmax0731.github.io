@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>駆動系・トランスミッション | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    :root { --domain: #a070e0; }
+    .controls button.active { background: var(--domain); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="../../vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">&#x1F3CE;</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../mechanics/mechanics.html">力学</a></li>
+    <li><a href="../thermodynamics/thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html" class="active">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">&#x2699;</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../vehicle-physics.html">ホーム</a><span class="sep">&#x203A;</span>
+        <span class="current">駆動系・トランスミッション</span>
+      </div>
+      <span class="domain-badge">Drivetrain</span>
+      <h1>駆動系・トランスミッション</h1>
+      <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        ギアトレイン、デファレンシャル、クラッチの動作をインタラクティブに可視化。
+        トルク伝達の仕組みを直感的に理解する。
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. ギアトレイン -->
+  <section class="section" id="geartrain" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>ギアトレイン — トルク増幅と速度域</h3>
+        <p>各ギアでのトルク増幅率と到達速度を可視化。ギア比と最終減速比を調整可能。</p>
+        <canvas class="sim-canvas" id="gearCanvas" style="height:520px;"></canvas>
+        <div class="controls">
+          <label>エンジントルク:</label>
+          <input type="range" id="gtTorque" min="100" max="500" value="250" step="10">
+          <span class="val" id="gtTorqueVal">250 Nm</span>
+          <label>最終減速比:</label>
+          <input type="range" id="gtFinal" min="25" max="50" value="35">
+          <span class="val" id="gtFinalVal">3.50</span>
+          <label>タイヤ半径:</label>
+          <input type="range" id="gtTireR" min="28" max="36" value="32">
+          <span class="val" id="gtTireRVal">0.32 m</span>
+          <label>レブリミット:</label>
+          <input type="range" id="gtRedline" min="5000" max="9000" value="7000" step="500">
+          <span class="val" id="gtRedlineVal">7000 rpm</span>
+        </div>
+        <div class="info-panel" id="gearInfo">
+          駆動力 F = T_eng × G_ratio × G_final / R_tire
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ギア機構アニメーション -->
+  <section class="section" id="gearmech">
+    <div class="container">
+      <div class="viz-card">
+        <h3>歯車機構アニメーション</h3>
+        <p>噛み合う歯車のトルク伝達と回転速度の関係をリアルタイム表示。</p>
+        <canvas class="sim-canvas" id="mechCanvas" style="height:420px;"></canvas>
+        <div class="controls">
+          <label>入力ギア歯数:</label>
+          <input type="range" id="mechZ1" min="10" max="30" value="15">
+          <span class="val" id="mechZ1Val">15</span>
+          <label>出力ギア歯数:</label>
+          <input type="range" id="mechZ2" min="15" max="50" value="30">
+          <span class="val" id="mechZ2Val">30</span>
+          <label>入力回転数:</label>
+          <input type="range" id="mechRPM" min="500" max="5000" value="2000" step="100">
+          <span class="val" id="mechRPMVal">2000 rpm</span>
+        </div>
+        <div class="info-panel" id="mechInfo">
+          ギア比 i = Z₂/Z₁ | 出力回転数 = 入力回転数 / i | 出力トルク = 入力トルク × i
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. デファレンシャル -->
+  <section class="section" id="diff" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>デファレンシャル — オープン / LSD / ロック</h3>
+        <p>旋回時の内外輪速度差とトルク配分。デフの種類によるトラクション特性の違い。</p>
+        <canvas class="sim-canvas" id="diffCanvas" style="height:480px;"></canvas>
+        <div class="controls">
+          <label>タイプ:</label>
+          <button id="diffOpen" class="active">オープン</button>
+          <button id="diffLSD">LSD</button>
+          <button id="diffLock">ロック</button>
+          <label>旋回半径:</label>
+          <input type="range" id="diffR" min="10" max="200" value="50" step="5">
+          <span class="val" id="diffRVal">50 m</span>
+          <label>速度:</label>
+          <input type="range" id="diffV" min="10" max="120" value="60" step="5">
+          <span class="val" id="diffVVal">60 km/h</span>
+          <label>路面&#x03BC;差(内輪):</label>
+          <input type="range" id="diffMuDiff" min="0" max="100" value="0">
+          <span class="val" id="diffMuDiffVal">0%</span>
+        </div>
+        <div class="info-panel" id="diffInfo">
+          オープンデフ: 内外輪に等トルク配分、速度差を許容
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. クラッチ接続 -->
+  <section class="section" id="clutch">
+    <div class="container">
+      <div class="viz-card">
+        <h3>クラッチ接続シミュレーション</h3>
+        <p>半クラッチ操作によるエンジン-入力軸の回転数マッチング。滑りと伝達トルクの関係。</p>
+        <canvas class="sim-canvas" id="clutchCanvas" style="height:450px;"></canvas>
+        <div class="controls">
+          <label>アイドル回転:</label>
+          <input type="range" id="clIdle" min="600" max="1200" value="800" step="50">
+          <span class="val" id="clIdleVal">800 rpm</span>
+          <label>エンジントルク:</label>
+          <input type="range" id="clTorque" min="50" max="300" value="150" step="10">
+          <span class="val" id="clTorqueVal">150 Nm</span>
+          <label>車両質量:</label>
+          <input type="range" id="clMass" min="800" max="2500" value="1400" step="100">
+          <span class="val" id="clMassVal">1400 kg</span>
+          <label>クラッチ:</label>
+          <input type="range" id="clPedal" min="0" max="100" value="0">
+          <span class="val" id="clPedalVal">0% (切)</span>
+          <button id="clReset">リセット</button>
+        </div>
+        <div class="info-panel" id="clutchInfo">
+          クラッチ切: エンジンとトランスミッション分離 | 半クラッチ: 滑りながらトルク伝達
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+function setupCanvas(canvas) {
+  var rect = canvas.getBoundingClientRect();
+  var dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  var c = canvas.getContext('2d');
+  c.scale(dpr, dpr);
+  return { ctx: c, w: rect.width, h: rect.height };
+}
+function bindSlider(id, valId, suffix, transform) {
+  var s = document.getElementById(id), d = document.getElementById(valId);
+  var u = function() { d.textContent = (transform ? transform(+s.value) : +s.value) + ' ' + suffix; };
+  s.addEventListener('input', u); u();
+}
+
+bindSlider('gtTorque', 'gtTorqueVal', 'Nm');
+bindSlider('gtFinal', 'gtFinalVal', '', function(v) { return (v / 10).toFixed(2); });
+bindSlider('gtTireR', 'gtTireRVal', 'm', function(v) { return (v / 100).toFixed(2); });
+bindSlider('gtRedline', 'gtRedlineVal', 'rpm');
+bindSlider('mechZ1', 'mechZ1Val', '');
+bindSlider('mechZ2', 'mechZ2Val', '');
+bindSlider('mechRPM', 'mechRPMVal', 'rpm');
+bindSlider('diffR', 'diffRVal', 'm');
+bindSlider('diffV', 'diffVVal', 'km/h');
+bindSlider('diffMuDiff', 'diffMuDiffVal', '%');
+bindSlider('clIdle', 'clIdleVal', 'rpm');
+bindSlider('clTorque', 'clTorqueVal', 'Nm');
+bindSlider('clMass', 'clMassVal', 'kg');
+bindSlider('clPedal', 'clPedalVal', '', function(v) {
+  if (v === 0) return '0% (切)';
+  if (v === 100) return '100% (繋)';
+  return v + '% (半クラ)';
+});
+
+/* ================================================================
+   1. ギアトレイン — トルク増幅と速度域
+   ================================================================ */
+(function() {
+  var canvas = document.getElementById('gearCanvas');
+  var S = setupCanvas(canvas);
+  var ctx = S.ctx, w = S.w, h = S.h;
+
+  var gearRatios = [3.63, 2.13, 1.45, 1.08, 0.87, 0.73];
+  var gearNames = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+  var gearColors = ['#e04040', '#e07030', '#e0c030', '#40c060', '#40a0e0', '#a070e0'];
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    var T = +document.getElementById('gtTorque').value;
+    var finalR = +document.getElementById('gtFinal').value / 10;
+    var tireR = +document.getElementById('gtTireR').value / 100;
+    var redline = +document.getElementById('gtRedline').value;
+
+    var mg = { top: 40, right: 30, bottom: 50, left: 65 };
+
+    // ---- 上半分: 駆動力 vs 速度 ----
+    var gw = w - mg.left - mg.right;
+    var gh = (h * 0.45) - mg.top - 20;
+    var maxV = 300;
+
+    // 最大駆動力を計算
+    var maxF = 0;
+    for (var g = 0; g < 6; g++) {
+      var f = T * gearRatios[g] * finalR / tireR;
+      if (f > maxF) maxF = f;
+    }
+    maxF *= 1.15;
+
+    function sx(v) { return mg.left + (v / maxV) * gw; }
+    function sy(f) { return mg.top + (1 - f / maxF) * gh; }
+
+    // 軸
+    ctx.strokeStyle = '#2a2a50'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mg.left, mg.top); ctx.lineTo(mg.left, mg.top + gh);
+    ctx.lineTo(mg.left + gw, mg.top + gh); ctx.stroke();
+
+    ctx.fillStyle = '#666'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('速度 (km/h)', mg.left + gw / 2, mg.top + gh + 35);
+    ctx.save(); ctx.translate(12, mg.top + gh / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText('駆動力 (N)', 0, 0); ctx.restore();
+
+    // グリッド
+    for (var v = 50; v <= maxV; v += 50) {
+      ctx.strokeStyle = '#1a1a30';
+      ctx.beginPath(); ctx.moveTo(sx(v), mg.top); ctx.lineTo(sx(v), mg.top + gh); ctx.stroke();
+      ctx.fillStyle = '#444'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+      ctx.fillText(v, sx(v), mg.top + gh + 13);
+    }
+
+    // 空気抵抗曲線
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    for (var vd = 0; vd <= maxV; vd += 2) {
+      var vm = vd / 3.6;
+      var drag = 0.5 * 0.33 * 2.2 * 1.225 * vm * vm;
+      if (vd === 0) ctx.moveTo(sx(vd), sy(drag)); else ctx.lineTo(sx(vd), sy(drag));
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // 各ギアの駆動力曲線
+    for (var gi = 0; gi < 6; gi++) {
+      var totalRatio = gearRatios[gi] * finalR;
+      var driveForce = T * totalRatio / tireR;
+
+      // このギアでの速度範囲 (rpm → 速度)
+      var vMin = 800 / totalRatio * (2 * Math.PI * tireR) / 60 * 3.6;
+      var vMax2 = redline / totalRatio * (2 * Math.PI * tireR) / 60 * 3.6;
+
+      // トルクカーブ (回転数による変動)
+      ctx.strokeStyle = gearColors[gi]; ctx.lineWidth = 2.5; ctx.beginPath();
+      var started = false;
+      for (var vg = Math.max(0, vMin); vg <= Math.min(maxV, vMax2); vg += 1) {
+        var rpm = (vg / 3.6) / (2 * Math.PI * tireR) * 60 * totalRatio;
+        // トルクカーブ: ピーク付近はベルカーブ
+        var peakRPM = redline * 0.65;
+        var tFrac = Math.exp(-Math.pow((rpm - peakRPM) / (peakRPM * 0.5), 2) * 0.5);
+        tFrac = Math.max(0.3, tFrac) * Math.min(1, rpm / 1500);
+        var fDrive = T * tFrac * totalRatio / tireR;
+        if (!started) { ctx.moveTo(sx(vg), sy(fDrive)); started = true; }
+        else ctx.lineTo(sx(vg), sy(fDrive));
+      }
+      ctx.stroke();
+
+      // ギアラベル
+      var labelV = (vMin + vMax2) / 2;
+      if (labelV < maxV) {
+        var labelRPM = (labelV / 3.6) / (2 * Math.PI * tireR) * 60 * totalRatio;
+        var labelTFrac = Math.exp(-Math.pow((labelRPM - redline * 0.65) / (redline * 0.65 * 0.5), 2) * 0.5);
+        labelTFrac = Math.max(0.3, labelTFrac) * Math.min(1, labelRPM / 1500);
+        var labelF = T * labelTFrac * totalRatio / tireR;
+        ctx.fillStyle = gearColors[gi]; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center';
+        ctx.fillText(gearNames[gi], sx(labelV), sy(labelF) - 8);
+      }
+    }
+
+    // 凡例: 空気抵抗
+    ctx.fillStyle = '#555'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('--- 空気抵抗', mg.left + gw - 100, mg.top + 15);
+
+    // ---- 下半分: ギア比バーチャート ----
+    var barY = h * 0.55;
+    var barH2 = h * 0.38;
+    var barMg = { left: mg.left + 10, right: 40 };
+    var bw = (w - barMg.left - barMg.right) / 6;
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('各ギアの特性', w / 2, barY - 5);
+
+    for (var bi = 0; bi < 6; bi++) {
+      var bx = barMg.left + bi * bw;
+      var totalR2 = gearRatios[bi] * finalR;
+      var maxSpd = redline / totalR2 * (2 * Math.PI * tireR) / 60 * 3.6;
+      var peakForce = T * gearRatios[bi] * finalR / tireR;
+
+      // トルク増幅バー
+      var torqueBarH = (totalR2 / (gearRatios[0] * finalR)) * barH2 * 0.4;
+      ctx.fillStyle = gearColors[bi];
+      ctx.globalAlpha = 0.3;
+      ctx.fillRect(bx + 5, barY + barH2 * 0.45 - torqueBarH, bw * 0.4 - 5, torqueBarH);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = gearColors[bi];
+      ctx.fillRect(bx + 5, barY + barH2 * 0.45 - torqueBarH, bw * 0.4 - 5, 3);
+
+      // 速度バー
+      var spdBarH = (maxSpd / 300) * barH2 * 0.4;
+      ctx.globalAlpha = 0.3;
+      ctx.fillRect(bx + bw * 0.45, barY + barH2 * 0.45 - spdBarH, bw * 0.4 - 5, spdBarH);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = gearColors[bi];
+      ctx.fillRect(bx + bw * 0.45, barY + barH2 * 0.45 - spdBarH, bw * 0.4 - 5, 3);
+
+      // ラベル
+      ctx.fillStyle = gearColors[bi]; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center';
+      ctx.fillText(gearNames[bi], bx + bw / 2, barY + barH2 * 0.5 + 15);
+
+      ctx.fillStyle = '#888'; ctx.font = '9px monospace';
+      ctx.fillText('比: ' + gearRatios[bi].toFixed(2), bx + bw / 2, barY + barH2 * 0.5 + 30);
+      ctx.fillText(Math.round(peakForce) + 'N', bx + bw / 2, barY + barH2 * 0.5 + 43);
+      ctx.fillText(Math.round(maxSpd) + 'km/h', bx + bw / 2, barY + barH2 * 0.5 + 56);
+    }
+
+    // 凡例
+    ctx.fillStyle = '#666'; ctx.font = '9px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('左バー: トルク増幅  右バー: 最高速度', barMg.left, barY + barH2 - 5);
+
+    document.getElementById('gearInfo').innerHTML =
+      '最終減速比: <span class="highlight">' + finalR.toFixed(2) + '</span> | ' +
+      '1速駆動力: <span class="highlight">' + Math.round(T * gearRatios[0] * finalR / tireR) + ' N</span> | ' +
+      '6速最高速: <span class="highlight">' + Math.round(redline / (gearRatios[5] * finalR) * (2 * Math.PI * tireR) / 60 * 3.6) + ' km/h</span>';
+  }
+
+  draw();
+  ['gtTorque', 'gtFinal', 'gtTireR', 'gtRedline'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', draw);
+  });
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvas); ctx = ns.ctx; w = ns.w; h = ns.h; draw();
+  });
+})();
+
+/* ================================================================
+   2. 歯車機構アニメーション
+   ================================================================ */
+(function() {
+  var canvas = document.getElementById('mechCanvas');
+  var S = setupCanvas(canvas);
+  var ctx = S.ctx, w = S.w, h = S.h;
+  var angle = 0;
+
+  function drawGear(cx, cy, r, teeth, rot, color) {
+    var toothH = 6 + r * 0.08;
+    var toothW = Math.PI * 2 / teeth / 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+
+    // 歯車の歯
+    ctx.beginPath();
+    for (var i = 0; i < teeth; i++) {
+      var a0 = (i / teeth) * Math.PI * 2;
+      var a1 = a0 + toothW * 0.3;
+      var a2 = a0 + toothW * 0.7;
+      var a3 = a0 + toothW;
+      ctx.lineTo(Math.cos(a0) * r, Math.sin(a0) * r);
+      ctx.lineTo(Math.cos(a1) * (r + toothH), Math.sin(a1) * (r + toothH));
+      ctx.lineTo(Math.cos(a2) * (r + toothH), Math.sin(a2) * (r + toothH));
+      ctx.lineTo(Math.cos(a3) * r, Math.sin(a3) * r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.3;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // 中心軸
+    ctx.beginPath(); ctx.arc(0, 0, r * 0.15, 0, Math.PI * 2);
+    ctx.fillStyle = '#333'; ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+
+    // スポーク
+    ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
+    for (var s = 0; s < 4; s++) {
+      var sa = s * Math.PI / 2;
+      ctx.beginPath(); ctx.moveTo(Math.cos(sa) * r * 0.18, Math.sin(sa) * r * 0.18);
+      ctx.lineTo(Math.cos(sa) * r * 0.85, Math.sin(sa) * r * 0.85); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // 回転方向矢印
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    var arrowR = r * 0.55;
+    ctx.beginPath();
+    ctx.arc(0, 0, arrowR, -0.5, 0.8);
+    ctx.stroke();
+    var ax = Math.cos(0.8) * arrowR;
+    var ay = Math.sin(0.8) * arrowR;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(ax - 6, ay - 6);
+    ctx.lineTo(ax + 2, ay - 8);
+    ctx.fillStyle = color; ctx.fill();
+
+    ctx.restore();
+  }
+
+  function update() {
+    var z1 = +document.getElementById('mechZ1').value;
+    var z2 = +document.getElementById('mechZ2').value;
+    var rpmIn = +document.getElementById('mechRPM').value;
+    var ratio = z2 / z1;
+    var rpmOut = rpmIn / ratio;
+
+    var speed = rpmIn / 60 * Math.PI * 2 / 60 * 0.8;
+    angle += speed;
+
+    ctx.clearRect(0, 0, w, h);
+
+    var r1 = 30 + z1 * 3;
+    var r2 = 30 + z2 * 3;
+    var cx1 = w * 0.33;
+    var cx2 = cx1 + r1 + r2 + 10;
+    var cy = h * 0.45;
+
+    // 噛み合い位置のハイライト
+    var meshX = cx1 + r1 + 3;
+    ctx.beginPath(); ctx.arc(meshX, cy, 8, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(160,112,224,0.3)'; ctx.fill();
+
+    // 歯車描画
+    drawGear(cx1, cy, r1, z1, angle, '#40a0e0');
+    drawGear(cx2, cy, r2, z2, -angle / ratio, '#e07030');
+
+    // ラベル
+    ctx.font = '13px monospace'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#40a0e0';
+    ctx.fillText('入力ギア (Z₁=' + z1 + ')', cx1, cy + r1 + 30);
+    ctx.fillText(rpmIn + ' rpm', cx1, cy + r1 + 46);
+
+    ctx.fillStyle = '#e07030';
+    ctx.fillText('出力ギア (Z₂=' + z2 + ')', cx2, cy + r2 + 30);
+    ctx.fillText(Math.round(rpmOut) + ' rpm', cx2, cy + r2 + 46);
+
+    // 右側: トルク・回転数の関係図
+    var infoX = Math.max(cx2 + r2 + 40, w * 0.7);
+    var infoY = h * 0.15;
+
+    ctx.fillStyle = '#888'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('ギア比 i = Z₂/Z₁', infoX, infoY);
+
+    ctx.fillStyle = '#a070e0'; ctx.font = 'bold 24px monospace';
+    ctx.fillText('i = ' + ratio.toFixed(2), infoX, infoY + 35);
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace';
+    ctx.fillText('回転数', infoX, infoY + 70);
+    // 入力バー
+    ctx.fillStyle = '#40a0e0';
+    ctx.fillRect(infoX, infoY + 78, 100, 14);
+    ctx.fillStyle = '#fff'; ctx.font = '10px monospace';
+    ctx.fillText(rpmIn + ' rpm', infoX + 4, infoY + 89);
+    // 出力バー
+    var outBarW = 100 / ratio;
+    ctx.fillStyle = '#e07030';
+    ctx.fillRect(infoX, infoY + 98, outBarW, 14);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(Math.round(rpmOut), infoX + 4, infoY + 109);
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace';
+    ctx.fillText('トルク (×' + ratio.toFixed(1) + ')', infoX, infoY + 140);
+    // 入力バー
+    ctx.fillStyle = '#40a0e0';
+    ctx.fillRect(infoX, infoY + 148, 60, 14);
+    ctx.fillStyle = '#fff'; ctx.font = '10px monospace';
+    ctx.fillText('1.0×', infoX + 4, infoY + 159);
+    // 出力バー
+    ctx.fillStyle = '#e07030';
+    ctx.fillRect(infoX, infoY + 168, Math.min(60 * ratio, w - infoX - 20), 14);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(ratio.toFixed(1) + '×', infoX + 4, infoY + 179);
+
+    // 矢印
+    ctx.fillStyle = '#888'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('低速 = 高トルク', infoX + 50, infoY + 210);
+    ctx.fillText('(エネルギー保存)', infoX + 50, infoY + 225);
+
+    document.getElementById('mechInfo').innerHTML =
+      'ギア比 i = ' + z2 + '/' + z1 + ' = <span class="highlight">' + ratio.toFixed(2) + '</span> | ' +
+      '入力: <span class="highlight">' + rpmIn + ' rpm</span> → 出力: <span class="highlight">' + Math.round(rpmOut) + ' rpm</span> | ' +
+      'トルク倍率: <span class="highlight">' + ratio.toFixed(2) + '×</span>';
+
+    requestAnimationFrame(update);
+  }
+  update();
+
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvas); ctx = ns.ctx; w = ns.w; h = ns.h;
+  });
+})();
+
+/* ================================================================
+   3. デファレンシャル
+   ================================================================ */
+(function() {
+  var canvas = document.getElementById('diffCanvas');
+  var S = setupCanvas(canvas);
+  var ctx = S.ctx, w = S.w, h = S.h;
+  var diffType = 'open';
+  var wheelAngle = 0;
+
+  document.getElementById('diffOpen').onclick = function() {
+    diffType = 'open'; setActive('diffOpen');
+  };
+  document.getElementById('diffLSD').onclick = function() {
+    diffType = 'lsd'; setActive('diffLSD');
+  };
+  document.getElementById('diffLock').onclick = function() {
+    diffType = 'lock'; setActive('diffLock');
+  };
+  function setActive(id) {
+    ['diffOpen','diffLSD','diffLock'].forEach(function(d) {
+      document.getElementById(d).classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function update() {
+    var R = +document.getElementById('diffR').value;
+    var V = +document.getElementById('diffV').value;
+    var muDiff = +document.getElementById('diffMuDiff').value / 100;
+
+    var trackW = 1.6;
+    var Vm = V / 3.6;
+
+    // 内外輪の理想速度
+    var outerV = Vm * (R + trackW / 2) / R;
+    var innerV = Vm * (R - trackW / 2) / R;
+
+    // デフタイプに応じたトルク配分と速度
+    var outerSpeed, innerSpeed, outerTorque, innerTorque;
+    var totalTorque = 100; // 正規化
+
+    var innerMu = 1 - muDiff;
+
+    if (diffType === 'open') {
+      outerSpeed = outerV;
+      innerSpeed = innerV;
+      // 路面μ差がある場合: 低μ側のトルクに制限
+      if (muDiff > 0) {
+        innerTorque = totalTorque * innerMu / (1 + innerMu);
+        outerTorque = innerTorque; // オープンデフは等トルク
+      } else {
+        outerTorque = totalTorque / 2;
+        innerTorque = totalTorque / 2;
+      }
+    } else if (diffType === 'lsd') {
+      outerSpeed = outerV;
+      innerSpeed = innerV * 0.85 + outerV * 0.15; // 部分ロック
+      var lockRatio = 0.6;
+      outerTorque = totalTorque * (0.5 + lockRatio * 0.2);
+      innerTorque = totalTorque - outerTorque;
+      if (muDiff > 0) {
+        innerTorque = totalTorque * Math.max(0.3, innerMu) / 2;
+        outerTorque = totalTorque - innerTorque;
+      }
+    } else { // lock
+      outerSpeed = Vm;
+      innerSpeed = Vm;
+      outerTorque = totalTorque / 2;
+      innerTorque = totalTorque / 2;
+    }
+
+    wheelAngle += Vm * 0.01;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // ---- 左: 車両トップビュー ----
+    var carCx = w * 0.28;
+    var carCy = h * 0.4;
+    var carW2 = 100;
+    var carH2 = 160;
+
+    // 旋回カーブ
+    if (R < 190) {
+      ctx.strokeStyle = '#1a1a30'; ctx.lineWidth = carW2 + 40;
+      ctx.beginPath();
+      ctx.arc(carCx + R * 2, carCy, R * 2, Math.PI * 0.8, Math.PI * 1.2);
+      ctx.stroke();
+      ctx.strokeStyle = '#222240'; ctx.lineWidth = carW2;
+      ctx.beginPath();
+      ctx.arc(carCx + R * 2, carCy, R * 2, Math.PI * 0.8, Math.PI * 1.2);
+      ctx.stroke();
+    }
+
+    // 車体
+    ctx.fillStyle = '#1a2a40';
+    ctx.strokeStyle = '#a070e0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(carCx - carW2 / 2 + 10, carCy - carH2 / 2);
+    ctx.lineTo(carCx + carW2 / 2 - 10, carCy - carH2 / 2);
+    ctx.quadraticCurveTo(carCx + carW2 / 2, carCy - carH2 / 2, carCx + carW2 / 2, carCy - carH2 / 2 + 10);
+    ctx.lineTo(carCx + carW2 / 2, carCy + carH2 / 2 - 10);
+    ctx.quadraticCurveTo(carCx + carW2 / 2, carCy + carH2 / 2, carCx + carW2 / 2 - 10, carCy + carH2 / 2);
+    ctx.lineTo(carCx - carW2 / 2 + 10, carCy + carH2 / 2);
+    ctx.quadraticCurveTo(carCx - carW2 / 2, carCy + carH2 / 2, carCx - carW2 / 2, carCy + carH2 / 2 - 10);
+    ctx.lineTo(carCx - carW2 / 2, carCy - carH2 / 2 + 10);
+    ctx.quadraticCurveTo(carCx - carW2 / 2, carCy - carH2 / 2, carCx - carW2 / 2 + 10, carCy - carH2 / 2);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    // デフ機構 (後軸)
+    var axleY = carCy + carH2 / 2 - 35;
+    ctx.strokeStyle = '#888'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(carCx - carW2 / 2 - 5, axleY);
+    ctx.lineTo(carCx + carW2 / 2 + 5, axleY);
+    ctx.stroke();
+
+    // デフ本体
+    ctx.beginPath();
+    ctx.arc(carCx, axleY, 12, 0, Math.PI * 2);
+    ctx.fillStyle = '#a070e0'; ctx.globalAlpha = 0.3; ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#a070e0'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#a070e0'; ctx.font = '8px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('DIFF', carCx, axleY + 3);
+
+    // ホイール
+    function drawWheel(wx, wy, spd, torque, label, isInner) {
+      var ww = 18, wh = 32;
+      var rot = wheelAngle * spd / Vm;
+
+      ctx.save();
+      ctx.translate(wx, wy);
+
+      // タイヤ
+      ctx.fillStyle = '#333';
+      ctx.fillRect(-ww / 2, -wh / 2, ww, wh);
+      ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+      ctx.strokeRect(-ww / 2, -wh / 2, ww, wh);
+
+      // トレッドパターン (回転表現)
+      ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
+      for (var t = 0; t < 4; t++) {
+        var ty = ((rot * 20 + t * wh / 4) % wh) - wh / 2;
+        ctx.beginPath(); ctx.moveTo(-ww / 2 + 2, ty); ctx.lineTo(ww / 2 - 2, ty); ctx.stroke();
+      }
+
+      ctx.restore();
+
+      // 速度表示
+      var torqueH = torque / totalTorque * 50;
+      ctx.fillStyle = isInner && muDiff > 0.3 ? 'rgba(224,64,64,0.4)' : 'rgba(160,112,224,0.4)';
+      ctx.fillRect(wx - 25, wy + wh / 2 + 5, 50, torqueH);
+      ctx.fillStyle = '#aaa'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+      ctx.fillText((spd * 3.6).toFixed(0) + ' km/h', wx, wy - wh / 2 - 5);
+      ctx.fillText('T:' + Math.round(torque) + '%', wx, wy + wh / 2 + torqueH + 14);
+      ctx.fillText(label, wx, wy + 4);
+    }
+
+    drawWheel(carCx - carW2 / 2 - 12, axleY, innerSpeed, innerTorque, '内', true);
+    drawWheel(carCx + carW2 / 2 + 12, axleY, outerSpeed, outerTorque, '外', false);
+
+    // 前輪
+    ctx.fillStyle = '#333';
+    ctx.fillRect(carCx - carW2 / 2 - 12 - 9, carCy - carH2 / 2 + 25 - 14, 18, 28);
+    ctx.fillRect(carCx + carW2 / 2 + 12 - 9, carCy - carH2 / 2 + 25 - 14, 18, 28);
+
+    // ---- 右: 比較チャート ----
+    var chartX = w * 0.55;
+    var chartY = h * 0.08;
+    var chartW = w * 0.4;
+    var chartH = h * 0.35;
+
+    ctx.fillStyle = '#888'; ctx.font = 'bold 12px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('内外輪の速度差と トルク配分', chartX, chartY);
+
+    // 速度バー
+    ctx.fillStyle = '#666'; ctx.font = '10px monospace';
+    ctx.fillText('速度', chartX, chartY + 30);
+
+    var barMaxW = chartW * 0.7;
+    var normV = Math.max(outerV, innerV);
+    // 内輪
+    ctx.fillStyle = '#40a0e0';
+    ctx.fillRect(chartX + 50, chartY + 35, (innerSpeed / normV) * barMaxW, 16);
+    ctx.fillStyle = '#fff'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('内: ' + (innerSpeed * 3.6).toFixed(1) + ' km/h', chartX + 55, chartY + 48);
+    // 外輪
+    ctx.fillStyle = '#e07030';
+    ctx.fillRect(chartX + 50, chartY + 55, (outerSpeed / normV) * barMaxW, 16);
+    ctx.fillStyle = '#fff';
+    ctx.fillText('外: ' + (outerSpeed * 3.6).toFixed(1) + ' km/h', chartX + 55, chartY + 68);
+
+    // トルクバー
+    ctx.fillStyle = '#666'; ctx.font = '10px monospace';
+    ctx.fillText('トルク', chartX, chartY + 95);
+
+    ctx.fillStyle = '#40a0e0';
+    ctx.fillRect(chartX + 50, chartY + 100, (innerTorque / totalTorque) * barMaxW * 2, 16);
+    ctx.fillStyle = '#fff';
+    ctx.fillText('内: ' + Math.round(innerTorque) + '%', chartX + 55, chartY + 113);
+
+    ctx.fillStyle = '#e07030';
+    ctx.fillRect(chartX + 50, chartY + 120, (outerTorque / totalTorque) * barMaxW * 2, 16);
+    ctx.fillStyle = '#fff';
+    ctx.fillText('外: ' + Math.round(outerTorque) + '%', chartX + 55, chartY + 133);
+
+    // デフタイプ説明
+    var descY = h * 0.55;
+    var descriptions = {
+      open: [
+        'オープンデファレンシャル',
+        '・両輪に等トルク配分',
+        '・回転速度差を自由に許容',
+        '・片輪が滑ると駆動力喪失',
+        '・一般的な乗用車に採用'
+      ],
+      lsd: [
+        'リミテッド・スリップ・デフ (LSD)',
+        '・回転差に応じてロック',
+        '・高μ側に多くトルク配分',
+        '・トラクション性能向上',
+        '・スポーツカー/競技車両'
+      ],
+      lock: [
+        'ロックデファレンシャル',
+        '・両輪を完全に直結',
+        '・速度差なし(同一回転)',
+        '・最大トラクション確保',
+        '・旋回時にタイヤ引きずり'
+      ]
+    };
+
+    var desc = descriptions[diffType];
+    ctx.fillStyle = '#a070e0'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
+    ctx.fillText(desc[0], chartX, descY);
+    ctx.fillStyle = '#888'; ctx.font = '11px monospace';
+    for (var di = 1; di < desc.length; di++) {
+      ctx.fillText(desc[di], chartX, descY + 20 + (di - 1) * 18);
+    }
+
+    var speedDiff = Math.abs(outerSpeed - innerSpeed) * 3.6;
+    document.getElementById('diffInfo').innerHTML =
+      'タイプ: <span class="highlight">' + diffType.toUpperCase() + '</span> | ' +
+      '内外速度差: <span class="highlight">' + speedDiff.toFixed(1) + ' km/h</span> | ' +
+      'トルク配分 内:外 = <span class="highlight">' + Math.round(innerTorque) + ':' + Math.round(outerTorque) + '</span>';
+
+    requestAnimationFrame(update);
+  }
+  update();
+
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvas); ctx = ns.ctx; w = ns.w; h = ns.h;
+  });
+})();
+
+/* ================================================================
+   4. クラッチ接続シミュレーション
+   ================================================================ */
+(function() {
+  var canvas = document.getElementById('clutchCanvas');
+  var S = setupCanvas(canvas);
+  var ctx = S.ctx, w = S.w, h = S.h;
+
+  var engRPM = 800;
+  var transRPM = 0;
+  var vehicleSpeed = 0;
+  var slipHeat = 0;
+  var history = { eng: [], trans: [], clutch: [], speed: [] };
+
+  document.getElementById('clReset').onclick = function() {
+    engRPM = +document.getElementById('clIdle').value;
+    transRPM = 0; vehicleSpeed = 0; slipHeat = 0;
+    history.eng.length = 0; history.trans.length = 0;
+    history.clutch.length = 0; history.speed.length = 0;
+  };
+
+  function update() {
+    var idle = +document.getElementById('clIdle').value;
+    var maxTorque = +document.getElementById('clTorque').value;
+    var mass = +document.getElementById('clMass').value;
+    var clutchPos = +document.getElementById('clPedal').value / 100; // 0=切, 1=繋
+    var dt = 0.016;
+
+    var gearRatio = 3.5 * 3.5; // 1速 × 最終減速比
+    var tireR = 0.32;
+    var engInertia = 0.15;
+    var transInertia = mass * tireR * tireR / (gearRatio * gearRatio) + 0.05;
+
+    // クラッチ伝達トルク
+    var maxClutchTorque = maxTorque * 1.2;
+    var clutchTorque = clutchPos * maxClutchTorque;
+    var slip = engRPM - transRPM;
+    var transmittedTorque = Math.min(clutchTorque, Math.abs(slip) * 0.5) * Math.sign(slip);
+
+    if (clutchPos >= 0.98) {
+      // 完全接続: 回転数を統合
+      var avgRPM = (engRPM * engInertia + transRPM * transInertia) / (engInertia + transInertia);
+      engRPM += (avgRPM - engRPM) * 0.2;
+      transRPM += (avgRPM - transRPM) * 0.2;
+      transmittedTorque = 0; // 滑りなし
+    } else {
+      // エンジン側
+      var engTorque = maxTorque * 0.3; // アイドル時のトルク
+      if (engRPM < idle) engTorque += (idle - engRPM) * 0.5; // アイドルコントロール
+      engRPM += (engTorque - transmittedTorque) / engInertia * dt * 10;
+
+      // トランスミッション側
+      var roadResistance = vehicleSpeed * 2 + 20; // 走行抵抗相当トルク
+      var netTransTorque = transmittedTorque - roadResistance * tireR / gearRatio;
+      transRPM += netTransTorque / transInertia * dt * 10;
+    }
+
+    engRPM = Math.max(300, Math.min(8000, engRPM));
+    transRPM = Math.max(0, Math.min(8000, transRPM));
+    vehicleSpeed = transRPM / gearRatio * 2 * Math.PI * tireR / 60 * 3.6;
+
+    // 滑り熱
+    slipHeat += Math.abs(slip) * clutchPos * 0.0001;
+    slipHeat *= 0.998;
+    slipHeat = Math.min(1, slipHeat);
+
+    // 履歴
+    history.eng.push(engRPM);
+    history.trans.push(transRPM);
+    history.clutch.push(clutchPos);
+    history.speed.push(vehicleSpeed);
+    var maxHist = 300;
+    if (history.eng.length > maxHist) {
+      history.eng.shift(); history.trans.shift();
+      history.clutch.shift(); history.speed.shift();
+    }
+
+    // ====== 描画 ======
+    ctx.clearRect(0, 0, w, h);
+
+    // ---- 左: クラッチ機構図 ----
+    var mechCx = w * 0.22;
+    var mechCy = h * 0.35;
+
+    // エンジン側フライホイール
+    var fwR = 50;
+    ctx.save(); ctx.translate(mechCx - 45, mechCy);
+    ctx.rotate(engRPM / 60 * Math.PI * 2 * performance.now() / 60000);
+    ctx.beginPath(); ctx.arc(0, 0, fwR, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(64,160,224,0.15)'; ctx.fill();
+    ctx.strokeStyle = '#40a0e0'; ctx.lineWidth = 3; ctx.stroke();
+    // スポーク
+    for (var sp = 0; sp < 6; sp++) {
+      var sa = sp * Math.PI / 3;
+      ctx.strokeStyle = '#40a0e0'; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(sa) * fwR * 0.9, Math.sin(sa) * fwR * 0.9); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    // クラッチディスク
+    var discX = mechCx - 45 + fwR + 5 + (1 - clutchPos) * 20;
+    ctx.save(); ctx.translate(discX, mechCy);
+    ctx.rotate(transRPM / 60 * Math.PI * 2 * performance.now() / 60000);
+    ctx.beginPath(); ctx.arc(0, 0, fwR * 0.85, 0, Math.PI * 2);
+    var heatColor = slipHeat > 0.5 ? 'rgba(224,64,64,' + (slipHeat * 0.5).toFixed(2) + ')' : 'rgba(224,160,64,' + (slipHeat * 0.3).toFixed(2) + ')';
+    ctx.fillStyle = heatColor; ctx.fill();
+    ctx.strokeStyle = '#e07030'; ctx.lineWidth = 2; ctx.stroke();
+    for (var sp2 = 0; sp2 < 8; sp2++) {
+      var sa2 = sp2 * Math.PI / 4;
+      ctx.strokeStyle = '#e07030'; ctx.lineWidth = 1; ctx.globalAlpha = 0.4;
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(sa2) * fwR * 0.75, Math.sin(sa2) * fwR * 0.75); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    // トランスミッション側
+    var transX = discX + fwR * 0.85 + 15;
+    ctx.strokeStyle = '#888'; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(transX, mechCy); ctx.lineTo(transX + 50, mechCy); ctx.stroke();
+    ctx.fillStyle = '#888'; ctx.font = '10px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('→ ミッション', transX + 25, mechCy + 20);
+
+    // ラベル
+    ctx.fillStyle = '#40a0e0'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+    ctx.fillText('エンジン', mechCx - 45, mechCy + fwR + 20);
+    ctx.fillText(Math.round(engRPM) + ' rpm', mechCx - 45, mechCy + fwR + 35);
+
+    ctx.fillStyle = '#e07030';
+    ctx.fillText('クラッチ', discX, mechCy + fwR + 20);
+    ctx.fillText(Math.round(transRPM) + ' rpm', discX, mechCy + fwR + 35);
+
+    // 滑り状態
+    if (clutchPos > 0.02 && clutchPos < 0.98 && Math.abs(slip) > 50) {
+      ctx.fillStyle = '#e04040'; ctx.font = 'bold 11px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('滑り: ' + Math.round(Math.abs(slip)) + ' rpm', (mechCx - 45 + discX) / 2, mechCy - fwR - 15);
+
+      // 熱警告
+      if (slipHeat > 0.6) {
+        ctx.fillStyle = '#e04040';
+        ctx.fillText('⚠ 過熱注意!', (mechCx - 45 + discX) / 2, mechCy - fwR - 30);
+      }
+    }
+
+    // クラッチ位置インジケーター
+    var indX = w * 0.05;
+    var indY = h * 0.1;
+    var indH = h * 0.5;
+    ctx.fillStyle = '#1a1a30';
+    ctx.fillRect(indX, indY, 20, indH);
+    ctx.strokeStyle = '#2a2a50'; ctx.lineWidth = 1;
+    ctx.strokeRect(indX, indY, 20, indH);
+
+    // グラデーション
+    var clGrad = ctx.createLinearGradient(0, indY, 0, indY + indH);
+    clGrad.addColorStop(0, '#40e080');
+    clGrad.addColorStop(0.5, '#e0c030');
+    clGrad.addColorStop(1, '#e04040');
+    ctx.fillStyle = clGrad;
+    ctx.fillRect(indX + 2, indY + 2, 16, indH - 4);
+
+    // ポインタ
+    var pointerY = indY + indH * (1 - clutchPos);
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(indX + 22, pointerY);
+    ctx.lineTo(indX + 32, pointerY - 5);
+    ctx.lineTo(indX + 32, pointerY + 5);
+    ctx.fill();
+
+    ctx.fillStyle = '#888'; ctx.font = '9px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('繋', indX - 2, indY - 4);
+    ctx.fillText('切', indX - 2, indY + indH + 12);
+
+    // ---- 右: 時系列グラフ ----
+    var gx = w * 0.5;
+    var gy = h * 0.08;
+    var gw2 = w * 0.46;
+    var gh2 = h * 0.55;
+    var maxRPM = 4000;
+
+    // 軸
+    ctx.strokeStyle = '#2a2a50'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh2);
+    ctx.lineTo(gx + gw2, gy + gh2); ctx.stroke();
+
+    ctx.fillStyle = '#555'; ctx.font = '9px monospace'; ctx.textAlign = 'right';
+    ctx.fillText(maxRPM, gx - 4, gy + 8);
+    ctx.fillText('0', gx - 4, gy + gh2 + 4);
+    ctx.save(); ctx.translate(gx - 18, gy + gh2 / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.fillText('RPM', 0, 0); ctx.restore();
+
+    // ゼロライン
+    ctx.setLineDash([3, 3]); ctx.strokeStyle = '#1a1a30';
+    ctx.beginPath(); ctx.moveTo(gx, gy + gh2 / 2); ctx.lineTo(gx + gw2, gy + gh2 / 2); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // エンジン回転数
+    ctx.strokeStyle = '#40a0e0'; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (var hi = 0; hi < history.eng.length; hi++) {
+      var hx = gx + (hi / maxHist) * gw2;
+      var hy = gy + gh2 * (1 - history.eng[hi] / maxRPM);
+      if (hi === 0) ctx.moveTo(hx, hy); else ctx.lineTo(hx, hy);
+    }
+    ctx.stroke();
+
+    // トランスミッション回転数
+    ctx.strokeStyle = '#e07030'; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (var hi2 = 0; hi2 < history.trans.length; hi2++) {
+      var hx2 = gx + (hi2 / maxHist) * gw2;
+      var hy2 = gy + gh2 * (1 - history.trans[hi2] / maxRPM);
+      if (hi2 === 0) ctx.moveTo(hx2, hy2); else ctx.lineTo(hx2, hy2);
+    }
+    ctx.stroke();
+
+    // クラッチ位置
+    ctx.strokeStyle = '#a070e0'; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    for (var hi3 = 0; hi3 < history.clutch.length; hi3++) {
+      var hx3 = gx + (hi3 / maxHist) * gw2;
+      var hy3 = gy + gh2 * (1 - history.clutch[hi3]);
+      if (hi3 === 0) ctx.moveTo(hx3, hy3); else ctx.lineTo(hx3, hy3);
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+
+    // 凡例
+    ctx.fillStyle = '#40a0e0'; ctx.fillRect(gx + 8, gy + 5, 14, 3);
+    ctx.fillStyle = '#888'; ctx.font = '10px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('エンジン', gx + 26, gy + 10);
+    ctx.fillStyle = '#e07030'; ctx.fillRect(gx + 8, gy + 18, 14, 3);
+    ctx.fillStyle = '#888'; ctx.fillText('ミッション', gx + 26, gy + 23);
+    ctx.fillStyle = '#a070e0'; ctx.fillRect(gx + 8, gy + 31, 14, 3);
+    ctx.fillStyle = '#888'; ctx.fillText('クラッチ位置', gx + 26, gy + 36);
+
+    // 速度・状態パネル
+    var panelY = h * 0.72;
+    ctx.fillStyle = '#1a1a30';
+    ctx.fillRect(gx, panelY, gw2, h * 0.22);
+    ctx.strokeStyle = '#2a2a50'; ctx.lineWidth = 1;
+    ctx.strokeRect(gx, panelY, gw2, h * 0.22);
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace'; ctx.textAlign = 'left';
+    ctx.fillText('車速: ', gx + 15, panelY + 22);
+    ctx.fillStyle = '#a070e0'; ctx.font = 'bold 18px monospace';
+    ctx.fillText(vehicleSpeed.toFixed(1) + ' km/h', gx + 70, panelY + 22);
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace';
+    ctx.fillText('滑り: ', gx + 15, panelY + 48);
+    var slipAbs = Math.abs(engRPM - transRPM);
+    ctx.fillStyle = slipAbs > 500 ? '#e04040' : slipAbs > 100 ? '#e0c030' : '#40e080';
+    ctx.fillText(Math.round(slipAbs) + ' rpm', gx + 70, panelY + 48);
+
+    ctx.fillStyle = '#888'; ctx.font = '12px monospace';
+    ctx.fillText('温度: ', gx + 15, panelY + 72);
+    ctx.fillStyle = slipHeat > 0.6 ? '#e04040' : slipHeat > 0.3 ? '#e0c030' : '#40e080';
+    var tempBar = gx + 70;
+    ctx.fillRect(tempBar, panelY + 62, slipHeat * 120, 12);
+    ctx.strokeStyle = '#2a2a50'; ctx.strokeRect(tempBar, panelY + 62, 120, 12);
+
+    document.getElementById('clutchInfo').innerHTML =
+      'エンジン: <span class="highlight">' + Math.round(engRPM) + ' rpm</span> | ' +
+      'ミッション: <span class="highlight">' + Math.round(transRPM) + ' rpm</span> | ' +
+      '車速: <span class="highlight">' + vehicleSpeed.toFixed(1) + ' km/h</span> | ' +
+      'クラッチ: <span class="highlight">' + Math.round(clutchPos * 100) + '%</span>';
+
+    requestAnimationFrame(update);
+  }
+  update();
+
+  window.addEventListener('resize', function() {
+    var ns = setupCanvas(canvas); ctx = ns.ctx; w = ns.w; h = ns.h;
+  });
+})();
+</script>
+</body>
+</html>

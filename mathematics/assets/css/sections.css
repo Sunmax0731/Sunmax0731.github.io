@@ -1,0 +1,236 @@
+/* ================================================================
+   sections.css — 全ドメインページ共通スタイル
+   各ページは :root { --domain: var(--color-X); } で色を設定する
+   ================================================================ */
+
+/* ---- ヒーロー ---- */
+.section-hero {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  /* color-mix で --domain の薄色背景を生成 (モダンブラウザ対応) */
+  background: radial-gradient(
+    ellipse at 30% 50%,
+    color-mix(in srgb, var(--domain) 15%, transparent) 0%,
+    var(--bg-primary) 70%
+  );
+  padding: var(--space-3xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-text {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20vw;
+  font-weight: 900;
+  color: color-mix(in srgb, var(--domain) 4%, transparent);
+  font-family: serif;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- ドメインバッジ ---- */
+.domain-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--domain) 15%, transparent);
+  color: var(--domain);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-md);
+}
+
+/* ---- 可視化セクション ---- */
+.viz-section {
+  background: var(--bg-secondary);
+  padding: var(--space-3xl) 0;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .viz-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- トピックカード ---- */
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-md);
+}
+
+.topic-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.topic-card:hover {
+  border-color: var(--domain);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--domain) 20%, transparent);
+}
+
+.topic-card .topic-symbol {
+  font-size: 1.8rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.topic-card h4 {
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.topic-card p {
+  font-size: 0.85rem;
+}
+
+/* ---- 数の拡張タイムライン (量ページ) ---- */
+.number-timeline {
+  position: relative;
+  padding: var(--space-lg) 0;
+}
+
+.timeline-track {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: var(--space-md);
+  scrollbar-width: thin;
+}
+
+.timeline-item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+
+.timeline-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 2px solid var(--domain);
+  color: var(--domain);
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-dot::after {
+  content: '';
+  position: absolute;
+  right: -100%;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--domain),
+    color-mix(in srgb, var(--domain) 20%, transparent)
+  );
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.timeline-item:last-child .timeline-dot::after {
+  display: none;
+}
+
+.timeline-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-sm);
+  max-width: 100px;
+}
+
+/* ---- 応用分野グリッド ---- */
+.application-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.application-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+}
+
+.application-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--domain);
+}
+
+.application-card:hover {
+  border-color: color-mix(in srgb, var(--domain) 50%, transparent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--domain) 12%, transparent);
+}
+
+.application-card .app-icon {
+  font-size: 1.6rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.application-card h4 {
+  color: var(--domain);
+  margin-bottom: var(--space-xs);
+  font-size: 0.95rem;
+}
+
+.application-card p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.application-card .app-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: var(--space-sm);
+}
+
+.application-card .app-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--domain) 12%, transparent);
+  color: color-mix(in srgb, var(--domain) 80%, var(--text-primary));
+  font-weight: 500;
+}

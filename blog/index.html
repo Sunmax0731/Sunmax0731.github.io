@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ブログ | Sunmax</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./blog.css" />
+  </head>
+  <body data-page="blog-index">
+    <header class="site-header">
+      <div class="header-inner">
+        <nav class="site-nav" aria-label="グローバルナビゲーション">
+          <a href="../index.html">トップページ</a>
+          <details class="nav-menu">
+            <summary>成果物</summary>
+            <div class="nav-dropdown">
+              <a href="../vehicle-physics/vehicle-physics.html">車両の物理シミュ</a>
+              <a href="../mathematics/mathematics.html">数学の可視化</a>
+            </div>
+          </details>
+          <details class="nav-menu">
+            <summary>3Dゲーム</summary>
+            <div class="nav-dropdown">
+              <a href="../3DGames/2048/2048.html">2048</a>
+              <a href="../3DGames/Breakout/Breakout2D.html">Breakout</a>
+              <a href="../3DGames/LifeGame/LifeGame.html">Life Game</a>
+              <a href="../3DGames/MergeGame/MergeGame.html">Merge Game</a>
+              <a href="../3DGames/Minesweeper/Minesweeper.html">Minesweeper</a>
+              <a href="../3DGames/Othello/othello.html">Othello</a>
+              <a href="../3DGames/RunnerGame/CrowdRunner.html">Crowd Runner</a>
+              <a href="../3DGames/SameGame/SameGame3D.html">SameGame 3D</a>
+              <a href="../3DGames/SortGame/ColorSort.html">Color Sort</a>
+            </div>
+          </details>
+          <a href="./index.html" class="active">ブログ</a>
+          <a href="../contact.html">問い合わせ</a>
+        </nav>
+
+        <h1>ブログ</h1>
+        <p class="tagline">
+          日記、学習記録、作ってみたメモを Markdown で追加していくコーナーです。
+        </p>
+      </div>
+    </header>
+
+    <main class="games-main">
+      <section class="card-section blog-section">
+        <div class="blog-toolbar">
+          <div>
+            <h2>記事一覧</h2>
+            <p class="blog-toolbar-copy">タグを選ぶと、関連する投稿だけを絞り込めます。</p>
+          </div>
+          <div id="tag-filters" class="tag-filter-bar" aria-label="タグ絞り込み"></div>
+        </div>
+        <p id="blog-status" class="blog-status">記事を読み込んでいます...</p>
+        <div id="blog-list" class="blog-list" hidden></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
+    </footer>
+    <script src="../nav.js"></script>
+    <script src="./blog.js"></script>
+  </body>
+</html>

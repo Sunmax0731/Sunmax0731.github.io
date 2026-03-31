@@ -1,0 +1,35 @@
+/* ============================================================
+   Breakout 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+#score-display {
+  min-width: 140px;
+}
+
+#lives-display {
+  background: var(--md-surface-container-high);
+  color: #ef5350;
+  padding: 8px 16px;
+  border-radius: var(--md-shape-full);
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  box-shadow: var(--md-elev-1);
+}
+
+#powerup-display {
+  background: var(--md-surface-container-high);
+  color: #4CAF50;
+  padding: 8px 16px;
+  border-radius: var(--md-shape-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: var(--md-elev-1);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+  .settings-card h1 { font-size: 1.8rem; }
+  .mode-btn { padding: 8px 14px; font-size: 0.8rem; }
+  #lives-display { font-size: 0.95rem; padding: 6px 10px; }
+  #restart-btn { padding: 6px 10px; font-size: 0.75rem; }
+}

@@ -1,0 +1,54 @@
+/* ============================================================
+   RunnerGame 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+:root {
+  --settings-title-size: 2rem;
+  --settings-title-margin: 32px;
+}
+
+/* ---- ゲーム画面: 縦スタック（HUDバー + キャンバス） ---- */
+#game-screen {
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ---- HUD ---- */
+#hud {
+  flex-shrink: 0;
+}
+
+#crowd-display {
+  white-space: nowrap;
+}
+
+#score-display {
+  color: #f1c40f;
+  white-space: nowrap;
+}
+
+/* ---- 進行バー ---- */
+#restart-btn { white-space: nowrap; }
+
+/* ---- キャンバス ---- */
+#game-canvas {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  background: #2c2c2e;
+}
+
+.result-card h2 { color: var(--md-primary); margin-bottom: 12px; }
+.result-card .sub-info {
+  font-size: 0.95rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   レスポンシブ
+   ============================================================ */
+@media (max-width: 600px) {
+  #restart-btn { font-size: 0.72rem; }
+}

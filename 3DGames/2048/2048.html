@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2048</title>
+    <link rel="stylesheet" href="../shared.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="portfolio-nav" aria-label="グローバルナビゲーション">
+      <a href="../../index.html">トップページ</a>
+      <details class="portfolio-menu">
+        <summary>成果物</summary>
+        <div class="portfolio-dropdown">
+          <a href="../../vehicle-physics/vehicle-physics.html">車両の物理シミュ</a>
+          <a href="../../mathematics/mathematics.html">数学の可視化</a>
+        </div>
+      </details>
+      <details class="portfolio-menu">
+        <summary>3Dゲーム</summary>
+        <div class="portfolio-dropdown">
+          <a href="../../3DGames/2048/2048.html">2048</a>
+          <a href="../../3DGames/Breakout/Breakout2D.html">Breakout</a>
+          <a href="../../3DGames/LifeGame/LifeGame.html">Life Game</a>
+          <a href="../../3DGames/MergeGame/MergeGame.html">Merge Game</a>
+          <a href="../../3DGames/Minesweeper/Minesweeper.html">Minesweeper</a>
+          <a href="../../3DGames/Othello/othello.html">Othello</a>
+          <a href="../../3DGames/RunnerGame/CrowdRunner.html">Crowd Runner</a>
+          <a href="../../3DGames/SameGame/SameGame3D.html">SameGame 3D</a>
+          <a href="../../3DGames/SortGame/ColorSort.html">Color Sort</a>
+        </div>
+      </details>
+      <a href="../../contact.html">問い合わせ</a>
+    </nav>
+    <div id="settings-screen">
+      <div class="settings-card">
+        <h1>2048</h1>
+        <div class="setting-group">
+          <label>モード</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn dim-btn" data-dim="2d">2D</button>
+            <button type="button" class="mode-btn dim-btn active" data-dim="3d">3D</button>
+          </div>
+        </div>
+        <div class="setting-group">
+          <label>グリッドサイズ</label>
+          <div class="mode-toggle">
+            <button type="button" class="mode-btn size-btn" data-size="small">小</button>
+            <button type="button" class="mode-btn size-btn active" data-size="medium">中</button>
+            <button type="button" class="mode-btn size-btn" data-size="large">大</button>
+          </div>
+          <p class="diff-desc" id="size-desc"></p>
+        </div>
+        <div class="how-to-play" id="how-to-play-3d">
+          <p>WASD / 矢印キー: タイルを移動</p>
+          <p>ドラッグ: 視点を回転</p>
+          <p>スクロール: ズーム</p>
+          <p>同じ数字を重ねて 2048 を目指します。</p>
+        </div>
+        <div class="how-to-play" id="how-to-play-2d">
+          <p>WASD / 矢印キー: タイルを移動</p>
+          <p>同じ数字を重ねて 2048 を目指します。</p>
+        </div>
+        <button id="start-btn">ゲームスタート</button>
+      </div>
+    </div>
+    <div id="game-screen">
+      <div id="app">
+        <header class="header">
+          <h1 class="title">2048</h1>
+          <div class="scores">
+            <div class="score-box">
+              <span class="score-label">SCORE</span>
+              <span class="score-value" id="score">0</span>
+            </div>
+            <div class="score-box">
+              <span class="score-label">BEST</span>
+              <span class="score-value" id="best">0</span>
+            </div>
+          </div>
+        </header>
+        <div class="controls">
+          <div class="hints"></div>
+          <div class="controls-btns">
+            <button id="btn-new" class="btn-primary">新しいゲーム</button>
+            <button id="back-btn" class="btn-secondary">設定に戻る</button>
+          </div>
+        </div>
+        <div id="board-container"></div>
+        <div id="overlay" class="overlay hidden">
+          <div class="overlay-content">
+            <p id="overlay-message"></p>
+            <button id="btn-retry" class="btn-primary">もう一度</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../nav.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="constants.js"></script>
+    <script src="model.js"></script>
+    <script src="view.js"></script>
+    <script src="controller.js"></script>
+    <script src="settings.js"></script>
+    <footer class="game-site-footer">
+      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

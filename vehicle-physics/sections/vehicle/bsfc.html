@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSFCマップ・エンジン効率 | 車両物理シミュレーション</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    :root { --domain: #20c0a0; }
+    .controls button.active { background: var(--domain); color: #fff; }
+    .bsfc-legend { display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    .bsfc-legend-bar { width:200px; height:16px; border-radius:4px;
+      background: linear-gradient(to right, #00e080, #80e000, #e0c000, #e06000, #e00020);
+      border:1px solid #444; }
+    .bsfc-legend-labels { display:flex; justify-content:space-between; width:200px; font-size:0.7rem; color:#aaa; }
+    .drive-btns { display:flex; gap:8px; margin:8px 0; }
+    .drive-btn { padding:6px 16px; border-radius:6px; border:1px solid #444; background:#1a1a2e;
+      color:#ccc; cursor:pointer; font-size:0.9rem; }
+    .drive-btn.active { background:var(--domain); color:#fff; border-color:var(--domain); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="../../vehicle-physics.html" class="nav-brand">
+    <span class="brand-icon">&#x1F3CE;</span><span>車両物理シミュレーション</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../mechanics/mechanics.html">力学</a></li>
+    <li><a href="../thermodynamics/thermodynamics.html">熱力学</a></li>
+    <li><a href="vehicle.html">車両物理</a></li>
+    <li><a href="dynamics.html">ダイナミクス</a></li>
+    <li><a href="engine3d.html">エンジン3D</a></li>
+    <li><a href="drivetrain.html">駆動系</a></li>
+    <li><a href="ev-hybrid.html">EV・HEV</a></li>
+    <li><a href="thermal.html">熱マネジメント</a></li>
+    <li><a href="steering.html">ステアリング</a></li>
+    <li><a href="safety.html">安全・衝突</a></li>
+    <li><a href="turbo.html">過給機</a></li>
+    <li><a href="control.html">制御系</a></li>
+    <li><a href="laptime.html">ラップタイム</a></li>
+    <li><a href="bsfc.html" class="active">BSFCマップ</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+  <section class="section-hero">
+    <div class="hero-bg-text">&#x26FD;</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../vehicle-physics.html">ホーム</a><span class="sep">&#x203A;</span>
+        <span class="current">BSFCマップ</span>
+      </div>
+      <span class="domain-badge">Engine Efficiency</span>
+      <h1>BSFCマップ・エンジン効率シミュレーション</h1>
+      <p style="max-width:640px;margin:1rem 0 1.5rem;font-size:1.1rem;">
+        正味燃料消費率（BSFC）マップで、エンジンの効率島を可視化。
+        走行モード別の動作点分布とギア選択による燃費最適化を解析する。
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 1: BSFC Map -->
+  <section class="section" id="bsfc-map" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>BSFCマップ（エンジン効率島線図）</h3>
+        <p>横軸はエンジン回転数（RPM）、縦軸はエンジン負荷（BMEP相当）。
+           色の濃い緑色ゾーンほどBSFC値が低く、燃料効率が高い最良効率域を示す。</p>
+        <canvas id="bsfcMapCanvas" style="width:100%;height:450px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="bsfc-legend">
+          <span style="font-size:0.8rem;color:#aaa;">BSFC [g/kWh]:</span>
+          <div>
+            <div class="bsfc-legend-bar"></div>
+            <div class="bsfc-legend-labels"><span>240</span><span>300</span><span>360</span><span>440</span><span>500+</span></div>
+          </div>
+        </div>
+        <div class="controls">
+          <label>エンジン回転数:</label>
+          <input type="range" id="bsfcRpm" min="1000" max="6000" value="2500" step="100">
+          <span class="val" id="bsfcRpmVal">2500</span> rpm
+          &nbsp;&nbsp;
+          <label>エンジン負荷:</label>
+          <input type="range" id="bsfcLoad" min="0" max="100" value="70" step="1">
+          <span class="val" id="bsfcLoadVal">70</span> %
+        </div>
+        <div class="info-panel" id="bsfcInfo">
+          <strong>動作点情報</strong><br>
+          BSFC: <span id="dispBsfc">—</span> g/kWh &nbsp;|&nbsp;
+          熱効率 η: <span id="dispEta">—</span> % &nbsp;|&nbsp;
+          推定出力: <span id="dispPower">—</span> kW &nbsp;|&nbsp;
+          燃料消費量: <span id="dispFuelRate">—</span> g/h
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Operating Points -->
+  <section class="section" id="op-points">
+    <div class="container">
+      <div class="viz-card">
+        <h3>動作点と燃費最適化 — 走行サイクル別分析</h3>
+        <p>走行モードごとにエンジン動作点がBSFCマップ上のどこに分布するかを示す。
+           点の大きさはその動作点での滞在時間に比例する。</p>
+        <canvas id="opCanvas" style="width:100%;height:450px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="drive-btns">
+          <button class="drive-btn active" id="btnCity">市街地走行</button>
+          <button class="drive-btn" id="btnHighway">高速走行</button>
+          <button class="drive-btn" id="btnSport">スポーツ走行</button>
+        </div>
+        <div class="info-panel" id="opInfo">
+          <strong>走行サイクル燃費</strong><br>
+          平均BSFC: <span id="dispAvgBsfc">—</span> g/kWh &nbsp;|&nbsp;
+          推定燃費: <span id="dispFuelEcon">—</span> L/100km &nbsp;|&nbsp;
+          CO₂排出量: <span id="dispCo2">—</span> g/km
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Gear Selection -->
+  <section class="section" id="gear-select" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="viz-card">
+        <h3>ギア選択と燃費 — 80 km/h定速走行</h3>
+        <p>各ギアで一定速度走行したときのエンジン動作点をBSFCマップ上に表示。
+           高いギアほど低回転・高負荷域へ動作点が移動し、燃費が改善する傾向がある。</p>
+        <canvas id="gearCanvas" style="width:100%;height:450px;background:#0a0a18;border-radius:8px;display:block;"></canvas>
+        <div class="controls">
+          <label>車速:</label>
+          <input type="range" id="gearSpeed" min="20" max="160" value="80" step="5">
+          <span class="val" id="gearSpeedVal">80</span> km/h
+          &nbsp;&nbsp;
+          <label>路面勾配:</label>
+          <input type="range" id="gearGrade" min="0" max="10" value="0" step="0.5">
+          <span class="val" id="gearGradeVal">0</span> %
+        </div>
+        <div class="info-panel" id="gearInfo">
+          <strong>ギア選択分析</strong><br>
+          推奨ギア: <span id="dispBestGear">—</span> &nbsp;|&nbsp;
+          最適BSFC: <span id="dispBestBsfc">—</span> g/kWh &nbsp;|&nbsp;
+          最悪ギア比: <span id="dispWorstBsfc">—</span> g/kWh &nbsp;|&nbsp;
+          燃費改善: <span id="dispGearImprove">—</span> %
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end page-wrapper -->
+
+<script>
+// ============================================================
+// Utility
+// ============================================================
+function setupCanvas(id) {
+  var c = document.getElementById(id);
+  var dpr = window.devicePixelRatio || 1;
+  var rect = c.getBoundingClientRect();
+  c.width = rect.width * dpr;
+  c.height = rect.height * dpr;
+  var ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { canvas: c, ctx: ctx, w: rect.width, h: rect.height };
+}
+
+function bindSlider(id, cb) {
+  var s = document.getElementById(id);
+  var v = document.getElementById(id + 'Val');
+  function update() { if(v) v.textContent = s.value; if(cb) cb(+s.value); }
+  s.addEventListener('input', update);
+  update();
+  return s;
+}
+
+// ============================================================
+// BSFC Math Model
+// ============================================================
+function calcBsfc(rpm, load) {
+  // load: 0-100%
+  var rpmFactor = 0.004 * Math.pow(rpm - 2500, 2) / 1000;
+  var loadFactor = 60 * Math.pow(1 - load / 100, 1.5);
+  var frictionFactor = 0.001 * rpm;
+  var bsfc = 240 + rpmFactor + loadFactor + frictionFactor;
+  if (bsfc < 220) bsfc = 220;
+  if (bsfc > 600) bsfc = 600;
+  return bsfc;
+}
+
+function bsfcToColor(bsfc) {
+  // 240 (best, green) -> 500 (worst, red)
+  var t = (bsfc - 240) / (500 - 240);
+  if (t < 0) t = 0;
+  if (t > 1) t = 1;
+  var r, g, b;
+  if (t < 0.25) {
+    // green -> yellow-green
+    r = Math.round(t * 4 * 160);
+    g = 220;
+    b = Math.round(128 * (1 - t * 4));
+  } else if (t < 0.5) {
+    var tt = (t - 0.25) * 4;
+    r = Math.round(160 + tt * 80);
+    g = Math.round(220 - tt * 40);
+    b = 0;
+  } else if (t < 0.75) {
+    var tt = (t - 0.5) * 4;
+    r = Math.round(240 + tt * 15);
+    g = Math.round(180 - tt * 120);
+    b = 0;
+  } else {
+    var tt = (t - 0.75) * 4;
+    r = 255;
+    g = Math.round(60 - tt * 60);
+    b = 0;
+  }
+  return [r, g, b];
+}
+
+// ============================================================
+// Section 1: BSFC Map
+// ============================================================
+(function() {
+  var S = setupCanvas('bsfcMapCanvas');
+  var ctx = S.ctx, W = S.w, H = S.h;
+  var PAD_L = 55, PAD_R = 70, PAD_T = 20, PAD_B = 45;
+  var mapW = W - PAD_L - PAD_R;
+  var mapH = H - PAD_T - PAD_B;
+
+  var RPM_MIN = 1000, RPM_MAX = 6000;
+  var LOAD_MIN = 0, LOAD_MAX = 100;
+
+  // Pre-render BSFC pixel map
+  var imgData = ctx.createImageData(Math.floor(mapW), Math.floor(mapH));
+
+  function renderBgMap() {
+    for (var py = 0; py < Math.floor(mapH); py++) {
+      for (var px = 0; px < Math.floor(mapW); px++) {
+        var rpm = RPM_MIN + (px / mapW) * (RPM_MAX - RPM_MIN);
+        var load = LOAD_MAX - (py / mapH) * (LOAD_MAX - LOAD_MIN);
+        var bsfc = calcBsfc(rpm, load);
+        var col = bsfcToColor(bsfc);
+        var idx = (py * Math.floor(mapW) + px) * 4;
+        imgData.data[idx]     = col[0];
+        imgData.data[idx + 1] = col[1];
+        imgData.data[idx + 2] = col[2];
+        imgData.data[idx + 3] = 220;
+      }
+    }
+  }
+  renderBgMap();
+
+  var currentRpm = 2500, currentLoad = 70;
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Draw bg map
+    ctx.putImageData(imgData, PAD_L, PAD_T);
+
+    // Draw BSFC contour labels
+    var contourLevels = [240, 260, 280, 300, 340, 400, 500];
+    ctx.save();
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var ci = 0; ci < contourLevels.length; ci++) {
+      var bval = contourLevels[ci];
+      // find approximate midpoint where this contour appears at mid-load
+      // scan for pixels near this BSFC value at load=60%
+      var targetLoad = 60;
+      var found = false;
+      for (var scanRpm = RPM_MIN; scanRpm <= RPM_MAX; scanRpm += 50) {
+        var v = calcBsfc(scanRpm, targetLoad);
+        if (Math.abs(v - bval) < 8) {
+          var px = PAD_L + (scanRpm - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+          var py = PAD_T + (1 - (targetLoad - LOAD_MIN) / (LOAD_MAX - LOAD_MIN)) * mapH;
+          var col = bsfcToColor(bval);
+          // darken label bg
+          ctx.fillStyle = 'rgba(0,0,0,0.55)';
+          ctx.fillRect(px - 18, py - 8, 36, 16);
+          var lum = (col[0] * 0.299 + col[1] * 0.587 + col[2] * 0.114);
+          ctx.fillStyle = lum > 100 ? '#111' : '#fff';
+          ctx.fillText(bval, px, py);
+          found = true;
+          break;
+        }
+      }
+    }
+    ctx.restore();
+
+    // Max torque curve (white dashed) — at load = 95%
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 5]);
+    ctx.beginPath();
+    for (var r = RPM_MIN; r <= RPM_MAX; r += 50) {
+      var px2 = PAD_L + (r - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      var torqueLoad = 95; // flat WOT line
+      var py2 = PAD_T + (1 - (torqueLoad - LOAD_MIN) / (LOAD_MAX - LOAD_MIN)) * mapH;
+      if (r === RPM_MIN) ctx.moveTo(px2, py2);
+      else ctx.lineTo(px2, py2);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.fillText('WOT (最大トルク)', PAD_L + mapW * 0.55, PAD_T + mapH * 0.035);
+    ctx.restore();
+
+    // X axis
+    ctx.save();
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#aaa';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (var r2 = RPM_MIN; r2 <= RPM_MAX; r2 += 500) {
+      var px3 = PAD_L + (r2 - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      ctx.beginPath(); ctx.moveTo(px3, PAD_T + mapH); ctx.lineTo(px3, PAD_T + mapH + 5); ctx.stroke();
+      ctx.fillText(r2, px3, PAD_T + mapH + 7);
+    }
+    ctx.fillStyle = '#ccc';
+    ctx.font = '12px sans-serif';
+    ctx.fillText('エンジン回転数 [rpm]', PAD_L + mapW / 2, H - 14);
+    ctx.restore();
+
+    // Y axis
+    ctx.save();
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#aaa';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (var l = 0; l <= 100; l += 20) {
+      var py3 = PAD_T + (1 - l / 100) * mapH;
+      ctx.beginPath(); ctx.moveTo(PAD_L - 5, py3); ctx.lineTo(PAD_L, py3); ctx.stroke();
+      ctx.fillText(l + '%', PAD_L - 7, py3);
+    }
+    ctx.save();
+    ctx.translate(14, PAD_T + mapH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#ccc';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('エンジン負荷 [%]', 0, 0);
+    ctx.restore();
+    ctx.restore();
+
+    // Color bar on right
+    var cbX = PAD_L + mapW + 10;
+    var cbY = PAD_T;
+    var cbH = mapH;
+    var cbW = 16;
+    var cbGrad = ctx.createLinearGradient(0, cbY, 0, cbY + cbH);
+    cbGrad.addColorStop(0, 'rgb(255,0,0)');
+    cbGrad.addColorStop(0.4, 'rgb(255,120,0)');
+    cbGrad.addColorStop(0.65, 'rgb(220,200,0)');
+    cbGrad.addColorStop(0.85, 'rgb(60,220,0)');
+    cbGrad.addColorStop(1, 'rgb(0,200,128)');
+    ctx.fillStyle = cbGrad;
+    ctx.fillRect(cbX, cbY, cbW, cbH);
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(cbX, cbY, cbW, cbH);
+    ctx.fillStyle = '#aaa';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    var cbLabels = [[0, '500+'], [0.3, '400'], [0.55, '300'], [0.75, '260'], [1, '240']];
+    for (var li = 0; li < cbLabels.length; li++) {
+      var ly = cbY + cbLabels[li][0] * cbH;
+      ctx.fillText(cbLabels[li][1], cbX + cbW + 3, ly);
+    }
+
+    // Operating point
+    var opX = PAD_L + (currentRpm - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+    var opY = PAD_T + (1 - currentLoad / 100) * mapH;
+    ctx.save();
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#fff';
+    ctx.beginPath();
+    ctx.arc(opX, opY, 10, 0, Math.PI * 2);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fill();
+    ctx.restore();
+    // crosshair
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(opX, PAD_T); ctx.lineTo(opX, PAD_T + mapH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD_L, opY); ctx.lineTo(PAD_L + mapW, opY); ctx.stroke();
+    ctx.restore();
+
+    // Update info panel
+    var bsfc = calcBsfc(currentRpm, currentLoad);
+    var eta = 3600 / bsfc * 1000 / 43000 * 100;
+    var power = currentRpm * currentLoad / 100 * 0.025; // rough kW scaling
+    var fuelRate = bsfc * power;
+    document.getElementById('dispBsfc').textContent = bsfc.toFixed(1);
+    document.getElementById('dispEta').textContent = eta.toFixed(1);
+    document.getElementById('dispPower').textContent = power.toFixed(1);
+    document.getElementById('dispFuelRate').textContent = fuelRate.toFixed(0);
+  }
+
+  bindSlider('bsfcRpm', function(v) { currentRpm = v; draw(); });
+  bindSlider('bsfcLoad', function(v) { currentLoad = v; draw(); });
+  draw();
+})();
+
+// ============================================================
+// Section 2: Operating Points
+// ============================================================
+(function() {
+  var S = setupCanvas('opCanvas');
+  var ctx = S.ctx, W = S.w, H = S.h;
+  var PAD_L = 55, PAD_R = 180, PAD_T = 20, PAD_B = 45;
+  var mapW = W - PAD_L - PAD_R;
+  var mapH = H - PAD_T - PAD_B;
+  var RPM_MIN = 1000, RPM_MAX = 6000;
+
+  // Pre-render map
+  var imgData = ctx.createImageData(Math.floor(mapW), Math.floor(mapH));
+  for (var py = 0; py < Math.floor(mapH); py++) {
+    for (var px = 0; px < Math.floor(mapW); px++) {
+      var rpm = RPM_MIN + (px / mapW) * (RPM_MAX - RPM_MIN);
+      var load = 100 - (py / mapH) * 100;
+      var bsfc = calcBsfc(rpm, load);
+      var col = bsfcToColor(bsfc);
+      var idx = (py * Math.floor(mapW) + px) * 4;
+      imgData.data[idx] = col[0]; imgData.data[idx+1] = col[1];
+      imgData.data[idx+2] = col[2]; imgData.data[idx+3] = 200;
+    }
+  }
+
+  // Driving mode operating points: [rpm, load%, time_weight]
+  var modes = {
+    city: [
+      [1200, 10, 3], [1400, 15, 4], [1500, 20, 3], [1300, 8, 5],
+      [1600, 25, 3], [2000, 30, 2], [1100, 5, 4], [1800, 18, 3],
+      [2200, 35, 2], [1400, 12, 4], [1600, 10, 3], [2500, 40, 1],
+      [1200, 6, 3], [1800, 22, 2], [2000, 28, 2]
+    ],
+    highway: [
+      [2000, 55, 5], [2200, 60, 6], [2500, 65, 5], [2800, 70, 4],
+      [2000, 50, 3], [2400, 58, 4], [3000, 72, 2], [2200, 62, 5],
+      [1800, 48, 3], [2600, 68, 3], [2000, 55, 4], [2400, 63, 3],
+      [2800, 66, 2], [2200, 57, 4], [2600, 64, 3]
+    ],
+    sport: [
+      [3500, 80, 3], [4000, 85, 3], [4500, 88, 2], [5000, 90, 2],
+      [3000, 75, 3], [4200, 86, 2], [5500, 92, 1], [3800, 82, 3],
+      [2800, 70, 2], [4600, 89, 2], [3200, 78, 3], [5000, 91, 1],
+      [3600, 83, 2], [4400, 87, 2], [2500, 65, 2]
+    ]
+  };
+
+  var currentMode = 'city';
+
+  function modeAvgBsfc(key) {
+    var pts = modes[key];
+    var sumW = 0, sumBW = 0;
+    for (var i = 0; i < pts.length; i++) {
+      var b = calcBsfc(pts[i][0], pts[i][1]);
+      sumBW += b * pts[i][2];
+      sumW += pts[i][2];
+    }
+    return sumBW / sumW;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.putImageData(imgData, PAD_L, PAD_T);
+
+    // Axes
+    ctx.save();
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+    ctx.fillStyle = '#aaa'; ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var r = RPM_MIN; r <= RPM_MAX; r += 500) {
+      var px2 = PAD_L + (r - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      ctx.beginPath(); ctx.moveTo(px2, PAD_T + mapH); ctx.lineTo(px2, PAD_T + mapH + 5); ctx.stroke();
+      ctx.fillText(r, px2, PAD_T + mapH + 7);
+    }
+    ctx.fillStyle = '#ccc'; ctx.font = '12px sans-serif';
+    ctx.fillText('エンジン回転数 [rpm]', PAD_L + mapW / 2, H - 14);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#aaa'; ctx.font = '11px sans-serif';
+    for (var l = 0; l <= 100; l += 20) {
+      var py2 = PAD_T + (1 - l / 100) * mapH;
+      ctx.beginPath(); ctx.moveTo(PAD_L - 5, py2); ctx.lineTo(PAD_L, py2); ctx.stroke();
+      ctx.fillText(l + '%', PAD_L - 7, py2);
+    }
+    ctx.save();
+    ctx.translate(14, PAD_T + mapH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#ccc'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('エンジン負荷 [%]', 0, 0);
+    ctx.restore();
+    ctx.restore();
+
+    // Plot operating points
+    var pts = modes[currentMode];
+    var maxW = 0;
+    for (var i = 0; i < pts.length; i++) if (pts[i][2] > maxW) maxW = pts[i][2];
+
+    for (var i = 0; i < pts.length; i++) {
+      var rpm = pts[i][0], load = pts[i][1], w = pts[i][2];
+      var opX = PAD_L + (rpm - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      var opY = PAD_T + (1 - load / 100) * mapH;
+      var r = 5 + (w / maxW) * 12;
+      var bsfc = calcBsfc(rpm, load);
+      var col = bsfcToColor(bsfc);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(opX, opY, r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',0.7)';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Zone bar chart on right
+    var zones = [0, 0, 0, 0]; // <260, 260-300, 300-350, >350
+    var totalW = 0;
+    for (var i = 0; i < pts.length; i++) {
+      var bsfc = calcBsfc(pts[i][0], pts[i][1]);
+      var w2 = pts[i][2];
+      totalW += w2;
+      if (bsfc < 260) zones[0] += w2;
+      else if (bsfc < 300) zones[1] += w2;
+      else if (bsfc < 350) zones[2] += w2;
+      else zones[3] += w2;
+    }
+    var chartX = PAD_L + mapW + 20;
+    var chartY = PAD_T + 20;
+    var chartH2 = mapH - 40;
+    var barW = 30;
+    var zoneColors = ['#00e080', '#80e000', '#e08000', '#e02020'];
+    var zoneLabels = ['<260', '260-300', '300-350', '>350'];
+    ctx.save();
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = '#ccc';
+    ctx.textAlign = 'center';
+    ctx.fillText('効率ゾーン', chartX + barW / 2 + 40, chartY - 10);
+    for (var zi = 0; zi < 4; zi++) {
+      var bx = chartX + zi * (barW + 10);
+      var bh = (zones[zi] / totalW) * chartH2;
+      var by = chartY + chartH2 - bh;
+      ctx.fillStyle = zoneColors[zi];
+      ctx.fillRect(bx, by, barW, bh);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(bx, by, barW, bh);
+      ctx.fillStyle = '#aaa';
+      ctx.font = '9px sans-serif';
+      ctx.fillText(zoneLabels[zi], bx + barW / 2, chartY + chartH2 + 12);
+      ctx.fillText((zones[zi] / totalW * 100).toFixed(0) + '%', bx + barW / 2, by - 4);
+    }
+    ctx.restore();
+
+    // Mode label
+    var modeNames = { city: '市街地走行', highway: '高速走行', sport: 'スポーツ走行' };
+    ctx.save();
+    ctx.fillStyle = '#20c0a0';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('モード: ' + modeNames[currentMode], PAD_L + 10, PAD_T + 20);
+    ctx.restore();
+
+    // Info panel
+    var avgB = modeAvgBsfc(currentMode);
+    var fuelEcon = avgB * 0.025 / (0.74 * 10); // rough L/100km
+    var co2 = fuelEcon * 2392 / 100;
+    document.getElementById('dispAvgBsfc').textContent = avgB.toFixed(1);
+    document.getElementById('dispFuelEcon').textContent = fuelEcon.toFixed(1);
+    document.getElementById('dispCo2').textContent = co2.toFixed(0);
+  }
+
+  document.getElementById('btnCity').addEventListener('click', function() {
+    currentMode = 'city';
+    document.getElementById('btnCity').classList.add('active');
+    document.getElementById('btnHighway').classList.remove('active');
+    document.getElementById('btnSport').classList.remove('active');
+    draw();
+  });
+  document.getElementById('btnHighway').addEventListener('click', function() {
+    currentMode = 'highway';
+    document.getElementById('btnCity').classList.remove('active');
+    document.getElementById('btnHighway').classList.add('active');
+    document.getElementById('btnSport').classList.remove('active');
+    draw();
+  });
+  document.getElementById('btnSport').addEventListener('click', function() {
+    currentMode = 'sport';
+    document.getElementById('btnCity').classList.remove('active');
+    document.getElementById('btnHighway').classList.remove('active');
+    document.getElementById('btnSport').classList.add('active');
+    draw();
+  });
+
+  draw();
+})();
+
+// ============================================================
+// Section 3: Gear Selection
+// ============================================================
+(function() {
+  var S = setupCanvas('gearCanvas');
+  var ctx = S.ctx, W = S.w, H = S.h;
+  var PAD_L = 55, PAD_R = 60, PAD_T = 20, PAD_B = 45;
+  var mapW = W - PAD_L - PAD_R;
+  var mapH = H - PAD_T - PAD_B;
+  var RPM_MIN = 1000, RPM_MAX = 6000;
+
+  // Pre-render map
+  var imgData = ctx.createImageData(Math.floor(mapW), Math.floor(mapH));
+  for (var py = 0; py < Math.floor(mapH); py++) {
+    for (var px = 0; px < Math.floor(mapW); px++) {
+      var rpm = RPM_MIN + (px / mapW) * (RPM_MAX - RPM_MIN);
+      var load = 100 - (py / mapH) * 100;
+      var bsfc = calcBsfc(rpm, load);
+      var col = bsfcToColor(bsfc);
+      var idx = (py * Math.floor(mapW) + px) * 4;
+      imgData.data[idx] = col[0]; imgData.data[idx+1] = col[1];
+      imgData.data[idx+2] = col[2]; imgData.data[idx+3] = 200;
+    }
+  }
+
+  // Vehicle parameters
+  var gearRatios = [3.545, 1.904, 1.310, 0.969, 0.815, 0.650];
+  var finalDrive = 3.94;
+  var tirRadius = 0.316; // m (205/55R16 approx)
+  var vehicleMass = 1350; // kg
+  var etaDrive = 0.92;
+  var cd = 0.30, af = 2.2; // drag coeff, frontal area m^2
+  var rho = 1.225;
+  var cr = 0.012; // rolling resistance
+
+  var currentSpeed = 80, currentGrade = 0;
+
+  function calcGearPoint(gear1idx, speedKmh, gradePct) {
+    var v = speedKmh / 3.6; // m/s
+    var gr = gearRatios[gear1idx];
+    // Engine RPM
+    var rpm = v * finalDrive * gr / (2 * Math.PI * tirRadius) * 60;
+    // Road load force
+    var Fgrade = vehicleMass * 9.81 * Math.sin(Math.atan(gradePct / 100));
+    var Froll = vehicleMass * 9.81 * cr * Math.cos(Math.atan(gradePct / 100));
+    var Fdrag = 0.5 * rho * cd * af * v * v;
+    var Ftotal = Fgrade + Froll + Fdrag;
+    // Required torque at wheels -> at engine
+    var Tengine = Ftotal * tirRadius / (gr * finalDrive * etaDrive);
+    // Peak torque model: flat 160 Nm from 2000-4000, falling off elsewhere
+    var peakTorque = 160;
+    if (rpm < 1500) peakTorque = 160 * (rpm / 1500);
+    else if (rpm > 5000) peakTorque = 160 * Math.max(0, 1 - (rpm - 5000) / 2000);
+    var load = Math.min(100, Math.max(0, (Tengine / peakTorque) * 100));
+    // Clamp RPM
+    if (rpm < RPM_MIN) rpm = RPM_MIN;
+    if (rpm > RPM_MAX) rpm = RPM_MAX;
+    return { rpm: rpm, load: load, torque: Tengine, peakTorque: peakTorque };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.putImageData(imgData, PAD_L, PAD_T);
+
+    // Axes
+    ctx.save();
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+    ctx.fillStyle = '#aaa'; ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var r = RPM_MIN; r <= RPM_MAX; r += 500) {
+      var px2 = PAD_L + (r - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      ctx.beginPath(); ctx.moveTo(px2, PAD_T + mapH); ctx.lineTo(px2, PAD_T + mapH + 5); ctx.stroke();
+      ctx.fillText(r, px2, PAD_T + mapH + 7);
+    }
+    ctx.fillStyle = '#ccc'; ctx.font = '12px sans-serif';
+    ctx.fillText('エンジン回転数 [rpm]', PAD_L + mapW / 2, H - 14);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#aaa'; ctx.font = '11px sans-serif';
+    for (var l = 0; l <= 100; l += 20) {
+      var py2 = PAD_T + (1 - l / 100) * mapH;
+      ctx.beginPath(); ctx.moveTo(PAD_L - 5, py2); ctx.lineTo(PAD_L, py2); ctx.stroke();
+      ctx.fillText(l + '%', PAD_L - 7, py2);
+    }
+    ctx.save();
+    ctx.translate(14, PAD_T + mapH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#ccc'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('エンジン負荷 [%]', 0, 0);
+    ctx.restore();
+    ctx.restore();
+
+    // Calculate all gear points
+    var points = [];
+    var bsfcValues = [];
+    for (var gi = 0; gi < 6; gi++) {
+      var pt = calcGearPoint(gi, currentSpeed, currentGrade);
+      var bsfc = calcBsfc(pt.rpm, pt.load);
+      points.push({ rpm: pt.rpm, load: pt.load, bsfc: bsfc, valid: pt.rpm >= RPM_MIN && pt.rpm <= RPM_MAX && pt.load <= 105 });
+      bsfcValues.push(bsfc);
+    }
+
+    // Find best (lowest BSFC) among valid gears
+    var bestIdx = -1, bestBsfc = 9999;
+    var worstIdx = -1, worstBsfc = 0;
+    for (var gi = 0; gi < 6; gi++) {
+      if (points[gi].valid && bsfcValues[gi] < bestBsfc) {
+        bestBsfc = bsfcValues[gi]; bestIdx = gi;
+      }
+      if (points[gi].valid && bsfcValues[gi] > worstBsfc) {
+        worstBsfc = bsfcValues[gi]; worstIdx = gi;
+      }
+    }
+
+    // Draw connecting dashed line
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    var started = false;
+    for (var gi = 0; gi < 6; gi++) {
+      if (!points[gi].valid) { started = false; continue; }
+      var opX = PAD_L + (points[gi].rpm - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      var opY = PAD_T + (1 - points[gi].load / 100) * mapH;
+      if (!started) { ctx.beginPath(); ctx.moveTo(opX, opY); started = true; }
+      else ctx.lineTo(opX, opY);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Draw gear points
+    for (var gi = 0; gi < 6; gi++) {
+      if (!points[gi].valid) continue;
+      var opX = PAD_L + (points[gi].rpm - RPM_MIN) / (RPM_MAX - RPM_MIN) * mapW;
+      var opY = PAD_T + (1 - points[gi].load / 100) * mapH;
+      var isOverload = points[gi].load > 95;
+
+      ctx.save();
+      ctx.beginPath();
+      if (gi === bestIdx) {
+        // Gold star for best gear
+        ctx.save();
+        ctx.translate(opX, opY);
+        ctx.fillStyle = '#ffd700';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#ffd700';
+        // Draw star
+        ctx.beginPath();
+        for (var si = 0; si < 5; si++) {
+          var ang = (si * 4 * Math.PI / 5) - Math.PI / 2;
+          var ang2 = (si * 4 * Math.PI / 5 + 2 * Math.PI / 5) - Math.PI / 2;
+          var ox = Math.cos(ang) * 13;
+          var oy = Math.sin(ang) * 13;
+          var ix = Math.cos(ang2) * 6;
+          var iy = Math.sin(ang2) * 6;
+          if (si === 0) ctx.moveTo(ox, oy);
+          else ctx.lineTo(ox, oy);
+          ctx.lineTo(ix, iy);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      } else {
+        ctx.arc(opX, opY, 11, 0, Math.PI * 2);
+        ctx.fillStyle = isOverload ? 'rgba(255,80,80,0.85)' : 'rgba(255,255,255,0.2)';
+        ctx.fill();
+        ctx.strokeStyle = isOverload ? '#ff4040' : '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      // Gear label
+      ctx.fillStyle = gi === bestIdx ? '#1a1a1a' : '#fff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText((gi + 1) + 'st'.replace('st', gi === 0 ? 'st' : gi === 1 ? 'nd' : gi === 2 ? 'rd' : 'th'), opX, opY + (gi === bestIdx ? 1 : 0));
+      ctx.restore();
+
+      // BSFC label near point
+      ctx.save();
+      ctx.fillStyle = isOverload ? '#ff8080' : '#ddd';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(bsfcValues[gi].toFixed(0), opX, opY - 18);
+      ctx.restore();
+
+      // Overload warning
+      if (isOverload) {
+        ctx.save();
+        ctx.fillStyle = '#ff4040';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('過負荷!', opX, opY + 22);
+        ctx.restore();
+      }
+    }
+
+    // Speed label
+    ctx.save();
+    ctx.fillStyle = '#20c0a0';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(currentSpeed + ' km/h  勾配: ' + currentGrade + '%', PAD_L + 10, PAD_T + 20);
+    ctx.restore();
+
+    // Update info
+    if (bestIdx >= 0) {
+      document.getElementById('dispBestGear').textContent = (bestIdx + 1) + '速';
+      document.getElementById('dispBestBsfc').textContent = bestBsfc.toFixed(1);
+      document.getElementById('dispWorstBsfc').textContent = worstBsfc.toFixed(1);
+      var improve = ((worstBsfc - bestBsfc) / worstBsfc * 100);
+      document.getElementById('dispGearImprove').textContent = improve.toFixed(1);
+    }
+  }
+
+  bindSlider('gearSpeed', function(v) { currentSpeed = v; draw(); });
+  bindSlider('gearGrade', function(v) { currentGrade = v; draw(); });
+  draw();
+})();
+</script>
+
+<!-- Info Panels (Japanese explanations) -->
+<div class="page-wrapper" style="padding-top:0;">
+
+  <section class="section" style="padding-top:0;padding-bottom:40px;">
+    <div class="container">
+      <div class="info-panel" style="margin-top:16px;">
+        <h4>&#x2139;&#xFE0F; BSFCマップの読み方</h4>
+        <p>
+          <strong>BSFC（正味燃料消費率）</strong>は、1kWhの仕事を出すために消費する燃料量[g/kWh]で表すエンジン効率指標。
+          値が低いほど燃料を効率よく使えている。典型的なガソリンエンジンでは、最良効率域（ベストアイランド）は
+          240〜260 g/kWh程度で、中回転（2000〜3500 rpm）・高負荷（70〜90%）に位置する。
+        </p>
+        <p>
+          <strong>熱効率 η = 3600 / (BSFC × HV)</strong>（HV: ガソリン低発熱量 ≈ 43 MJ/kg）で計算され、
+          最良効率域では約30〜38%に達する。残りの熱はエキゾーストや冷却水から排出される。
+        </p>
+        <p>
+          <strong>走行モード別の特徴：</strong><br>
+          ・<em>市街地走行</em>：低回転・低負荷域に動作点が集中し、効率が悪い（BSFC &gt; 350 g/kWh）<br>
+          ・<em>高速走行</em>：中回転・中〜高負荷域に分布し、効率が良い（BSFC ≈ 270〜300 g/kWh）<br>
+          ・<em>スポーツ走行</em>：高回転・高負荷域に動作点があり、出力は大きいが効率は中程度
+        </p>
+        <p>
+          <strong>ギア選択の重要性：</strong>同じ車速でもギアを上げるとエンジン回転数が下がり、
+          要求トルクが増す（負荷が上がる）。これにより動作点がBSFCマップの最良効率域に近づき、
+          燃費が改善する。ただし過剰に高いギアを選択すると負荷が限界を超え、ノッキングやエンジンストールのリスクが生じる。
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

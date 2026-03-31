@@ -1,0 +1,73 @@
+/* ============================================================
+   LifeGame 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+#game-screen {
+  display: none;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: var(--md-surface-container-lowest);
+  padding: 64px 12px 12px;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  cursor: crosshair;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px rgba(44, 44, 44, 0.08);
+}
+
+#gen-display,
+#pop-display {
+  min-width: 90px;
+  font-variant-numeric: tabular-nums;
+}
+
+#controls { display: flex; gap: 4px; pointer-events: all; }
+
+#play-pause-btn,
+#step-btn,
+#random-btn,
+#clear-btn {
+  pointer-events: all;
+  background: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+  border-radius: var(--md-shape-full);
+  padding: 8px 14px;
+  font-size: 1rem;
+  box-shadow: var(--md-elev-1);
+  transition: background 200ms, color 200ms, box-shadow 200ms;
+}
+#play-pause-btn:hover,
+#step-btn:hover,
+#random-btn:hover,
+#clear-btn:hover { box-shadow: var(--md-elev-2); }
+
+#play-pause-btn.playing {
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+}
+
+#back-btn {
+  pointer-events: all;
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+  border-radius: var(--md-shape-full);
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  box-shadow: var(--md-elev-1);
+}
+#back-btn:hover { box-shadow: var(--md-elev-2); }
+
+@media (max-width: 600px) {
+  .settings-card h1 { font-size: 1.8rem; }
+  .mode-btn { padding: 8px 6px; font-size: 0.75rem; }
+  #play-pause-btn, #step-btn, #random-btn, #clear-btn { padding: 6px 10px; font-size: 0.9rem; }
+  #back-btn { padding: 6px 10px; font-size: 0.75rem; }
+  #game-screen { padding: 62px 10px 12px; }
+  #game-canvas { width: 100%; height: 100%; }
+}

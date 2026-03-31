@@ -1,0 +1,180 @@
+/* ============================================================
+   MergeGame 固有スタイル (共通は shared.css 参照)
+   ============================================================ */
+
+/* ---- body: スクロール制御をゆるめる ---- */
+body { overflow-x: hidden; height: auto; }
+
+:root {
+  --settings-card-width: min(520px, 100%);
+  --settings-title-margin: 8px;
+}
+
+.settings-card .subtitle {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 36px;
+}
+
+/* ---- グリッドサイズ選択ボタン ---- */
+.size-selector { display: flex; gap: 8px; width: 100%; }
+
+.size-btn {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: var(--md-shape-md);
+  background: var(--md-surface-container);
+  color: var(--md-on-surface-variant);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 2px solid transparent;
+  transition: background 200ms, color 200ms, border-color 200ms, box-shadow 200ms;
+  text-align: center;
+}
+.size-btn.active {
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border-color: var(--md-primary);
+  box-shadow: var(--md-elev-1);
+}
+.size-btn:hover:not(.active) { background: var(--md-surface-container-highest); }
+
+.size-btn .size-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.size-btn .size-desc { display: block; font-size: 0.75rem; opacity: 0.7; }
+
+/* ---- アイテム一覧プレビュー ---- */
+.item-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+.item-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--md-surface-container);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--md-shape-sm);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  color: var(--md-on-surface-variant);
+}
+.item-chip .chip-emoji { font-size: 1rem; }
+
+/* ---- ゲーム画面: canvas を absolute 配置 ---- */
+#game-screen {
+  flex-direction: column;
+  background: #141218;
+}
+
+#game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #141218;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- HUD ---- */
+#hud {
+  position: absolute;
+  height: 60px;
+  top: 0;
+}
+
+#score-display {
+  min-width: 130px;
+}
+
+#level-display {
+  white-space: nowrap;
+}
+
+#settings-btn {
+  white-space: nowrap;
+}
+
+/* ---- フッター（スポーンタイマー） ---- */
+#footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(20, 18, 24, 0.96) 70%, transparent);
+}
+
+#spawn-timer {
+  color: var(--md-on-surface-variant);
+}
+
+/* ---- ゲームオーバーオーバーレイ上書き ---- */
+#game-over-overlay { backdrop-filter: blur(6px); }
+
+.game-over-card h2 { color: var(--md-error); margin-bottom: 20px; }
+
+.go-score-label {
+  font-size: 0.875rem;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 4px;
+}
+
+#final-score { font-size: 3rem; display: block; margin-bottom: 16px; }
+
+.go-level-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.go-level-label { font-size: 0.875rem; color: var(--md-on-surface-variant); }
+#final-level { font-size: 1.1rem; font-weight: 700; color: var(--md-tertiary); }
+
+.go-divider { height: 1px; background: var(--md-outline-variant); margin: 0 0 24px; }
+
+#retry-btn { padding: 10px 28px; }
+
+/* ============================================================
+   レスポンシブ — タブレット (〜768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .settings-card { padding: 32px 28px; }
+  .settings-card h1 { font-size: 1.9rem; margin-bottom: 6px; }
+}
+
+/* ============================================================
+   レスポンシブ — スマートフォン (〜600px)
+   ============================================================ */
+@media (max-width: 600px) {
+  #settings-screen { align-items: flex-start; padding: 16px 12px; }
+  .settings-card { border-radius: var(--md-shape-lg); }
+  .settings-card h1 { font-size: 1.6rem; margin-bottom: 4px; }
+
+  #hud { height: 52px; }
+
+  #footer { height: 38px; }
+  #spawn-timer { font-size: 0.75rem; }
+
+  .game-over-card { padding: 28px 20px; border-radius: var(--md-shape-lg); }
+  .game-over-card h2 { font-size: 1.6rem; }
+  #final-score { font-size: 2.4rem; }
+  #retry-btn, #back-btn { padding: 10px 20px; }
+}
+
+/* ============================================================
+   レスポンシブ — 小型スマートフォン (〜380px)
+   ============================================================ */
+@media (max-width: 380px) {
+  .settings-card { padding: 20px 14px; }
+  .settings-card h1 { font-size: 1.4rem; }
+  #score-display { font-size: 0.78rem; }
+  #level-display { display: none; }
+}

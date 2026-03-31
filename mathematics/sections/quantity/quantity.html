@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量 — 数の世界 | 数学の世界</title>
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/sections.css">
+  <style>
+    :root { --domain: var(--color-quantity); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <a href="../../mathematics.html" class="nav-brand">
+    <span class="brand-symbol">∑</span>
+    <span>数学の世界</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="quantity.html" class="active">量</a></li>
+    <li><a href="../change/change.html">変化</a></li>
+    <li><a href="../structure/structure.html">構造</a></li>
+    <li><a href="../space/space.html">空間</a></li>
+    <li><a href="../finite-math/finite-math.html">有限数学</a></li>
+    <li><a href="../math-sciences/math-sciences.html">数理科学</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrapper">
+
+  <!-- ヒーロー -->
+  <section class="section-hero">
+    <div class="hero-bg-text">ℕ</div>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="../../mathematics.html">ホーム</a>
+        <span class="sep">›</span>
+        <span class="current">量</span>
+      </div>
+      <span class="domain-badge">Quantity</span>
+      <h1>量 — 数の世界</h1>
+      <p style="max-width: 600px; margin: 1rem 0 1.5rem; font-size: 1.1rem;">
+        自然数に始まり、整数・有理数・実数・複素数・四元数へと拡張されてきた「数」の概念。
+        数学の最も根本的な問い——「数とは何か」を探る。
+      </p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="#topics" class="btn btn-primary" style="background: var(--color-quantity);">トピックを見る</a>
+        <a href="#visualizations" class="btn btn-outline">インタラクティブデモ</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数の拡張タイムライン -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>数の拡張の歴史</h2>
+        <p>数の概念は「必要に駆られて」段階的に拡張されてきた</p>
+      </div>
+      <div class="number-timeline">
+        <div class="timeline-track">
+          <div class="timeline-item">
+            <div class="timeline-dot">ℕ</div>
+            <div class="timeline-label">自然数<br>1, 2, 3, ...</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">ℤ</div>
+            <div class="timeline-label">整数<br>..., -1, 0, 1, ...</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">ℚ</div>
+            <div class="timeline-label">有理数<br>p/q の形</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">ℝ</div>
+            <div class="timeline-label">実数<br>数直線上の点</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">ℂ</div>
+            <div class="timeline-label">複素数<br>a + bi</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">ℍ</div>
+            <div class="timeline-label">四元数<br>a+bi+cj+dk</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">𝕆</div>
+            <div class="timeline-label">八元数<br>8次元除算代数</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot">*ℝ</div>
+            <div class="timeline-label">超実数<br>無限小を含む</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- トピック一覧 -->
+  <section class="section" id="topics">
+    <div class="container">
+      <div class="section-header">
+        <h2>トピック</h2>
+      </div>
+      <div class="topic-grid">
+        <div class="topic-card">
+          <span class="topic-symbol">1️⃣</span>
+          <h4>自然数・整数</h4>
+          <p>数えることから始まった最も基本的な数。偶数・奇数・整除性。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">🔢</span>
+          <h4>分数・小数・有理数</h4>
+          <p>p/qの形で表せる数。循環小数との関係。有理数の稠密性。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">√</span>
+          <h4>無理数・実数</h4>
+          <p>√2の発見からカントールの対角線論法まで。実数直線の完備性。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">𝑖</span>
+          <h4>虚数・複素数</h4>
+          <p>x² = -1 の解として生まれた虚数単位 i。複素平面と極形式。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">𝑃</span>
+          <h4>素数</h4>
+          <p>自分自身と1以外で割り切れない数。素数定理・リーマン仮説へ。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">π</span>
+          <h4>数学定数</h4>
+          <p>π, e, φ（黄金比）, √2 ... 至る所に現れる特別な数。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">ℍ</span>
+          <h4>四元数・八元数</h4>
+          <p>3D回転を表現する四元数。可換律・結合律を失いながら進む拡張。</p>
+        </div>
+        <div class="topic-card">
+          <span class="topic-symbol">∞</span>
+          <h4>無限と濃度</h4>
+          <p>カントールによる無限の大小比較。ℵ₀, ℵ₁, 連続体仮説。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- インタラクティブ可視化 -->
+  <section class="viz-section" id="visualizations">
+    <div class="container">
+      <div class="section-header">
+        <h2>インタラクティブ可視化</h2>
+      </div>
+      <div class="viz-grid">
+
+        <!-- 複素数平面 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>複素数の乗算 — 回転としての解釈</h4>
+            <span class="badge badge-quantity">複素数</span>
+          </div>
+          <div id="complex-viz" style="height: 320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>角度 θ</label>
+              <input type="range" id="complex-angle" min="0" max="360" value="45" step="1">
+              <span class="control-value" id="complex-angle-val">45°</span>
+            </div>
+            <div class="control-group">
+              <label>絶対値 r</label>
+              <input type="range" id="complex-r" min="0.1" max="2" value="1" step="0.05">
+              <span class="control-value" id="complex-r-val">1.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- エラトステネスの篩 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>エラトステネスの篩 — 素数の発見</h4>
+            <span class="badge badge-quantity">素数</span>
+          </div>
+          <div id="sieve-viz" style="padding: var(--space-md);"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>上限 N</label>
+              <input type="range" id="sieve-n" min="10" max="200" value="100" step="10">
+              <span class="control-value" id="sieve-n-val">100</span>
+            </div>
+            <div style="align-self: flex-end;">
+              <button class="btn btn-ghost" id="sieve-step-btn">ステップ実行</button>
+              <button class="btn btn-ghost" id="sieve-reset-btn">リセット</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数直線 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>数の包含関係</h4>
+            <span class="badge badge-quantity">数の分類</span>
+          </div>
+          <div id="number-sets-viz" style="height: 280px;"></div>
+        </div>
+
+        <!-- 黄金比 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>黄金比 φ = (1+√5)/2 ≈ 1.618</h4>
+            <span class="badge badge-quantity">数学定数</span>
+          </div>
+          <div id="golden-viz" style="height: 280px;"></div>
+        </div>
+
+        <!-- フィボナッチ数列 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>フィボナッチ数列と黄金比の収束</h4>
+            <span class="badge badge-quantity">数列</span>
+          </div>
+          <div id="fib-viz" style="height: 300px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>項数 n</label>
+              <input type="range" id="fib-n" min="3" max="30" value="15" step="1">
+              <span class="control-value" id="fib-n-val">15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 素因数分解 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>素因数分解の木構造</h4>
+            <span class="badge badge-quantity">素数</span>
+          </div>
+          <div class="viz-body">
+            <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+              <input type="number" id="factor-input" value="360" min="2" max="9999"
+                style="flex:1;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:1rem;font-family:monospace;">
+              <button class="btn btn-ghost" id="factor-btn">分解</button>
+            </div>
+            <div id="factor-result" style="min-height:200px;"></div>
+          </div>
+        </div>
+
+        <!-- カントールの濃度 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>カントールの対角線論法 — |ℕ| &lt; |ℝ|</h4>
+            <span class="badge badge-quantity">無限・濃度</span>
+          </div>
+          <div id="cantor-viz" style="height: 300px;"></div>
+          <div class="viz-controls">
+            <button class="btn btn-ghost" id="cantor-step-btn">次のステップ</button>
+            <button class="btn btn-ghost" id="cantor-reset-btn">リセット</button>
+            <span class="control-value" id="cantor-status">開始してください</span>
+          </div>
+        </div>
+
+        <!-- 四元数の3D回転 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>四元数 ℍ — 3D回転の表現</h4>
+            <span class="badge badge-quantity">四元数</span>
+          </div>
+          <div id="quat-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>回転軸 X</label>
+              <input type="range" id="quat-x" min="-1" max="1" value="0.5" step="0.05">
+              <span class="control-value" id="quat-x-val">0.50</span>
+            </div>
+            <div class="control-group">
+              <label>回転軸 Y</label>
+              <input type="range" id="quat-y" min="-1" max="1" value="0.5" step="0.05">
+              <span class="control-value" id="quat-y-val">0.50</span>
+            </div>
+            <div class="control-group">
+              <label>回転軸 Z</label>
+              <input type="range" id="quat-z" min="-1" max="1" value="0" step="0.05">
+              <span class="control-value" id="quat-z-val">0.00</span>
+            </div>
+            <button class="btn btn-ghost" id="quat-anim-btn">▶ 回転</button>
+          </div>
+        </div>
+
+        <!-- 数直線上の有理数・無理数 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>数直線上の有理数と無理数の分布</h4>
+            <span class="badge badge-quantity">有理数・無理数</span>
+          </div>
+          <div id="numline-viz" style="height:320px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>分母の上限 q</label>
+              <input type="range" id="numline-q" min="2" max="20" value="8" step="1">
+              <span class="control-value" id="numline-q-val">8</span>
+            </div>
+            <div class="control-group">
+              <label>表示</label>
+              <select id="numline-mode" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="both">有理数＋無理数</option>
+                <option value="rational">有理数のみ</option>
+                <option value="irrational">主な無理数</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- p進数 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>p進数 — 「距離」の再定義</h4>
+            <span class="badge badge-quantity">p進解析</span>
+          </div>
+          <div id="padic-viz" style="height:220px;"></div>
+          <div class="viz-controls">
+            <div class="control-group">
+              <label>素数 p</label>
+              <select id="padic-p" style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:0.8rem;">
+                <option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="7">7</option>
+              </select>
+              <span class="control-value" id="padic-p-val">2</span>
+            </div>
+            <div class="control-group">
+              <label>表示範囲 N</label>
+              <input type="range" id="padic-n" min="8" max="24" value="16" step="1">
+              <span class="control-value" id="padic-n-val">16</span>
+            </div>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">通常の距離とは異なり、p進距離では p の高い冪の倍数ほど「0に近い」とみなす</p>
+        </div>
+
+        <!-- 超限順序数 -->
+        <div class="viz-container">
+          <div class="viz-header">
+            <h4>超限順序数 — 無限の彼方の秩序</h4>
+            <span class="badge badge-quantity">集合論</span>
+          </div>
+          <div id="ordinal-viz" style="height:200px;"></div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">ω は全自然数の「次」の順序数。ω の先にも ω+1, ω·2, ω², ωω … と続く無限の階層がある</p>
+        </div>
+
+        <!-- 濃度の比較 -->
+        <div class="viz-container" style="grid-column:1/-1;">
+          <div class="viz-header">
+            <h4>濃度の比較 — ℕ と ℤ は同じ「大きさ」</h4>
+            <span class="badge badge-quantity">濃度・集合論</span>
+          </div>
+          <div id="cardinality-viz" style="height:220px;"></div>
+          <div class="viz-controls">
+            <button class="btn btn-ghost" id="card-start-btn">▶ 再生</button>
+            <button class="btn btn-ghost" id="card-reset-btn">リセット</button>
+          </div>
+          <p style="font-size:0.8rem;color:var(--text-muted);padding:4px 8px;">f(n) の矢印が全単射を構成。ℕ と ℤ は共に可算無限 ℵ₀ であり、実数の非可算無限 ℵ₁ とは異なる</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 主要公式 -->
+  <section class="section">
+    <div class="container-sm">
+      <div class="section-header">
+        <h2>主要な公式・定理</h2>
+      </div>
+      <div class="grid-2" style="gap: var(--space-md);">
+        <div class="info-card">
+          <h4>オイラーの等式</h4>
+          <div class="math-block">e<sup>iπ</sup> + 1 = 0</div>
+          <p style="font-size: 0.85rem;">e, i, π, 1, 0 という数学の5大定数をつなぐ美しい等式</p>
+        </div>
+        <div class="info-card">
+          <h4>素数定理</h4>
+          <div class="math-block">π(x) ~ x / ln(x)</div>
+          <p style="font-size: 0.85rem;">x以下の素数の個数 π(x) の漸近的挙動</p>
+        </div>
+        <div class="info-card">
+          <h4>カントールの対角線論法</h4>
+          <div class="math-block">|ℕ| < |ℝ|</div>
+          <p style="font-size: 0.85rem;">実数は自然数より「多い」——無限にも大小がある</p>
+        </div>
+        <div class="info-card">
+          <h4>代数学の基本定理</h4>
+          <div class="math-block">∀p(z)∈ℂ[z], deg≥1 ⟹ ∃z₀∈ℂ</div>
+          <p style="font-size: 0.85rem;">複素数上では、n次方程式はちょうどn個の解を持つ</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 応用分野 -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2>応用分野</h2>
+        <p>「量」の数学が現代社会のどこで活きているか</p>
+      </div>
+      <div class="application-grid">
+        <div class="application-card">
+          <span class="app-icon">💻</span>
+          <h4>コンピュータサイエンス</h4>
+          <p>二進数・16進数は全てのデジタル情報の基盤。浮動小数点数（IEEE 754）は数値計算の精度を規定し、整数オーバーフロー・アンダーフローはバグの温床。</p>
+          <div class="app-tags"><span class="app-tag">2進数</span><span class="app-tag">浮動小数点</span><span class="app-tag">数値計算</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🔐</span>
+          <h4>暗号・セキュリティ</h4>
+          <p>RSA暗号は大きな素数の積の分解困難性を利用。楕円曲線暗号（ECC）は有限体上の整数演算。量子コンピュータによる素因数分解（ショアのアルゴリズム）が脅威に。</p>
+          <div class="app-tags"><span class="app-tag">RSA</span><span class="app-tag">素数</span><span class="app-tag">楕円曲線</span><span class="app-tag">量子暗号</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">📡</span>
+          <h4>電気・電子工学</h4>
+          <p>複素数は交流回路のインピーダンス解析に必須。フェーザー表示（振幅・位相を複素数で表現）により回路方程式が代数的に解ける。</p>
+          <div class="app-tags"><span class="app-tag">交流回路</span><span class="app-tag">インピーダンス</span><span class="app-tag">フィルタ設計</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">🤖</span>
+          <h4>機械学習・データサイエンス</h4>
+          <p>行列・ベクトルは多次元データの表現そのもの。線形代数（行列演算）がニューラルネットワークの全層計算を担う。確率・統計も数の精密な理解が前提。</p>
+          <div class="app-tags"><span class="app-tag">線形代数</span><span class="app-tag">テンソル</span><span class="app-tag">統計</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">💹</span>
+          <h4>金融・会計</h4>
+          <p>複利計算・現在価値は指数・対数の実用例。リスク管理では有理数・実数の精密な扱いが必要。会計ソフトの丸め誤差も数の表現に起因。</p>
+          <div class="app-tags"><span class="app-tag">複利</span><span class="app-tag">リスク管理</span><span class="app-tag">会計</span></div>
+        </div>
+        <div class="application-card">
+          <span class="app-icon">⚛️</span>
+          <h4>量子物理学</h4>
+          <p>量子状態は複素ヒルベルト空間のベクトル。確率振幅は複素数で表され、観測確率はその絶対値の二乗。四元数はスピン・回転の記述に活用。</p>
+          <div class="app-tags"><span class="app-tag">量子状態</span><span class="app-tag">複素振幅</span><span class="app-tag">スピン</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>「神は整数を作り、残りはすべて人間が作った」— レオポルト・クロネッカー</p>
+  </div>
+</footer>
+
+<script src="../../assets/js/core/math-utils.js"></script>
+<script src="../../assets/js/quantity.js"></script>
+</body>
+</html>
