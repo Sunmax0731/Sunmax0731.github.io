@@ -283,7 +283,7 @@ function renderPostList(container, status, posts, activeTag) {
   container.innerHTML = filteredPosts
     .map(
       (post) => `
-        <article class="blog-card">
+        <article class="blog-card${post.meta.cover ? "" : " blog-card-no-cover"}">
           ${post.meta.cover ? `<img class="blog-card-cover" src="${escapeAttribute(post.meta.cover)}" alt="${escapeAttribute(post.meta.title)}" />` : ""}
           <div class="blog-card-body">
             <p class="blog-card-date">${escapeHtml(post.meta.dateLabel)}</p>
