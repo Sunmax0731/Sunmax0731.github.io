@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ));
 
   for (const dropdown of workDropdowns) {
-    if (dropdown.querySelector('a[href*="fluid-simulation/"]')) continue;
+    if (dropdown.querySelector('a[href*="fluid-simulation"]')) continue;
 
     const link = document.createElement("a");
     link.href = fluidSimulationHref;
