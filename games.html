@@ -12,16 +12,17 @@
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>学習コンテンツ</summary>
             <div class="nav-dropdown">
-              <a href="vehicle-physics.html">車両の物理シミュ</a>
-              <a href="mathematics.html">数学の可視化</a>
+              <a href="vehicle-physics.html">車両工学の学習シミュレーション</a>
+              <a href="mathematics.html">数学の可視化コンテンツ</a>
             </div>
           </details>
           <details class="nav-menu">
             <summary>3Dゲーム</summary>
             <div class="nav-dropdown">
               <a href="games.html" class="active">3Dゲーム一覧</a>
+              <a href="gungi/">軍議</a>
               <a href="2048.html">2048</a>
               <a href="breakout-2d.html">Breakout</a>
               <a href="life-game.html">Life Game</a>
@@ -34,12 +35,13 @@
             </div>
           </details>
           <a href="blog/">ブログ</a>
-          <a href="contact.html">問い合わせ</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
 
         <h1>3Dゲーム</h1>
         <p class="tagline">
-          ブラウザで遊べるミニゲームをまとめています。2D / 3D の切り替えやルールの違いを気軽に試せます。
+          ブラウザで動作するゲームやインタラクティブ作品をまとめています。2D と 3D の表現、
+          ルール実装、UI 設計、アクション要素の違いを見比べられます。
         </p>
       </div>
     </header>
@@ -49,36 +51,42 @@
         <div class="feature-entry-grid">
           <article class="feature-panel">
             <p class="feature-kicker">Overview</p>
-            <h2>ルールの違うゲームを短い導線で触れる</h2>
+            <h2>遊べる作品をまとめて比較できるページです</h2>
             <p>
-              パズル、ボードゲーム、アクションまで、操作感や見え方の違う作品をひとまとめにしています。
-              手早く試せるものから、3D 表現を前面に出したものまで、雰囲気の違いを見比べやすい構成です。
+              パズル、ボードゲーム、アクションまで、ブラウザでそのまま触れる作品を公開しています。
+              UI の作り方やルール処理、3D 表現、入力の扱いなど、作品ごとの違いも合わせて確認できます。
             </p>
             <ul class="feature-point-list">
-              <li>2D / 3D の切り替えに対応したゲームを複数収録</li>
-              <li>短時間で遊び始められるシンプルなルール設計</li>
-              <li>盤面系、反射神経系、色合わせ系までジャンルを分散</li>
-              <li>ブラウザだけでそのまま動作確認できる</li>
+              <li>2D / 3D の幅を持たせたゲームを公開</li>
+              <li>CPU 対戦やロジック重視の作品も収録</li>
+              <li>ブラウザだけでそのまま遊べる構成</li>
+              <li>UI とルール処理の違いを見比べやすい一覧</li>
             </ul>
           </article>
           <article class="feature-panel feature-panel-soft">
             <p class="feature-kicker">Start Here</p>
-            <h3>まず触るならこの3つ</h3>
+            <h3>まず触ってほしい 4 作品</h3>
             <div class="feature-quick-links">
+              <a class="feature-quick-link" href="gungi/">
+                <span class="feature-link-title">軍議</span>
+                <span class="feature-link-note">CPU 対戦、手駒配置、ツケの 3D 表現まで試せるブラウザ版です。</span>
+              </a>
               <a class="feature-quick-link" href="2048.html">
                 <span class="feature-link-title">2048</span>
-                <span class="feature-link-note">盤面パズルの基本操作をすぐ確認できます。</span>
+                <span class="feature-link-note">定番パズルの基本ルールを短時間で試せます。</span>
               </a>
               <a class="feature-quick-link" href="breakout-2d.html">
                 <span class="feature-link-title">Breakout</span>
-                <span class="feature-link-note">反射とテンポ重視で、2D / 3D の差が見やすい作品です。</span>
+                <span class="feature-link-note">アクション性のある作品として操作感を確認できます。</span>
               </a>
               <a class="feature-quick-link" href="same-game-3d.html">
                 <span class="feature-link-title">SameGame 3D</span>
-                <span class="feature-link-note">立体的な盤面処理と消去ルールの組み合わせを試せます。</span>
+                <span class="feature-link-note">立体パズルならではの視点操作と消去ルールを試せます。</span>
               </a>
             </div>
-            <p class="feature-helper">迷ったら、盤面系 1 本、アクション系 1 本、立体系 1 本の順で触ると全体像を掴みやすいです。</p>
+            <p class="feature-helper">
+              新規公開の軍議は、9x9 盤面、重ね置きの 3D 表現、CPU 対戦までを含む作品です。
+            </p>
           </article>
         </div>
       </section>
@@ -86,15 +94,46 @@
       <section class="card-section">
         <h2>ゲーム一覧</h2>
         <div class="card-grid">
-          <a class="content-card" href="2048.html"><h3>2048</h3><p>数字を合体させて目標値を目指す定番パズルです。</p></a>
-          <a class="content-card" href="breakout-2d.html"><h3>Breakout</h3><p>ボールを打ち返してブロックを崩すアクションゲームです。</p></a>
-          <a class="content-card" href="life-game.html"><h3>Life Game</h3><p>セルの増減パターンを観察できるシミュレーションです。</p></a>
-          <a class="content-card" href="merge-game.html"><h3>Merge Game</h3><p>同種オブジェクトを重ねて進化させるカジュアルゲームです。</p></a>
-          <a class="content-card" href="mine-sweeper.html"><h3>Minesweeper</h3><p>数字の手掛かりを頼りに地雷を避ける定番ロジックです。</p></a>
-          <a class="content-card" href="othello.html"><h3>Othello</h3><p>盤面の挟み込みで勝負するボードゲームです。</p></a>
-          <a class="content-card" href="crowd-runner.html"><h3>Crowd Runner</h3><p>集団を増やしながら進むラン系ゲームです。</p></a>
-          <a class="content-card" href="same-game-3d.html"><h3>SameGame 3D</h3><p>同色ブロックをまとめて消していく立体パズルです。</p></a>
-          <a class="content-card" href="color-sort.html"><h3>Color Sort</h3><p>色ごとに並べ替える整理系パズルです。</p></a>
+          <a class="content-card" href="gungi/">
+            <h3>軍議</h3>
+            <p>ハンターハンターの軍議をベースにした、9x9 盤と 3D ツケ表現の CPU 対戦ブラウザゲームです。</p>
+          </a>
+          <a class="content-card" href="2048.html">
+            <h3>2048</h3>
+            <p>数字を合体させて目標値を目指す定番パズルです。</p>
+          </a>
+          <a class="content-card" href="breakout-2d.html">
+            <h3>Breakout</h3>
+            <p>ボールを打ち返してブロックを崩すアクションゲームです。</p>
+          </a>
+          <a class="content-card" href="life-game.html">
+            <h3>Life Game</h3>
+            <p>セルの増減パターンを観察できるシミュレーションです。</p>
+          </a>
+          <a class="content-card" href="merge-game.html">
+            <h3>Merge Game</h3>
+            <p>同種オブジェクトを重ねて進化させるカジュアルゲームです。</p>
+          </a>
+          <a class="content-card" href="mine-sweeper.html">
+            <h3>Minesweeper</h3>
+            <p>数字の手掛かりを頼りに地雷を避ける定番ロジックです。</p>
+          </a>
+          <a class="content-card" href="othello.html">
+            <h3>Othello</h3>
+            <p>盤面の挟み込みで勝負するボードゲームです。</p>
+          </a>
+          <a class="content-card" href="crowd-runner.html">
+            <h3>Crowd Runner</h3>
+            <p>集団を増やしながら進むラン系ゲームです。</p>
+          </a>
+          <a class="content-card" href="same-game-3d.html">
+            <h3>SameGame 3D</h3>
+            <p>同色ブロックをまとめて消していく立体パズルです。</p>
+          </a>
+          <a class="content-card" href="color-sort.html">
+            <h3>Color Sort</h3>
+            <p>色ごとに並べ替える整理系パズルです。</p>
+          </a>
         </div>
       </section>
     </main>
