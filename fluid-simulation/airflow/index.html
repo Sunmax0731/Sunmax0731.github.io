@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ocean Surface</title>
-  <script type="module" crossorigin src="../assets/airflow-C_xe95Z-.js"></script>
+  <script type="module" crossorigin src="../assets/airflow-CGHxp8Hs.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/controls-D9uNXtZD.js">
-  <link rel="stylesheet" crossorigin href="../assets/airflow-JYmJ6Rl_.css">
+  <link rel="stylesheet" crossorigin href="../assets/airflow-W-jRHvhK.css">
 </head>
 <body>
   <canvas id="canvas"></canvas>
+
+  <div class="topLinks">
+    <a id="projectTop" href="../../fluid-simulation.html">&lt;- Project Top</a>
+    <a id="back" href="../">&lt;- Back to gallery</a>
+  </div>
 
   <div class="headline">
     <strong>Ocean Surface</strong>
     <span>3D tank-style water surface with wall reflections, impact ripples, and orbit camera control</span>
   </div>
-
-  <a id="back" href="../">&lt;- Back to gallery</a>
 
   <div id="leftDock">
     <div class="dockGroup">
@@ -46,5 +49,11 @@
       Drag to orbit, wheel to zoom. Presets now add only an initial swell and then settle, so use Nagi for calm water and trigger Water Drop, Metal Sphere, Crate, or Rain to inspect continuous impact response and wall reflections. Keys: <strong>1 - 5</strong> presets, <strong>Q / W / E</strong> drop actions, <strong>T</strong> rain toggle, <strong>R</strong> clear impacts.
     </div>
 
+  <script>
+    const projectTop = document.getElementById('projectTop');
+    if (!window.location.pathname.includes('/fluid-simulation/')) {
+      projectTop.hidden = true;
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>流体シミュレーション | Sunmax</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <nav class="site-nav" aria-label="グローバルナビゲーション">
+          <a href="./">トップページ</a>
+          <details class="nav-menu">
+            <summary>成果物</summary>
+            <div class="nav-dropdown">
+              <a href="vehicle-physics.html">車両の物理シミュ</a>
+              <a href="mathematics.html">数学の可視化</a>
+              <a href="fluid-simulation.html" class="active">流体シミュレーション</a>
+            </div>
+          </details>
+          <details class="nav-menu">
+            <summary>3Dゲーム</summary>
+            <div class="nav-dropdown">
+              <a href="games.html">3Dゲーム一覧</a>
+              <a href="2048.html">2048</a>
+              <a href="breakout-2d.html">Breakout</a>
+              <a href="life-game.html">Life Game</a>
+              <a href="merge-game.html">Merge Game</a>
+              <a href="mine-sweeper.html">Minesweeper</a>
+              <a href="othello.html">Othello</a>
+              <a href="crowd-runner.html">Crowd Runner</a>
+              <a href="same-game-3d.html">SameGame 3D</a>
+              <a href="color-sort.html">Color Sort</a>
+            </div>
+          </details>
+          <a href="blog/">ブログ</a>
+          <a href="contact.html">お問い合わせ</a>
+        </nav>
+
+        <h1>流体シミュレーション</h1>
+        <p class="tagline">
+          水面、煙、炎、インクの動きを、リアルタイム表示に重点を置いて構成した WebGL デモ集です。
+        </p>
+      </div>
+    </header>
+
+    <main class="games-main">
+      <section class="card-section feature-entry">
+        <div class="feature-entry-grid">
+          <article class="feature-panel">
+            <p class="feature-kicker">Overview</p>
+            <h2>見た目の説得力を重視した流体表現をまとめています</h2>
+            <p>
+              リアルタイム可視化向けに、水面の反射と波紋、煙や炎の立体的な密度表現、
+              インクの膜厚と屈折をそれぞれ別のデモとして整理しています。
+              物理の厳密さだけでなく、ゲームやビジュアル演出でそのまま使える見え方を重視して調整しています。
+            </p>
+            <ul class="feature-point-list">
+              <li>水槽内の波、落下物、水しぶき、雨をまとめて確認できる水面デモ</li>
+              <li>たき火、霧、噴射炎を 3D 密度グリッドで描く煙・炎デモ</li>
+              <li>膜厚、屈折、集光模様まで調整できるインク表現デモ</li>
+              <li>各デモで右側のパラメータを分類し、見た目への影響を日本語で確認可能</li>
+            </ul>
+          </article>
+          <article class="feature-panel feature-panel-soft">
+            <p class="feature-kicker">Start Here</p>
+            <h3>まず見るならこの 3 つ</h3>
+            <div class="feature-quick-links">
+              <a class="feature-quick-link" href="fluid-simulation/">
+                <span class="feature-link-title">Fluid Motion Lab</span>
+                <span class="feature-link-note">各デモの入口です。水面、煙・炎、インクの 3 つを一覧で切り替えられます。</span>
+              </a>
+              <a class="feature-quick-link" href="fluid-simulation/airflow/">
+                <span class="feature-link-title">Ocean Surface</span>
+                <span class="feature-link-note">水槽内の波、反射、水しぶき、落下物や雨による連続的な波の伝播を確認できます。</span>
+              </a>
+              <a class="feature-quick-link" href="fluid-simulation/liquid/">
+                <span class="feature-link-title">Smoke &amp; Fire</span>
+                <span class="feature-link-note">煙、炎、霧の見た目を 3D の密度表現で調整しながら確認できます。</span>
+              </a>
+            </div>
+            <p class="feature-helper">
+              まずは `Fluid Motion Lab` から全体を見て、その後に個別デモで細かいパラメータを触る構成です。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>デモ一覧</h2>
+        <div class="card-grid">
+          <a class="content-card" href="fluid-simulation/">
+            <h3>Fluid Motion Lab</h3>
+            <p>3 つの流体デモをまとめた入口ページです。全体の方向性をここから確認できます。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/airflow/">
+            <h3>Ocean Surface</h3>
+            <p>静かな水面から連続的な落下、雨、水槽壁での反射までを 3D で表示します。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/liquid/">
+            <h3>Smoke &amp; Fire</h3>
+            <p>たき火、霧、噴射炎を切り替えながら、立体的な煙と火の見え方を調整できます。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/multiphase/">
+            <h3>Ink Flow</h3>
+            <p>光沢のある液膜、屈折、膜厚、気泡のくり抜きなどを含むインク表現デモです。</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
+    </footer>
+    <script src="nav.js"></script>
+  </body>
+</html>

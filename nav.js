@@ -5,7 +5,7 @@ const docsRootUrl = document.currentScript?.src
 document.addEventListener("DOMContentLoaded", () => {
   const menus = Array.from(document.querySelectorAll(".nav-menu, .portfolio-menu"));
   if (menus.length === 0) return;
-  const fluidSimulationHref = new URL("fluid-simulation/", docsRootUrl).href;
+  const fluidSimulationHref = new URL("fluid-simulation.html", docsRootUrl).href;
   const workDropdowns = Array.from(document.querySelectorAll(".nav-dropdown, .portfolio-dropdown")).filter((dropdown) => (
     dropdown.querySelector('a[href*="vehicle-physics"]') && dropdown.querySelector('a[href*="mathematics"]')
   ));

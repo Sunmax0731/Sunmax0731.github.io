@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ink Flow</title>
-  <script type="module" crossorigin src="../assets/multiphase-C3meQqbj.js"></script>
+  <script type="module" crossorigin src="../assets/multiphase-DaDzN_GA.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/controls-D9uNXtZD.js">
-  <link rel="stylesheet" crossorigin href="../assets/multiphase-BgmlEqaP.css">
+  <link rel="stylesheet" crossorigin href="../assets/multiphase-DQryrv05.css">
 </head>
 <body>
   <canvas id="canvas"></canvas>
+
+  <div class="topLinks">
+    <a id="projectTop" href="../../fluid-simulation.html">&lt;- Project Top</a>
+    <a id="back" href="../">&lt;- Back to gallery</a>
+  </div>
 
   <div class="headline">
     <strong>Ink Flow</strong>
     <span>3D liquid basin for glossy pigment sheets, refractive edges, and realtime splash control</span>
   </div>
-
-  <a id="back" href="../">&lt;- Back to gallery</a>
   <div id="leftDock">
     <div class="dockGroup">
       <div class="dockLabel">Scenes</div>
@@ -46,5 +49,11 @@
     Left drag paints fluid. Right drag orbits the camera. Wheel zooms. Keys: <strong>1 / 2 / 3</strong> scene, <strong>B</strong> bubble tool, <strong>V</strong> velocity view, <strong>R</strong> reset. Use the right panel for thickness, refraction, fresnel, and caustics.
   </div>
 
+  <script>
+    const projectTop = document.getElementById('projectTop');
+    if (!window.location.pathname.includes('/fluid-simulation/')) {
+      projectTop.hidden = true;
+    }
+  </script>
 </body>
 </html>

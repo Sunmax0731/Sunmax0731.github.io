@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smoke &amp; Fire</title>
-  <script type="module" crossorigin src="../assets/liquid-lOiX0qMC.js"></script>
+  <script type="module" crossorigin src="../assets/liquid-3QS5mzqd.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/controls-D9uNXtZD.js">
-  <link rel="stylesheet" crossorigin href="../assets/liquid-YxwF5i9g.css">
+  <link rel="stylesheet" crossorigin href="../assets/liquid-BKg7mODS.css">
 </head>
 <body>
   <canvas id="canvas"></canvas>
+
+  <div class="topLinks">
+    <a id="projectTop" href="../../fluid-simulation.html">&lt;- Project Top</a>
+    <a id="back" href="../">&lt;- Back to gallery</a>
+  </div>
 
   <div class="headline">
     <strong>Smoke &amp; Fire</strong>
     <span>3D plume presentation for campfire, mist, and thruster-style realtime FX</span>
   </div>
-
-  <a id="back" href="../">&lt;- Back to gallery</a>
   <div id="leftDock">
     <div class="dockGroup">
       <div class="dockLabel">Looks</div>
@@ -37,5 +40,11 @@
     Left drag injects plumes. Right drag orbits the camera. Wheel zooms. Keys: <strong>1 / 2 / 3</strong> switch looks, <strong>R</strong> resets.
   </div>
 
+  <script>
+    const projectTop = document.getElementById('projectTop');
+    if (!window.location.pathname.includes('/fluid-simulation/')) {
+      projectTop.hidden = true;
+    }
+  </script>
 </body>
 </html>
