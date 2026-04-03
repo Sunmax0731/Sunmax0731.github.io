@@ -28,6 +28,57 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Configure Google Analytics
+        env:
+          GOOGLE_ANALYTICS_MEASUREMENT_ID: ${{ vars.GOOGLE_ANALYTICS_MEASUREMENT_ID }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          measurement_id = os.environ.get("GOOGLE_ANALYTICS_MEASUREMENT_ID", "").strip()
+          if not measurement_id:
+              raise SystemExit(0)
+
+          Path("analytics-config.js").write_text(
+              "// Set your GA4 Measurement ID, for example: G-XXXXXXXXXX\n"
+              "window.SUNMAX_ANALYTICS = {\n"
+              f"  googleAnalyticsMeasurementId: {json.dumps(measurement_id)},\n"
+              "};\n",
+              encoding="utf-8",
+          )
+          print("Wrote analytics-config.js from GOOGLE_ANALYTICS_MEASUREMENT_ID.")
+          PY
+
+      - name: Inject analytics loader
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          snippet = (
+              b'<script src="/analytics-config.js"></script>\n'
+              b'<script src="/analytics.js" defer></script>\n'
+              b'</head>'
+          )
+          head_pattern = re.compile(br"</head>", re.IGNORECASE)
+          redirect_pattern = re.compile(br'http-equiv\s*=\s*["\']refresh["\']', re.IGNORECASE)
+          injected = 0
+
+          for path in Path(".").rglob("*.html"):
+              data = path.read_bytes()
+              if redirect_pattern.search(data) or b"analytics.js" in data:
+                  continue
+
+              next_data, replacements = head_pattern.subn(snippet, data, count=1)
+              if replacements:
+                  path.write_bytes(next_data)
+                  injected += 1
+
+          print(f"Injected analytics loader into {injected} HTML files.")
+          PY
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
