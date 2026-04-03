@@ -9,6 +9,16 @@
   gap: 0.9rem;
 }
 
+.blog-toolbar-heading {
+  min-width: 0;
+}
+
+.blog-toolbar-heading h2 {
+  margin-bottom: 0;
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+}
+
 .blog-toolbar-copy {
   color: #5f5f5f;
 }
