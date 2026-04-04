@@ -115,6 +115,7 @@ body {
   color: var(--text);
   font-weight: 600;
   background: var(--surface-soft);
+  white-space: nowrap;
   transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 

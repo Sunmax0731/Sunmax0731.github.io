@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const link = document.createElement("a");
     link.href = gungiHref;
-    link.textContent = "軍議";
+    link.textContent = "軍儀";
     dropdown.appendChild(link);
   }
 
