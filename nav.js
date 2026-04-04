@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (menus.length === 0) return;
 
   const fluidSimulationHref = new URL("fluid-simulation.html", docsRootUrl).href;
+  const faceTrackingHref = new URL("face-tracking/", docsRootUrl).href;
   const gungiHref = new URL("gungi/", docsRootUrl).href;
 
   const dropdowns = Array.from(document.querySelectorAll(".nav-dropdown, .portfolio-dropdown"));
@@ -20,12 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
   ));
 
   for (const dropdown of workDropdowns) {
-    if (dropdown.querySelector('a[href*="fluid-simulation"]')) continue;
+    if (!dropdown.querySelector('a[href*="fluid-simulation"]')) {
+      const link = document.createElement("a");
+      link.href = fluidSimulationHref;
+      link.textContent = "流体シミュレーション";
+      dropdown.appendChild(link);
+    }
 
-    const link = document.createElement("a");
-    link.href = fluidSimulationHref;
-    link.textContent = "流体シミュレーション";
-    dropdown.appendChild(link);
+    if (!dropdown.querySelector('a[href*="face-tracking"]')) {
+      const link = document.createElement("a");
+      link.href = faceTrackingHref;
+      link.textContent = "フェイストラッキング";
+      dropdown.appendChild(link);
+    }
   }
 
   for (const dropdown of gameDropdowns) {

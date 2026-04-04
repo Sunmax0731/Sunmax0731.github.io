@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Tracking App</title>
+  <style>
+    :root {
+      --bg: #0c0e1a;
+      --surface: #151829;
+      --surface2: #1c2038;
+      --border: #2a2f4a;
+      --text: #e4e8f7;
+      --muted: #7b82a8;
+      --accent: #6c9fff;
+      --accent2: #4f7de8;
+      --green: #5ee6a0;
+      --red: #ff6b6b;
+      --sidebar-w: 300px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ===== Sidebar ===== */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      transition: margin-left 0.25s ease;
+      z-index: 10;
+    }
+
+    #sidebar.collapsed {
+      margin-left: calc(var(--sidebar-w) * -1);
+    }
+
+    #sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #sidebar-header h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    #sidebar-toggle {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      width: 24px;
+      height: 56px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: none;
+      border-radius: 0 8px 8px 0;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: left 0.25s ease, background 0.15s;
+    }
+
+    #sidebar-toggle:hover {
+      background: var(--accent2);
+      color: #fff;
+    }
+
+    #sidebar-toggle.open {
+      left: var(--sidebar-w);
+    }
+
+    .sidebar-content {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    select {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+    }
+
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent2);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.15s;
+    }
+
+    button:hover { background: var(--accent); }
+    button:disabled { background: var(--border); color: var(--muted); cursor: default; }
+
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .btn-small:hover { background: var(--border); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Drop zones */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(108, 159, 255, 0.05);
+    }
+
+    .drop-zone.has-file {
+      border-style: solid;
+      border-color: var(--green);
+    }
+
+    .dz-preview {
+      flex: 0 0 52px;
+      height: 52px;
+      border-radius: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 1.2rem;
+    }
+
+    .dz-preview img { width: 100%; height: 100%; object-fit: contain; }
+
+    .dz-text { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+
+    .dz-label { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+
+    .dz-hint { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
+
+    .dz-filename {
+      font-size: 0.68rem;
+      color: var(--green);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .dz-clear-btn {
+      margin-top: 2px;
+      padding: 2px 8px;
+      font-size: 0.65rem;
+      background: #2a1a1a;
+      color: var(--red);
+      border-radius: 4px;
+      width: fit-content;
+      border: 1px solid #3a2222;
+    }
+
+    .dz-clear-btn:hover { background: #3a2222; }
+
+    .drop-zone input[type="file"] { display: none; }
+
+    /* ===== Main area ===== */
+    #main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+    }
+
+    /* Canvas area */
+    #canvas-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      min-height: 0;
+      position: relative;
+    }
+
+    #canvas-wrap {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      resize: both;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #000;
+      min-width: 320px;
+      min-height: 240px;
+    }
+
+    #output {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      border-radius: 11px;
+    }
+
+    /* Status bar */
+    #status-bar {
+      height: 32px;
+      min-height: 32px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      gap: 16px;
+    }
+
+    #status {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    #camera-info {
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar toggle -->
+  <button id="sidebar-toggle" class="open" title="メニュー開閉">&#9664;</button>
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <h1>Face Tracking</h1>
+    </div>
+
+    <div class="sidebar-content" id="controls">
+
+      <!-- Camera -->
+      <div class="card">
+        <h2>Camera</h2>
+        <div class="row">
+          <select id="camera-select">
+            <option value="">--</option>
+          </select>
+          <button class="btn-small" id="camera-refresh-btn">一覧</button>
+        </div>
+        <button id="init-btn" style="width:100%">カメラ起動 & 初期化</button>
+        <div class="toggle-row">
+          <input type="checkbox" id="camera-visible" checked>
+          <label for="camera-visible">カメラ映像を表示</label>
+        </div>
+      </div>
+
+      <!-- Face overlay -->
+      <div class="card">
+        <h2>Face Overlay</h2>
+        <div class="toggle-row">
+          <input type="checkbox" id="face-overlay-enable">
+          <label for="face-overlay-enable">有効</label>
+        </div>
+
+        <div class="drop-zone" id="face-drop">
+          <div class="dz-preview" id="face-dz-preview">img</div>
+          <div class="dz-text">
+            <span class="dz-label">顔オーバーレイ画像</span>
+            <span class="dz-hint">クリックまたはドロップ</span>
+            <span class="dz-filename" id="face-filename"></span>
+            <button class="dz-clear-btn" id="face-clear" style="display:none">削除</button>
+          </div>
+          <input type="file" id="face-file" accept="image/gif,image/*">
+        </div>
+
+        <label>スケール: <span id="face-scale-val">1.4</span>x</label>
+        <input type="range" id="face-scale" min="0.5" max="4" step="0.05" value="1.4">
+        <label>Y オフセット: <span id="face-offset-val">0</span>px</label>
+        <input type="range" id="face-offset" min="-150" max="150" step="1" value="0">
+        <div class="toggle-row">
+          <input type="checkbox" id="face-rotate-enable" checked>
+          <label for="face-rotate-enable">顔の傾きに追従</label>
+        </div>
+      </div>
+
+      <!-- Background -->
+      <div class="card">
+        <h2>Background</h2>
+        <div class="toggle-row">
+          <input type="checkbox" id="bg-enable">
+          <label for="bg-enable">有効</label>
+        </div>
+
+        <div class="drop-zone" id="bg-drop">
+          <div class="dz-preview" id="bg-dz-preview">img</div>
+          <div class="dz-text">
+            <span class="dz-label">背景画像</span>
+            <span class="dz-hint">クリックまたはドロップ</span>
+            <span class="dz-filename" id="bg-filename"></span>
+            <button class="dz-clear-btn" id="bg-clear" style="display:none">削除</button>
+          </div>
+          <input type="file" id="bg-file" accept="image/gif,image/*">
+        </div>
+
+        <label>セグメント閾値: <span id="seg-thresh-val">128</span></label>
+        <input type="range" id="seg-thresh" min="0" max="255" step="1" value="128">
+      </div>
+
+      <!-- Debug -->
+      <div class="card">
+        <h2>Debug</h2>
+        <div class="toggle-row">
+          <input type="checkbox" id="debug-face-enable">
+          <label for="debug-face-enable">顔の特徴点</label>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="debug-pose-enable">
+          <label for="debug-pose-enable">ボディトラッキング</label>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="debug-hand-enable">
+          <label for="debug-hand-enable">ハンドトラッキング</label>
+        </div>
+        <label>ポイントサイズ: <span id="debug-point-size-val">3</span>px</label>
+        <input type="range" id="debug-point-size" min="1" max="8" step="0.5" value="3">
+        <label>ライン太さ: <span id="debug-line-width-val">2</span>px</label>
+        <input type="range" id="debug-line-width" min="0.5" max="6" step="0.5" value="2">
+        <div id="debug-status" style="font-size:0.68rem;color:var(--muted)"></div>
+      </div>
+
+      <!-- Output / OBS -->
+      <div class="card">
+        <h2>Output</h2>
+        <button id="popout-btn" style="width:100%">映像を別ウィンドウで開く</button>
+        <div class="row" style="gap:6px">
+          <button id="rec-btn" style="flex:1">録画開始</button>
+          <button id="rec-stop-btn" style="flex:1" disabled>停止 & 保存</button>
+        </div>
+        <div id="rec-status" style="font-size:0.72rem;color:var(--muted)"></div>
+        <details style="font-size:0.72rem;color:var(--muted);line-height:1.6;margin-top:4px">
+          <summary style="cursor:pointer;color:var(--accent);font-weight:600">OBS 仮想カメラ連携ガイド</summary>
+          <ol style="margin:8px 0 0 16px;padding:0">
+            <li>「映像を別ウィンドウで開く」をクリック</li>
+            <li>OBS で「ソース」→「ウィンドウキャプチャ」を追加</li>
+            <li>ウィンドウで「Face Tracking Output」を選択</li>
+            <li>OBS メニュー「仮想カメラ開始」をクリック</li>
+            <li>Zoom / Discord 等のカメラ設定で「OBS Virtual Camera」を選択</li>
+          </ol>
+          <p style="margin-top:6px;color:var(--green)">OBS Studio のインストールが必要です（仮想カメラドライバが含まれます）</p>
+        </details>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div id="main-area">
+    <div id="canvas-area">
+      <div id="canvas-wrap">
+        <canvas id="output" width="640" height="480"></canvas>
+      </div>
+    </div>
+
+    <div id="status-bar">
+      <span id="status">待機中</span>
+      <span id="camera-info"></span>
+    </div>
+  </div>
+
+  <!-- Hidden -->
+  <video id="video" autoplay playsinline style="display:none"></video>
+  <canvas id="mask-canvas" style="display:none"></canvas>
+
+  <script src="app.bundle.js"></script>
+</body>
+</html>
