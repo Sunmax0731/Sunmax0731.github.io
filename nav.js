@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fluidSimulationHref = new URL("fluid-simulation.html", docsRootUrl).href;
   const faceTrackingHref = new URL("face-tracking/", docsRootUrl).href;
+  const motoCatalogHref = new URL("moto-catalog/", docsRootUrl).href;
   const gungiHref = new URL("gungi/", docsRootUrl).href;
 
   const dropdowns = Array.from(document.querySelectorAll(".nav-dropdown, .portfolio-dropdown"));
@@ -32,6 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const link = document.createElement("a");
       link.href = faceTrackingHref;
       link.textContent = "フェイストラッキング";
+      dropdown.appendChild(link);
+    }
+
+    if (!dropdown.querySelector('a[href*="moto-catalog"]')) {
+      const link = document.createElement("a");
+      link.href = motoCatalogHref;
+      link.textContent = "バイク図鑑";
       dropdown.appendChild(link);
     }
   }
