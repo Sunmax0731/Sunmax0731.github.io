@@ -35,6 +35,7 @@ git push -u origin main
 ## Notes
 
 - The blog uses `fetch`, so it must be served over HTTP. GitHub Pages is fine.
+- For local verification, run `python serve.py` in `docs/`. This server fixes module MIME types for `.js` and `.wasm`.
 - New blog posts should be added under `blog/posts/yyyymmdd_nn/`.
 - After adding a post, also update `blog/posts.json`.
 - To enable Google Analytics 4, either set `window.SUNMAX_ANALYTICS.googleAnalyticsMeasurementId` in `analytics-config.js` or define the repository variable `GOOGLE_ANALYTICS_MEASUREMENT_ID`.
