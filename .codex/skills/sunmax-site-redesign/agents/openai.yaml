@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sunmax Site Redesign"
+  short_description: "Guide redesign work for this static site."
+  default_prompt: "Use $sunmax-site-redesign to plan or implement redesign work for this repository."

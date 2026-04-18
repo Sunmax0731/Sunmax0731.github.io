@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PB-MPM</title>
+  <link rel="icon" type="image/png" href="../assets/SEED_logo-OH0WcY7I.png" />
+  <script type="module" crossorigin src="../assets/pbmpm-D4NlS2ba.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/site-shell-BrTbeRto.js">
+  <link rel="stylesheet" crossorigin href="../assets/site-shell-C4Gg5g0i.css">
+  <link rel="stylesheet" crossorigin href="../assets/pbmpm-C3akoDwC.css">
+</head>
+<body id="body" class="sim-page pbmpm-page">
+  <nav class="site-nav" aria-label="Global navigation">
+    <a id="siteTopLink" href="../../index.html" class="nav-brand">
+      <span class="brand-icon">PB</span>
+      <span id="navBrandText">Fluid Motion Lab</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../pbmpm/" class="active">PB-MPM</a></li>
+      <li><a href="../airflow/">Ocean Surface</a></li>
+      <li><a href="../liquid/">Smoke &amp; Fire</a></li>
+      <li><a href="../multiphase/">Ink Flow</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper">
+    <section class="section-hero">
+      <div class="hero-bg-text">PB-MPM</div>
+      <div class="container">
+        <div class="breadcrumb">
+          <a id="heroTopLink" href="../../index.html">Top</a><span class="sep">/</span>
+          <span class="current">PB-MPM</span>
+        </div>
+        <span id="domainBadge" class="domain-badge">Fluid / PB-MPM</span>
+        <h1 id="heroTitle" class="hero-title">PB-MPM Material Sandbox</h1>
+        <p id="heroCopy" class="hero-copy">
+          EA SEED の PB-MPM をベースに、2D reference と experimental 3D runtime を同じ画面で扱えるように整理した material sandbox です。
+          左ドックで scene と主要アクション、右パネルで simulation / shapes / stats を操作できます。
+        </p>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <div class="viz-card">
+          <h3 id="vizTitle">Unified Sandbox Layout</h3>
+          <p id="vizDescription">
+            Ocean Surface / Smoke &amp; Fire / Ink Flow と同系統のレイアウトに揃えつつ、
+            PB-MPM 特有の scene authoring、shape editing、3D runtime stats を継続して扱える構成にしています。
+          </p>
+
+          <div class="sim-frame-header">
+            <div class="feature-badges">
+              <span id="featureBadgeRuntime" class="feature-badge">2D + 3D Runtime</span>
+              <span id="featureBadgeMaterials" class="feature-badge">Water / Plastic / Sponge</span>
+              <span id="featureBadgeAuthoring" class="feature-badge">Scene Authoring</span>
+            </div>
+            <div class="sim-info-card">
+              <strong id="frameLabel">PB-MPM Sandbox</strong>
+              <p id="frameCopy"><strong>Tab</strong> で scene 切替、<strong>F</strong> で 3D frame、<strong>Space</strong> で pause、<strong>F5</strong> で reset。</p>
+            </div>
+          </div>
+
+          <div class="sim-layout">
+            <aside class="sim-sidebar sim-sidebar-left">
+              <div id="leftDock">
+                <div class="dockGroup">
+                  <div id="dockLanguageLabel" class="dockLabel">Language</div>
+                  <div id="dockLanguageButtons">
+                    <button id="languageJaButton" type="button">日本語</button>
+                    <button id="languageEnButton" type="button">English</button>
+                  </div>
+                </div>
+
+                <div class="dockGroup">
+                  <div id="dockScenesLabel" class="dockLabel">Scenes</div>
+                  <div id="dockScenarioList"></div>
+                </div>
+
+                <div class="dockGroup">
+                  <div id="dockActionsLabel" class="dockLabel">Actions</div>
+                  <div id="dockQuickActions">
+                    <button id="dockResetButton" type="button">Reset</button>
+                    <button id="dockPauseButton" type="button">Pause</button>
+                    <button id="dockNewSceneButton" type="button">New Scene</button>
+                    <button id="dockNewShapeButton" type="button">New Shape</button>
+                    <button id="dockFrameButton" type="button">Frame 3D View</button>
+                  </div>
+                </div>
+
+                <div class="dockGroup" id="dockMaterialGroup">
+                  <div id="dockMaterialsLabel" class="dockLabel">Materials</div>
+                  <div id="dockMaterialButtons">
+                    <button id="dockWaterMaterialButton" type="button">Water</button>
+                    <button id="dockPlasticMaterialButton" type="button">Plastic</button>
+                    <button id="dockSandMaterialButton" type="button">Sand</button>
+                    <button id="dockSpongeMaterialButton" type="button">Sponge</button>
+                  </div>
+                </div>
+
+                <div class="dockGroup">
+                  <div id="dockPanelLabel" class="dockLabel">Panel</div>
+                  <div id="dockPanelTabs">
+                    <button id="dockSettingsTabButton" type="button">Settings</button>
+                    <button id="dockShapesTabButton" type="button">Shapes</button>
+                    <button id="dockStatsTabButton" type="button">Stats</button>
+                  </div>
+                </div>
+
+                <div class="dockGroup">
+                  <div id="dockStatusLabel" class="dockLabel">Status</div>
+                  <div id="dockStatus" class="sim-info-card">
+                    <strong>Loading</strong>
+                    <p>Preparing PB-MPM runtime.</p>
+                  </div>
+                </div>
+
+                <div class="dockGroup">
+                  <div id="dockResourcesLabel" class="dockLabel">Resources</div>
+                  <div id="dockResources">
+                    <a id="paperLink" href="https://media.contentapi.ea.com/content/dam/ea/seed/presentations/seed-siggraph2024-pbmpm-paper.pdf" target="_blank" rel="noopener">SIGGRAPH 2024 Paper</a>
+                    <a id="repoLink" href="https://github.com/electronicarts/pbmpm" target="_blank" rel="noopener">EA PB-MPM GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <div class="sim-stage-wrap">
+              <div class="sim-stage" id="viewport">
+                <main id="main" class="pbmpm-stage-app">
+                  <canvas id="canvas"></canvas>
+                  <canvas id="vectorCanvas"></canvas>
+                </main>
+
+                <div id="loadingContainer" class="pbmpm-loading">
+                  <img id="loadingAnimation" src="../assets/SEED_inverted-D7QsjaAe.png" alt="PB-MPM loading logo" />
+                  <h1 id="loadingText">Loading...</h1>
+                  <p id="loadingCopy" class="pbmpm-loading-copy">
+                    WebGPU enabled Chrome / Edge を推奨します。Firefox では動作しません。
+                  </p>
+                  <h2 id="errorText"></h2>
+                </div>
+              </div>
+            </div>
+
+            <aside class="sim-sidebar sim-sidebar-right" id="uiSidebar">
+              <div id="ui" class="uiPanel">
+                <div id="uiPanel" class="pbmpm-control-panel">
+                  <div class="pbmpm-panel-topbar">
+                    <div class="pbmpm-panel-heading">
+                      <strong id="panelHeadingTitle">Parameters</strong>
+                      <p id="panelHeadingCopy">Simulation, shapes, and performance stats.</p>
+                    </div>
+                    <button id="uiButton" type="button" class="pbmpm-toggle-button">Hide Panel</button>
+                  </div>
+
+                  <div class="pbmpm-panel-body">
+                    <div class="pbmpm-tab-strip" role="tablist" aria-label="PB-MPM panel tabs">
+                      <button id="settingsTabButton" type="button" class="pbmpm-tab-button active">Settings</button>
+                      <button id="shapesTabButton" type="button" class="pbmpm-tab-button">Shapes</button>
+                      <button id="performanceTabButton" type="button" class="pbmpm-tab-button">Stats</button>
+                    </div>
+
+                    <div id="settingsTabContent" class="pbmpm-tab-content is-active">
+                      <form id="uiContainer"></form>
+                    </div>
+
+                    <div id="shapesTabContent" class="pbmpm-tab-content">
+                      <button id="newShapeButton" type="button" class="inputCombo">New Shape</button>
+                      <div id="shapesList"></div>
+                    </div>
+
+                    <div id="performanceTabContent" class="pbmpm-tab-content">
+                      <output class="input" id="timingStats">Timing stats are not available.</output>
+                      <output class="input" id="speedStats"></output>
+                      <output class="input" id="gridStats"></output>
+                      <output class="input" id="particleStats">Particle count is not available.</output>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    if (!window.location.pathname.includes('/fluid-simulation/')) {
+      document.getElementById('siteTopLink').hidden = true;
+      document.getElementById('heroTopLink').hidden = true;
+    }
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>量 — 数の世界 | 数学の世界</title>
+  <link rel="stylesheet" href="detail-template.css">
   <link rel="stylesheet" href="mathematics/assets/css/base.css">
   <link rel="stylesheet" href="mathematics/assets/css/layout.css">
   <link rel="stylesheet" href="mathematics/assets/css/components.css">
@@ -53,8 +54,59 @@
     </div>
   </section>
 
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-template-card">
+        <div class="detail-intro-grid">
+          <article class="detail-intro-main">
+            <p class="detail-intro-kicker">Quick Guide</p>
+            <h2>このページでできること</h2>
+            <p>
+              数の拡張の歴史を眺めたうえで、量に関する主要トピックとインタラクティブ可視化を行き来できます。
+              抽象的な「数」の話を、複素数平面や素数の篩のような動く例に結び付けて読み始めるためのページです。
+            </p>
+            <ul class="detail-pill-list">
+              <li>数の拡張</li>
+              <li>複素数</li>
+              <li>素数</li>
+              <li>無限・濃度</li>
+            </ul>
+          </article>
+          <div class="detail-panel-grid">
+            <article class="detail-panel">
+              <h3>操作対象</h3>
+              <div class="detail-link-list">
+                <a href="#history"><span class="detail-link-label">数の拡張の歴史</span><span class="detail-link-note">自然数から超実数までの流れを時系列で整理する</span></a>
+                <a href="#topics"><span class="detail-link-label">トピック一覧</span><span class="detail-link-note">量の領域で押さえたい概念を俯瞰する</span></a>
+                <a href="#visualizations"><span class="detail-link-label">インタラクティブ可視化</span><span class="detail-link-note">複素数、素数、黄金比などを動かして確かめる</span></a>
+                <a href="#applications"><span class="detail-link-label">応用分野</span><span class="detail-link-note">量の数学が現代技術でどう使われるかを見る</span></a>
+              </div>
+            </article>
+            <article class="detail-panel">
+              <h3>学べること</h3>
+              <ul class="detail-list">
+                <li>数の概念が必要に応じてどう拡張されてきたか</li>
+                <li>有理数、無理数、複素数、四元数の位置づけ</li>
+                <li>素数や数学定数が持つ構造的なおもしろさ</li>
+                <li>無限や濃度のような抽象概念の入口</li>
+              </ul>
+            </article>
+            <article class="detail-panel">
+              <h3>関連リンク</h3>
+              <div class="detail-link-list">
+                <a href="mathematics.html"><span class="detail-link-label">数学の可視化へ戻る</span><span class="detail-link-note">数学ラボ全体の入口から他テーマを見る</span></a>
+                <a href="change.html"><span class="detail-link-label">変化</span><span class="detail-link-note">量から一歩進んで、関数や微積分の世界へつなげる</span></a>
+                <a href="structure.html"><span class="detail-link-label">構造</span><span class="detail-link-note">規則や関係性に焦点を移して数学を整理する</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 数の拡張タイムライン -->
-  <section class="section" style="background: var(--bg-secondary);">
+  <section class="section" id="history" style="background: var(--bg-secondary);">
     <div class="container">
       <div class="section-header">
         <h2>数の拡張の歴史</h2>
@@ -398,7 +450,7 @@
   </section>
 
   <!-- 応用分野 -->
-  <section class="section" style="background: var(--bg-secondary);">
+  <section class="section" id="applications" style="background: var(--bg-secondary);">
     <div class="container">
       <div class="section-header">
         <h2>応用分野</h2>
@@ -440,6 +492,35 @@
           <h4>量子物理学</h4>
           <p>量子状態は複素ヒルベルト空間のベクトル。確率振幅は複素数で表され、観測確率はその絶対値の二乗。四元数はスピン・回転の記述に活用。</p>
           <div class="app-tags"><span class="app-tag">量子状態</span><span class="app-tag">複素振幅</span><span class="app-tag">スピン</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-next-shell">
+        <div class="detail-next-header">
+          <p class="detail-intro-kicker">Next</p>
+          <h2>次に読む</h2>
+        </div>
+        <div class="detail-next-grid">
+          <a class="detail-next-card" href="change.html">
+            <h3>変化</h3>
+            <p>量の理解を土台にして、関数、微積分、動的システムの見方へ進めます。</p>
+          </a>
+          <a class="detail-next-card" href="structure.html">
+            <h3>構造</h3>
+            <p>数そのものから、関係や規則性を扱う数学へ視点を広げたいときに向いています。</p>
+          </a>
+          <a class="detail-next-card" href="math-sciences.html">
+            <h3>数理科学</h3>
+            <p>数学が科学や工学とどうつながるかを、より応用寄りの視点で見られます。</p>
+          </a>
+          <a class="detail-next-card" href="mathematics.html">
+            <h3>数学ラボ一覧</h3>
+            <p>他の数学テーマへ戻って、興味のある分野から横断的に読み進められます。</p>
+          </a>
         </div>
       </div>
     </div>

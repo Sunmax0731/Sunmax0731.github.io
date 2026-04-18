@@ -8,36 +8,23 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
+          <a href="games.html">ゲーム</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
               <a href="vehicle-physics.html">車両の物理シミュ</a>
               <a href="mathematics.html" class="active">数学の可視化</a>
+              <a href="fluid-simulation.html">流体シミュレーション</a>
+              <a href="face-tracking/">フェイストラッキング</a>
             </div>
           </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html">3Dゲーム一覧</a><a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
-            </div>
-          </details>
+          <a href="moto-catalog/">バイク図鑑</a>
           <a href="blog/">ブログ</a>
           <a href="contact.html">問い合わせ</a>
         </nav>
-
-        <h1>数学の可視化</h1>
-        <p class="tagline">数学の概念を、インタラクティブな図と動きで理解しやすくしたページです。</p>
       </div>
     </header>
 
@@ -46,11 +33,9 @@
         <div class="feature-entry-grid">
           <article class="feature-panel">
             <p class="feature-kicker">Overview</p>
-            <h2>抽象的な概念を、図と動きで掴む</h2>
-            <p>
-              数、変化、構造、空間といった抽象テーマを、図や関係、インタラクションに置き換えて確認できる入口ページです。
-              学び直しの最初の足場としても、各分野のつながりをざっくり整理したいときにも使えるようにまとめています。
-            </p>
+            <h2>数学の可視化</h2>
+            <p class="section-lead">数学の概念を図と動きで捉えるページです。</p>
+            <p>数、変化、構造、空間を見やすく整理しています。</p>
             <ul class="feature-point-list">
               <li>数と量の基本から視覚的に追える</li>
               <li>関数や変化率をグラフ感覚で掴める</li>
@@ -81,6 +66,32 @@
       </section>
 
       <section class="card-section">
+        <h2>テーマから見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="quantity.html">
+            <span class="card-eyebrow">Number Sense</span>
+            <h3>数と量から入る</h3>
+            <p>自然数、分数、比のような基本概念から整理し、数学全体の足場を作れます。</p>
+          </a>
+          <a class="content-card" href="change.html">
+            <span class="card-eyebrow">Change</span>
+            <h3>変化を追う</h3>
+            <p>関数、グラフ、変化率を中心に、動きとして理解しやすいテーマを先に見られます。</p>
+          </a>
+          <a class="content-card" href="structure.html">
+            <span class="card-eyebrow">Structure</span>
+            <h3>規則と関係を見る</h3>
+            <p>構造、空間、有限数学を通して、抽象的な関係を図として捉えたい人向けです。</p>
+          </a>
+          <a class="content-card" href="math-sciences.html">
+            <span class="card-eyebrow">Applications</span>
+            <h3>他分野との接点を見る</h3>
+            <p>数理科学まで広げて、数学が他の技術テーマとどうつながるかを俯瞰できます。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
         <h2>全コンテンツ</h2>
         <div class="card-grid">
           <a class="content-card" href="quantity.html"><h3>数と量</h3><p>自然数、分数、比などの基本概念を扱います。</p></a>
@@ -89,6 +100,32 @@
           <a class="content-card" href="space.html"><h3>空間</h3><p>図形、座標、立体の見え方を扱います。</p></a>
           <a class="content-card" href="finite-math.html"><h3>有限数学</h3><p>組合せやグラフ理論の基礎を学べます。</p></a>
           <a class="content-card" href="math-sciences.html"><h3>数理科学</h3><p>数学と科学のつながりを整理しています。</p></a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>次に見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="vehicle-physics.html">
+            <span class="card-eyebrow">Lab</span>
+            <h3>車両の物理シミュ</h3>
+            <p>数式や関係性を実際の挙動へつなげて見たい場合は、車両側の可視化へ進めます。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation.html">
+            <span class="card-eyebrow">Graphics</span>
+            <h3>流体シミュレーション</h3>
+            <p>抽象概念だけでなく、リアルタイム表現やインタラクティブな見せ方にも興味がある場合に向いています。</p>
+          </a>
+          <a class="content-card" href="games.html">
+            <span class="card-eyebrow">Interactive</span>
+            <h3>ゲーム</h3>
+            <p>ルールや構造を遊べる作品として見るなら、ゲーム一覧からブラウザ作品へ進めます。</p>
+          </a>
+          <a class="content-card" href="blog/">
+            <span class="card-eyebrow">Notes</span>
+            <h3>ブログ</h3>
+            <p>学習記録や制作途中の気づきを文章で追うなら、技術メモと更新ログを確認できます。</p>
+          </a>
         </div>
       </section>
     </main>

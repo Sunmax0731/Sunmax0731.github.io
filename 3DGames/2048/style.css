@@ -120,7 +120,7 @@ body {
 }
 
 kbd {
-  background: rgba(245, 197, 24, 0.18);
+  background: rgba(255, 240, 191, 0.92);
   border-radius: 4px;
   padding: 1px 5px;
   font-size: 0.68rem;
@@ -196,8 +196,8 @@ kbd {
   align-items: center;
   gap: 2px;
   transform: translate(-50%, -50%);
-  background: rgba(23, 74, 125, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(93, 75, 29, 0.92);
+  border: 1px solid rgba(255, 249, 227, 0.42);
   border-radius: var(--md-shape-sm);
   padding: 4px 10px;
   backdrop-filter: blur(6px);
@@ -208,20 +208,20 @@ kbd {
 .hint-dir-key {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #fff8e4;
   line-height: 1.1;
 }
 
 .hint-dir-sub {
   font-size: 0.58rem;
-  color: #e7f2ff;
+  color: #ffeab6;
   line-height: 1;
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(23, 33, 46, 0.78);
+  background: rgba(47, 38, 15, 0.72);
   display: flex;
   align-items: center;
   justify-content: center;

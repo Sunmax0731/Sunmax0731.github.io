@@ -8,40 +8,23 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
+          <a href="games.html">ゲーム</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
               <a href="vehicle-physics.html">車両の物理シミュ</a>
               <a href="mathematics.html">数学の可視化</a>
               <a href="fluid-simulation.html" class="active">流体シミュレーション</a>
+              <a href="face-tracking/">フェイストラッキング</a>
             </div>
           </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html">3Dゲーム一覧</a>
-              <a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
-            </div>
-          </details>
+          <a href="moto-catalog/">バイク図鑑</a>
           <a href="blog/">ブログ</a>
-          <a href="contact.html">お問い合わせ</a>
+          <a href="contact.html">問い合わせ</a>
         </nav>
-
-        <h1>流体シミュレーション</h1>
-        <p class="tagline">
-          水面、煙、炎、インクの動きを、リアルタイム表示に重点を置いて構成した WebGL デモ集です。
-        </p>
       </div>
     </header>
 
@@ -50,23 +33,24 @@
         <div class="feature-entry-grid">
           <article class="feature-panel">
             <p class="feature-kicker">Overview</p>
-            <h2>見た目の説得力を重視した流体表現をまとめています</h2>
-            <p>
-              リアルタイム可視化向けに、水面の反射と波紋、煙や炎の立体的な密度表現、
-              インクの膜厚と屈折をそれぞれ別のデモとして整理しています。
-              物理の厳密さだけでなく、ゲームやビジュアル演出でそのまま使える見え方を重視して調整しています。
-            </p>
+            <h2>流体シミュレーション</h2>
+            <p class="section-lead">PB-MPM とオリジナル表現を比較できるページです。</p>
+            <p>研究寄りの挙動確認と、水面、煙、インクの演出を並べて見られます。</p>
             <ul class="feature-point-list">
+              <li>PB-MPM で Liquid / Elastic / Sand / Visco を切り替えられる WebGPU デモ</li>
               <li>水槽内の波、落下物、水しぶき、雨をまとめて確認できる水面デモ</li>
               <li>たき火、霧、噴射炎を 3D 密度グリッドで描く煙・炎デモ</li>
               <li>膜厚、屈折、集光模様まで調整できるインク表現デモ</li>
-              <li>各デモで右側のパラメータを分類し、見た目への影響を日本語で確認可能</li>
             </ul>
           </article>
           <article class="feature-panel feature-panel-soft">
             <p class="feature-kicker">Start Here</p>
-            <h3>まず見るならこの 3 つ</h3>
+            <h3>まず見るならこの 4 つ</h3>
             <div class="feature-quick-links">
+              <a class="feature-quick-link" href="fluid-simulation/pbmpm/">
+                <span class="feature-link-title">PB-MPM</span>
+                <span class="feature-link-note">EA SEED の SIGGRAPH 2024 論文を参照した WebGPU 実装です。Dam Break や Box Fracture などのシーンを切り替えながら、材料挙動を確認できます。</span>
+              </a>
               <a class="feature-quick-link" href="fluid-simulation/airflow/">
                 <span class="feature-link-title">Ocean Surface</span>
                 <span class="feature-link-note">水槽内の波、反射、水しぶき、落下物や雨による連続的な波の伝播を確認できます。</span>
@@ -81,15 +65,45 @@
               </a>
             </div>
             <p class="feature-helper">
-              このページから各シミュレーションへ直接入れます。各デモのヘッダーから他のシミュレーションへ移動できます。
+              PB-MPM は WebGPU が必要です。Chrome / Edge を推奨し、Firefox は対象外です。その他 3 つは WebGL ベースのオリジナルデモです。
             </p>
           </article>
         </div>
       </section>
 
       <section class="card-section">
+        <h2>デモタイプから見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="fluid-simulation/pbmpm/">
+            <span class="card-eyebrow">Research Reference</span>
+            <h3>PB-MPM を試す</h3>
+            <p>論文と公開実装を踏まえた WebGPU デモとして、材料挙動の比較を中心に確認できます。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/airflow/">
+            <span class="card-eyebrow">Surface Motion</span>
+            <h3>水面の反応を見る</h3>
+            <p>落下物、雨、水槽壁での反射まで含め、水の見え方と波の伝播を追えるデモです。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/liquid/">
+            <span class="card-eyebrow">Volume Effects</span>
+            <h3>煙と炎を調整する</h3>
+            <p>密度表現やライティングを変えながら、立体的な煙・炎・霧の見せ方を確認できます。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation/multiphase/">
+            <span class="card-eyebrow">Stylized Liquid</span>
+            <h3>インク表現を観察する</h3>
+            <p>膜厚、屈折、気泡の抜け、集光模様など、視覚寄りの液体表現をまとめて試せます。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
         <h2>デモ一覧</h2>
         <div class="card-grid">
+          <a class="content-card" href="fluid-simulation/pbmpm/">
+            <h3>PB-MPM</h3>
+            <p>論文「A Position Based Material Point Method」と公開実装をもとにした WebGPU デモです。液体、弾性体、砂、粘塑性体をシーンごとに切り替えられます。</p>
+          </a>
           <a class="content-card" href="fluid-simulation/airflow/">
             <h3>Ocean Surface</h3>
             <p>静かな水面から連続的な落下、雨、水槽壁での反射までを 3D で表示します。</p>
@@ -101,6 +115,46 @@
           <a class="content-card" href="fluid-simulation/multiphase/">
             <h3>Ink Flow</h3>
             <p>光沢のある液膜、屈折、膜厚、気泡のくり抜きなどを含むインク表現デモです。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>参照資料</h2>
+        <div class="card-grid">
+          <a class="content-card" href="https://media.contentapi.ea.com/content/dam/ea/seed/presentations/seed-siggraph2024-pbmpm-paper.pdf" target="_blank" rel="noopener">
+            <h3>SIGGRAPH 2024 Paper</h3>
+            <p>Chris Lewin による「A Position Based Material Point Method」の PDF です。PB-MPM の背景と狙いを確認できます。</p>
+          </a>
+          <a class="content-card" href="https://github.com/electronicarts/pbmpm" target="_blank" rel="noopener">
+            <h3>electronicarts / pbmpm</h3>
+            <p>EA が公開している WebGPU 実装です。シーン構成、UI、ライセンス、上流 README を直接参照できます。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>次に見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="mathematics.html">
+            <span class="card-eyebrow">Lab</span>
+            <h3>数学の可視化</h3>
+            <p>シミュレーションの背景にある関係や構造を、より抽象的な図として見たい場合はこちらです。</p>
+          </a>
+          <a class="content-card" href="games.html">
+            <span class="card-eyebrow">Interactive</span>
+            <h3>ゲーム</h3>
+            <p>研究寄りのデモだけでなく、ブラウザ上で触れる作品全体の雰囲気を見たい場合に向いています。</p>
+          </a>
+          <a class="content-card" href="blog/">
+            <span class="card-eyebrow">Notes</span>
+            <h3>ブログ</h3>
+            <p>実装過程や観察メモを文章でも追いたい場合は、技術記事と制作ログを確認できます。</p>
+          </a>
+          <a class="content-card" href="contact.html">
+            <span class="card-eyebrow">Contact</span>
+            <h3>問い合わせ</h3>
+            <p>WebGPU やブラウザ表現の実装相談があれば、連絡ページから直接連絡できます。</p>
           </a>
         </div>
       </section>

@@ -8,43 +8,88 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
+          <a href="games.html">ゲーム</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
               <a href="vehicle-physics.html">車両の物理シミュ</a>
               <a href="mathematics.html">数学の可視化</a>
+              <a href="fluid-simulation.html">流体シミュレーション</a>
+              <a href="face-tracking/">フェイストラッキング</a>
             </div>
           </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html">3Dゲーム一覧</a><a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
-            </div>
-          </details>
+          <a href="moto-catalog/">バイク図鑑</a>
           <a href="blog/">ブログ</a>
           <a href="contact.html" class="active">問い合わせ</a>
         </nav>
-
-        <h1>問い合わせ</h1>
-        <p class="tagline">制作の相談や技術の話題についてはこちらからご連絡ください。</p>
       </div>
     </header>
 
     <main class="games-main">
-      <section class="about">
-        <h2>連絡方法</h2>
-        <p>メールを中心に受け付けています。SNS からの連絡も可能です。</p>
+      <section class="card-section">
+        <p class="card-eyebrow">Contact</p>
+        <h2>問い合わせ</h2>
+        <p class="section-lead">制作の相談や技術の話題についてはこちらからご連絡ください。</p>
+        <h3 class="section-subtitle">興味があるテーマ</h3>
+        <p class="section-lead">
+          いま特に関心が強いのは、仕組みが見える題材をインタラクティブに伝えることです。
+          ラボ、ゲーム、バイク図鑑で扱っているテーマがそのまま現在の興味領域になっています。
+        </p>
+        <div class="card-grid">
+          <article class="content-card">
+            <span class="card-eyebrow">Vehicle / Moto</span>
+            <h3>車両とバイクの構造・挙動</h3>
+            <p>車両物理、エンジン、駆動系、バイク図鑑のように、仕組みや違いが見える題材に強く惹かれています。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">Mathematics</span>
+            <h3>数学を図と動きで伝えること</h3>
+            <p>数、変化、構造のような抽象概念を、図やインタラクションに置き換えて理解しやすくするテーマに興味があります。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">Fluid / Graphics</span>
+            <h3>流体とリアルタイム表現</h3>
+            <p>PB-MPM、水面、煙、インクのように、挙動の面白さと見た目の説得力を両立する表現に取り組んでいます。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">Interactive Web</span>
+            <h3>触って理解できる Web 体験</h3>
+            <p>読むだけでなく、操作しながら内容を理解できるブラウザ作品や学習コンテンツを作ることに関心があります。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>得意なテーマ</h2>
+        <p class="section-lead">
+          現在の成果物群の中でも、実際に手を動かして積み上げてきた比重が大きい領域です。
+          AI と協業しながら、現実の現象や構造を言語化し、それを Web ページの仕組みとインタラクションに落とし込む進め方を強みとしています。
+        </p>
+        <div class="card-grid">
+          <article class="content-card">
+            <span class="card-eyebrow">Browser Games</span>
+            <h3>ブラウザゲームの実装</h3>
+            <p>2048、Breakout、SameGame 3D、軍儀のように、ルール設計から実装まで一貫して形にすることを得意としています。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">3D / Simulation</span>
+            <h3>3D とシミュレーションの見せ方</h3>
+            <p>エンジン 3D や流体デモのように、複雑な動きや状態をブラウザ上で見せる構成や調整に強みがあります。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">AI Collaboration</span>
+            <h3>現象の言語化とインタラクション設計</h3>
+            <p>現実の挙動や仕組みを言葉で整理し、AI と協業しながら Web ページ上の動きや操作体験へ変換することを得意としています。車両物理、数学可視化、流体デモでもこの進め方を軸にしています。</p>
+          </article>
+          <article class="content-card">
+            <span class="card-eyebrow">Catalog / Comparison</span>
+            <h3>比較しやすい情報のまとめ方</h3>
+            <p>バイク図鑑のように、一覧、比較、詳細の流れで複数の対象を見やすく整理する情報設計にも取り組んでいます。</p>
+          </article>
+        </div>
       </section>
 
       <section class="card-section">
