@@ -1,0 +1,97 @@
+{
+    "version": 3,
+    "simulation": {
+        "dimension": 3,
+        "gridDepth": 96,
+        "viewMode": "planning-3d"
+    },
+    "resolution": [
+        1920,
+        1080
+    ],
+    "settings": [
+        {
+            "name": "particlesPerCellAxis",
+            "type": "range",
+            "value": "2"
+        },
+        {
+            "name": "elasticityRatio",
+            "type": "range",
+            "value": "1.0"
+        },
+        {
+            "name": "renderMode",
+            "type": "combo",
+            "value": "1"
+        }
+    ],
+    "shapes": [
+        {
+            "id": "shape0",
+            "position": {"x": 760, "y": 260, "z": 48},
+            "halfSize": {"x": 120, "y": 120, "z": 20},
+            "rotation": 0,
+            "shape": "1",
+            "function": "3",
+            "emitMaterial": "1",
+            "emissionRate": "0",
+            "radius": 120
+        },
+        {
+            "id": "shape1",
+            "position": {"x": 1180, "y": 300, "z": 52},
+            "halfSize": {"x": 150, "y": 180, "z": 24},
+            "rotation": 0,
+            "shape": "0",
+            "function": "3",
+            "emitMaterial": "3",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape2",
+            "position": {"x": 960, "y": 1032, "z": 48},
+            "halfSize": {"x": 930, "y": 26, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape3",
+            "position": {"x": 64, "y": 540, "z": 48},
+            "halfSize": {"x": 42, "y": 470, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape4",
+            "position": {"x": 1856, "y": 540, "z": 48},
+            "halfSize": {"x": 42, "y": 470, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape5",
+            "position": {"x": 960, "y": 700, "z": 48},
+            "halfSize": {"x": 160, "y": 42, "z": 24},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        }
+    ]
+}

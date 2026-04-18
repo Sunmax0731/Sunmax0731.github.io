@@ -8,36 +8,23 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
+          <a href="games.html">ゲーム</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
               <a href="vehicle-physics.html" class="active">車両の物理シミュ</a>
               <a href="mathematics.html">数学の可視化</a>
+              <a href="fluid-simulation.html">流体シミュレーション</a>
+              <a href="face-tracking/">フェイストラッキング</a>
             </div>
           </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html">3Dゲーム一覧</a><a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
-            </div>
-          </details>
+          <a href="moto-catalog/">バイク図鑑</a>
           <a href="blog/">ブログ</a>
           <a href="contact.html">問い合わせ</a>
         </nav>
-
-        <h1>車両の物理シミュ</h1>
-        <p class="tagline">車両・エンジン・駆動系の挙動をブラウザ上で確認できるコンテンツです。</p>
       </div>
     </header>
 
@@ -46,12 +33,9 @@
         <div class="feature-entry-grid">
           <article class="feature-panel">
             <p class="feature-kicker">Overview</p>
-            <h2>基礎から車両挙動まで、つながりで見る</h2>
-            <p>
-              力学・熱力学の土台から、エンジン、駆動系、車両ダイナミクス、
-              熱マネジメントまでをブラウザ上で横断できる入口ページです。
-              式だけで終わらせず、実際の構成や挙動のイメージも一緒に掴めるように整理しています。
-            </p>
+            <h2>車両の物理シミュ</h2>
+            <p class="section-lead">車両、エンジン、駆動系の動きを追う入口です。</p>
+            <p>基礎から構造、走りまでをつなげて見られます。</p>
             <ul class="feature-point-list">
               <li>力学と熱力学の基礎から順に追える</li>
               <li>エンジン・駆動系・車両挙動をまとめて見られる</li>
@@ -82,6 +66,32 @@
       </section>
 
       <section class="card-section">
+        <h2>テーマから見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="mechanics.html">
+            <span class="card-eyebrow">Basics</span>
+            <h3>基礎から入る</h3>
+            <p>力学と熱力学から入り、車両全体の理解に必要な土台を先に固めたい人向けです。</p>
+          </a>
+          <a class="content-card" href="engine3d.html">
+            <span class="card-eyebrow">Powertrain</span>
+            <h3>構造と駆動系を見る</h3>
+            <p>エンジン、駆動系、ターボ、EV / Hybrid など、動力の作り方をまとめて追えます。</p>
+          </a>
+          <a class="content-card" href="vehicle.html">
+            <span class="card-eyebrow">Dynamics</span>
+            <h3>車両挙動を掘る</h3>
+            <p>旋回、加減速、ステアリング、車体挙動など、走りに直結するテーマを横断できます。</p>
+          </a>
+          <a class="content-card" href="thermal.html">
+            <span class="card-eyebrow">Support Systems</span>
+            <h3>熱と安全を押さえる</h3>
+            <p>熱マネジメントや安全性の観点から、車両全体を支える要素まで視野を広げられます。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
         <h2>全コンテンツ</h2>
         <div class="card-grid">
           <a class="content-card" href="mechanics.html"><h3>力学</h3><p>運動方程式やエネルギーの基礎を確認できます。</p></a>
@@ -95,6 +105,32 @@
           <a class="content-card" href="steering.html"><h3>ステアリング</h3><p>操舵系の仕組みと挙動を確認できます。</p></a>
           <a class="content-card" href="safety.html"><h3>安全性</h3><p>ブレーキや制御支援の考え方を整理しています。</p></a>
           <a class="content-card" href="turbo.html"><h3>ターボ</h3><p>過給の仕組みとレスポンス特性を学べます。</p></a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>次に見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="mathematics.html">
+            <span class="card-eyebrow">Lab</span>
+            <h3>数学の可視化</h3>
+            <p>数式や関係性を図として捉えたい場合は、数学側の可視化コンテンツがつながります。</p>
+          </a>
+          <a class="content-card" href="fluid-simulation.html">
+            <span class="card-eyebrow">Graphics</span>
+            <h3>流体シミュレーション</h3>
+            <p>挙動理解から一歩進めて、ブラウザ上での見せ方やリアルタイム表現を確認できます。</p>
+          </a>
+          <a class="content-card" href="moto-catalog/">
+            <span class="card-eyebrow">Catalog</span>
+            <h3>バイク図鑑</h3>
+            <p>機構や車体への興味を、車種ごとの観点や印象に広げて見たい場合はこちらです。</p>
+          </a>
+          <a class="content-card" href="contact.html">
+            <span class="card-eyebrow">Contact</span>
+            <h3>問い合わせ</h3>
+            <p>車両表現やシミュレーションについて相談したい場合は、連絡ページから直接連絡できます。</p>
+          </a>
         </div>
       </section>
     </main>

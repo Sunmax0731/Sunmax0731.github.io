@@ -195,6 +195,22 @@ canvas.sim-canvas {
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .domain-grid { grid-template-columns: 1fr; }
-  .nav-links { gap: var(--space-md); }
+  .site-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  .nav-links {
+    gap: var(--space-md);
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links li { flex: 0 0 auto; }
   .nav-links a { font-size: 0.8rem; }
+  .container { padding: 0 var(--space-md); }
 }

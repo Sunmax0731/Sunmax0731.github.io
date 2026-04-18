@@ -57,6 +57,7 @@ async function initBlogIndex() {
 async function initBlogPost() {
   const status = document.getElementById("post-status");
   const view = document.getElementById("post-view");
+  const related = document.getElementById("post-related");
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("slug");
 
@@ -72,17 +73,17 @@ async function initBlogPost() {
   }
 
   try {
-    const post = await loadPost(slug);
+    const [post, slugs] = await Promise.all([loadPost(slug), fetchManifest()]);
+    const siblingPosts = await Promise.all(
+      slugs.filter((entry) => entry !== slug).map((entry) => loadPost(entry)),
+    );
+    const relatedPosts = pickRelatedPosts(post, siblingPosts.sort(comparePostsByDate));
     document.title = `${post.meta.title} | ブログ | Sunmax`;
-
-    const heroTitle = document.getElementById("post-hero-title");
-    const heroTagline = document.getElementById("post-hero-tagline");
-    heroTitle.textContent = post.meta.title;
-    heroTagline.textContent = post.summary;
 
     view.innerHTML = renderPostPage(post);
     view.hidden = false;
     status.hidden = true;
+    renderRelatedPosts(related, post, relatedPosts);
   } catch (error) {
     status.textContent = "記事の読み込みに失敗しました。記事フォルダと slug を確認してください。";
     console.error(error);
@@ -280,24 +281,7 @@ function renderPostList(container, status, posts, activeTag) {
 
   status.hidden = true;
   container.hidden = false;
-  container.innerHTML = filteredPosts
-    .map(
-      (post) => `
-        <article class="blog-card${post.meta.cover ? "" : " blog-card-no-cover"}">
-          ${post.meta.cover ? `<img class="blog-card-cover" src="${escapeAttribute(post.meta.cover)}" alt="${escapeAttribute(post.meta.title)}" />` : ""}
-          <div class="blog-card-body">
-            <p class="blog-card-date">${escapeHtml(post.meta.dateLabel)}</p>
-            <h3 class="blog-card-title">${escapeHtml(post.meta.title)}</h3>
-            <p class="blog-summary">${escapeHtml(post.summary)}</p>
-            <div class="blog-tag-list">
-              ${post.meta.tags.map((tag) => `<span class="blog-tag">#${escapeHtml(tag)}</span>`).join("")}
-            </div>
-            <a class="blog-card-link" href="./post.html?slug=${encodeURIComponent(post.slug)}">記事を読む →</a>
-          </div>
-        </article>
-      `,
-    )
-    .join("");
+  container.innerHTML = filteredPosts.map((post) => renderPostCard(post)).join("");
 }
 
 function renderPostPage(post) {
@@ -312,6 +296,74 @@ function renderPostPage(post) {
     </header>
     <div class="blog-article">${post.html}</div>
   `;
+}
+
+function renderPostCard(post) {
+  return `
+    <article class="blog-card${post.meta.cover ? "" : " blog-card-no-cover"}">
+      ${post.meta.cover ? `<img class="blog-card-cover" src="${escapeAttribute(post.meta.cover)}" alt="${escapeAttribute(post.meta.title)}" />` : ""}
+      <div class="blog-card-body">
+        <p class="blog-card-date">${escapeHtml(post.meta.dateLabel)}</p>
+        <h3 class="blog-card-title">${escapeHtml(post.meta.title)}</h3>
+        <p class="blog-summary">${escapeHtml(post.summary)}</p>
+        <div class="blog-tag-list">
+          ${post.meta.tags.map((tag) => `<span class="blog-tag">#${escapeHtml(tag)}</span>`).join("")}
+        </div>
+        <a class="blog-card-link" href="./post.html?slug=${encodeURIComponent(post.slug)}">記事を読む →</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderRelatedPosts(container, currentPost, posts) {
+  if (!container) return;
+
+  const tagLinks = currentPost.meta.tags
+    .map(
+      (tag) => `
+        <a class="blog-related-tag-link" href="./?tag=${encodeURIComponent(tag)}">#${escapeHtml(tag)} の記事を見る</a>
+      `,
+    )
+    .join("");
+
+  container.hidden = false;
+  container.innerHTML = `
+    <div class="blog-related-panel">
+      <div class="blog-related-heading">
+        <p class="card-eyebrow">Next</p>
+        <h3>次に読む記事</h3>
+        <p class="blog-related-copy">同じタグや近いテーマの記事を優先して並べています。</p>
+      </div>
+      ${posts.length > 0 ? `<div class="blog-related-grid">${posts.map((post) => renderPostCard(post)).join("")}</div>` : ""}
+      <div class="blog-related-tags">${tagLinks}</div>
+    </div>
+  `;
+}
+
+function pickRelatedPosts(currentPost, posts, limit = 3) {
+  return posts
+    .map((post) => ({
+      post,
+      score: getRelatedScore(currentPost, post),
+    }))
+    .sort((left, right) => {
+      if (right.score !== left.score) {
+        return right.score - left.score;
+      }
+      return comparePostsByDate(left.post, right.post);
+    })
+    .slice(0, limit)
+    .map((entry) => entry.post);
+}
+
+function getRelatedScore(currentPost, candidatePost) {
+  const sharedTags = candidatePost.meta.tags.filter((tag) => currentPost.meta.tags.includes(tag)).length;
+  const sameYear =
+    currentPost.meta.date && candidatePost.meta.date && currentPost.meta.date.slice(0, 4) === candidatePost.meta.date.slice(0, 4)
+      ? 1
+      : 0;
+
+  return sharedTags * 10 + sameYear;
 }
 
 function renderMarkdown(markdown, baseUrl) {

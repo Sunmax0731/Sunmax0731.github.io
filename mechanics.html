@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>力学 — 運動・力・エネルギー | 車両物理シミュレーション</title>
   <link rel="stylesheet" href="vehicle-physics/assets/css/style.css">
+  <link rel="stylesheet" href="detail-template.css">
   <style>:root { --domain: var(--color-mechanics); }</style>
 </head>
 <body>
@@ -41,6 +42,57 @@
       <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
         ニュートン力学を基礎とし、物体の運動、力の伝達、エネルギー保存を可視化する。
       </p>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-template-card">
+        <div class="detail-intro-grid">
+          <article class="detail-intro-main">
+            <p class="detail-intro-kicker">Quick Guide</p>
+            <h2>このページでできること</h2>
+            <p>
+              放物運動、ばね振動、衝突、振り子を通して、運動方程式と保存則が実際にどう現れるかを順に確認できます。
+              数式を読む前に、パラメータを動かして挙動の変化を掴む入口として使えるページです。
+            </p>
+            <ul class="detail-pill-list">
+              <li>放物運動</li>
+              <li>単振動</li>
+              <li>運動量保存</li>
+              <li>周期運動</li>
+            </ul>
+          </article>
+          <div class="detail-panel-grid">
+            <article class="detail-panel">
+              <h3>操作対象</h3>
+              <div class="detail-link-list">
+                <a href="#projectile"><span class="detail-link-label">放物運動</span><span class="detail-link-note">初速、角度、空気抵抗を変えて軌道を比較する</span></a>
+                <a href="#spring"><span class="detail-link-label">バネ-質点系</span><span class="detail-link-note">ばね定数、質量、減衰を調整して応答を見る</span></a>
+                <a href="#collision"><span class="detail-link-label">衝突シミュレーション</span><span class="detail-link-note">質量と反発係数から衝突後の違いを確認する</span></a>
+                <a href="#pendulum"><span class="detail-link-label">振り子</span><span class="detail-link-note">単振り子と二重振り子の周期性やカオス性を比較する</span></a>
+              </div>
+            </article>
+            <article class="detail-panel">
+              <h3>学べること</h3>
+              <ul class="detail-list">
+                <li>運動方程式と軌道・速度・時間の関係</li>
+                <li>フックの法則と減衰を含む振動の見え方</li>
+                <li>運動量保存と反発係数が衝突結果に与える影響</li>
+                <li>周期運動からカオス的挙動までのつながり</li>
+              </ul>
+            </article>
+            <article class="detail-panel">
+              <h3>関連リンク</h3>
+              <div class="detail-link-list">
+                <a href="vehicle-physics.html"><span class="detail-link-label">車両の物理シミュへ戻る</span><span class="detail-link-note">ラボ全体の入口から関連テーマを見直す</span></a>
+                <a href="thermodynamics.html"><span class="detail-link-label">熱力学</span><span class="detail-link-note">エネルギーの見方を熱機関側へ広げる</span></a>
+                <a href="vehicle.html"><span class="detail-link-label">車両ダイナミクス</span><span class="detail-link-note">基礎を実際の車両挙動へつなげる</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -139,6 +191,35 @@
           <input type="range" id="pendAngle" min="10" max="170" value="45">
           <span class="val" id="pendAngleVal">45°</span>
           <button id="pendReset">リセット</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-next-shell">
+        <div class="detail-next-header">
+          <p class="detail-intro-kicker">Next</p>
+          <h2>次に読む</h2>
+        </div>
+        <div class="detail-next-grid">
+          <a class="detail-next-card" href="thermodynamics.html">
+            <h3>熱力学</h3>
+            <p>エネルギー保存の考え方を、熱機関やサイクルの視点へつなげて読めます。</p>
+          </a>
+          <a class="detail-next-card" href="vehicle.html">
+            <h3>車両ダイナミクス</h3>
+            <p>基礎力学を実際の加減速、旋回、タイヤモデルへ応用する流れを確認できます。</p>
+          </a>
+          <a class="detail-next-card" href="engine3d.html">
+            <h3>エンジン3D</h3>
+            <p>構造が動く様子を見ながら、力学と熱機関のつながりを直感的に掴めます。</p>
+          </a>
+          <a class="detail-next-card" href="vehicle-physics.html">
+            <h3>車両ラボ一覧</h3>
+            <p>他の車両系テーマへ戻って、気になる分野から横断的に見ていけます。</p>
+          </a>
         </div>
       </div>
     </div>

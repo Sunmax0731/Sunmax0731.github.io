@@ -8,189 +8,199 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./" class="active">トップページ</a>
+          <a href="games.html">ゲーム</a>
           <details class="nav-menu">
-            <summary>成果物</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
               <a href="vehicle-physics.html">車両の物理シミュ</a>
               <a href="mathematics.html">数学の可視化</a>
+              <a href="fluid-simulation.html">流体シミュレーション</a>
               <a href="face-tracking/">フェイストラッキング</a>
-            </div>
-          </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html">3Dゲーム一覧</a><a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
+              <a href="moto-catalog/">バイク図鑑</a>
             </div>
           </details>
           <a href="blog/">ブログ</a>
           <a href="contact.html">問い合わせ</a>
         </nav>
-
-        <img class="profile-img" src="profile.png" alt="プロフィール画像" />
-        <h1>Sunmax</h1>
-        <p class="tagline">
-          WebとUnityを中心に、インタラクティブな表現とゲーム制作を学んでいます。
-        </p>
       </div>
     </header>
 
     <main>
       <section class="about">
         <h2>自己紹介</h2>
-        <p>
-          Sunmax として活動しています。Unity を使った 3D 表現やゲーム制作、
-          そして HTML / CSS / JavaScript を使った Web 制作を学習中です。
-          物理シミュレーションや数学の可視化のように、仕組みを理解しながら形にする制作が好きです。
-        </p>
-      </section>
-
-      <section class="hobbies">
-        <h2>趣味</h2>
-        <ul>
-          <li><span class="hobby-emoji" aria-hidden="true">🏍️</span>バイク</li>
-          <li><span class="hobby-emoji" aria-hidden="true">📷</span>カメラ</li>
-          <li><span class="hobby-emoji" aria-hidden="true">📚</span>読書</li>
-          <li><span class="hobby-emoji" aria-hidden="true">🎮</span>ゲーム</li>
-          <li><span class="hobby-emoji" aria-hidden="true">💡</span>技術学習</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>リンク</h2>
-        <div class="links">
-          <a href="https://github.com/Sunmax0731" target="_blank" rel="noopener">
-            <img src="https://cdn.simpleicons.org/github/181717" alt="GitHub" />
-            GitHub
-          </a>
-          <a href="https://x.com/Sunmax0731" target="_blank" rel="noopener">
-            <img src="https://cdn.simpleicons.org/x/000000" alt="X" />
-            X (Twitter)
-          </a>
-          <a href="https://zenn.dev/sunmax" target="_blank" rel="noopener">
-            <img src="https://static.zenn.studio/images/logo.png" alt="Zenn" />
-            Zenn
-          </a>
+        <div class="about-intro">
+          <img class="profile-img" src="profile.png" alt="プロフィール画像" />
+          <div class="about-intro-copy">
+            <h3>Sunmax</h3>
+            <p>Unity と Web を軸に、仕組みが伝わるインタラクティブ表現を制作しています。</p>
+          </div>
+        </div>
+        <div class="card-grid">
+          <article class="mini-card">
+            <h3>趣味</h3>
+            <div class="links inline-links static-links">
+              <div class="static-link-card">
+                <span class="static-link-emoji" aria-hidden="true">&#127949;</span>
+                バイク
+              </div>
+              <div class="static-link-card">
+                <span class="static-link-emoji" aria-hidden="true">&#128247;</span>
+                カメラ
+              </div>
+              <div class="static-link-card">
+                <span class="static-link-emoji" aria-hidden="true">&#128218;</span>
+                読書
+              </div>
+              <div class="static-link-card">
+                <span class="static-link-emoji" aria-hidden="true">&#127918;</span>
+                ゲーム
+              </div>
+              <div class="static-link-card">
+                <span class="static-link-emoji" aria-hidden="true">&#128161;</span>
+                技術学習
+              </div>
+            </div>
+          </article>
+          <article class="mini-card">
+            <h3>外部リンク</h3>
+            <p class="mini-card-lead">制作ログや技術メモは以下で更新しています。</p>
+            <div class="links inline-links">
+              <a href="https://github.com/Sunmax0731" target="_blank" rel="noopener">
+                <img src="https://cdn.simpleicons.org/github/181717" alt="GitHub" />
+                GitHub
+              </a>
+              <a href="https://x.com/Sunmax0731" target="_blank" rel="noopener">
+                <img src="https://cdn.simpleicons.org/x/000000" alt="X" />
+                X (Twitter)
+              </a>
+              <a href="https://zenn.dev/sunmax" target="_blank" rel="noopener">
+                <img src="https://static.zenn.studio/images/logo.png" alt="Zenn" />
+                Zenn
+              </a>
+            </div>
+          </article>
         </div>
       </section>
 
       <section class="skills">
         <h2>スキル一覧</h2>
-        <span class="skill-category proficient">経験あり</span>
-        <div class="skill-grid">
-          <div class="skill-item proficient">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/unity/000000"
-              alt="Unity"
-            />
-            <span class="skill-name">Unity</span>
-          </div>
-          <div class="skill-item proficient">
-            <img
-              class="skill-icon"
-              src="https://gistcdn.githack.com/johndward01/95c1d09de9e3707cfb4154989962376d/raw/f74007782421219d9e9ab4b6a27de2e172a8b714/csharp-logo.svg"
-              alt="C#"
-            />
-            <span class="skill-name">C#</span>
-          </div>
-          <div class="skill-item proficient">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/blender/E87D0D"
-              alt="Blender"
-            />
-            <span class="skill-name">Blender</span>
-          </div>
-          <div class="skill-item proficient">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/python/3776AB"
-              alt="Python"
-            />
-            <span class="skill-name">Python</span>
-          </div>
-          <div class="skill-item proficient">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/cplusplus/00599C"
-              alt="C/C++"
-            />
-            <span class="skill-name">C / C++</span>
-          </div>
-        </div>
-
-        <span class="skill-category learning">学習中</span>
-        <div class="skill-grid">
-          <div class="skill-item learning">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/html5/E34F26"
-              alt="HTML5"
-            />
-            <span class="skill-name">HTML</span>
-          </div>
-          <div class="skill-item learning">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/css/1572B6"
-              alt="CSS3"
-            />
-            <span class="skill-name">CSS</span>
-          </div>
-          <div class="skill-item learning">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/javascript/F7DF1E"
-              alt="JavaScript"
-            />
-            <span class="skill-name">JavaScript</span>
-          </div>
-          <div class="skill-item learning">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/typescript/3178C6"
-              alt="TypeScript"
-            />
-            <span class="skill-name">TypeScript</span>
+        <p class="section-lead">
+          3D 表現、シミュレーション、ブラウザ実装を横断しながら、実際に触れる作品として積み上げています。
+        </p>
+        <div class="skill-group">
+          <span class="skill-category proficient">経験あり</span>
+          <div class="skill-grid">
+            <div class="skill-item proficient">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/unity/000000"
+                alt="Unity"
+              />
+              <span class="skill-name">Unity</span>
+            </div>
+            <div class="skill-item proficient">
+              <img
+                class="skill-icon"
+                src="https://gistcdn.githack.com/johndward01/95c1d09de9e3707cfb4154989962376d/raw/f74007782421219d9e9ab4b6a27de2e172a8b714/csharp-logo.svg"
+                alt="C#"
+              />
+              <span class="skill-name">C#</span>
+            </div>
+            <div class="skill-item proficient">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/blender/E87D0D"
+                alt="Blender"
+              />
+              <span class="skill-name">Blender</span>
+            </div>
+            <div class="skill-item proficient">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/python/3776AB"
+                alt="Python"
+              />
+              <span class="skill-name">Python</span>
+            </div>
+            <div class="skill-item proficient">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/cplusplus/00599C"
+                alt="C/C++"
+              />
+              <span class="skill-name">C / C++</span>
+            </div>
           </div>
         </div>
 
-        <span class="skill-category ai">AI活用</span>
-        <div class="skill-grid">
-          <div class="skill-item ai">
-            <img
-              class="skill-icon"
-              src="https://cdn.simpleicons.org/anthropic/D97757"
-              alt="Claude Code"
-            />
-            <span class="skill-name">Claude Code</span>
+        <div class="skill-group">
+          <span class="skill-category learning">学習中</span>
+          <div class="skill-grid">
+            <div class="skill-item learning">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/html5/E34F26"
+                alt="HTML5"
+              />
+              <span class="skill-name">HTML</span>
+            </div>
+            <div class="skill-item learning">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/css/1572B6"
+                alt="CSS3"
+              />
+              <span class="skill-name">CSS</span>
+            </div>
+            <div class="skill-item learning">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/javascript/F7DF1E"
+                alt="JavaScript"
+              />
+              <span class="skill-name">JavaScript</span>
+            </div>
+            <div class="skill-item learning">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/typescript/3178C6"
+                alt="TypeScript"
+              />
+              <span class="skill-name">TypeScript</span>
+            </div>
           </div>
-          <div class="skill-item ai">
-            <img
-              class="skill-icon"
-              src="OpenAI-black-monoblossom.svg"
-              alt="Codex"
-            />
-            <span class="skill-name">Codex</span>
+        </div>
+
+        <div class="skill-group">
+          <span class="skill-category ai">AI活用</span>
+          <div class="skill-grid">
+            <div class="skill-item ai">
+              <img
+                class="skill-icon"
+                src="https://cdn.simpleicons.org/anthropic/D97757"
+                alt="Claude Code"
+              />
+              <span class="skill-name">Claude Code</span>
+            </div>
+            <div class="skill-item ai">
+              <img
+                class="skill-icon"
+                src="OpenAI-black-monoblossom.svg"
+                alt="Codex"
+              />
+              <span class="skill-name">Codex</span>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="contact">
         <h2>お問い合わせ</h2>
-        <p>制作や学習に関するご相談は、お問い合わせページから受け付けています。</p>
-        <a href="contact.html" class="btn">お問い合わせページへ</a>
+        <p>制作や学習に関する相談、ポートフォリオへの問い合わせはメールや SNS から受け付けています。</p>
+        <a href="contact.html" class="btn">問い合わせページへ</a>
       </section>
     </main>
 

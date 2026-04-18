@@ -1,33 +1,33 @@
 /* ============================================================
    shared.css — 全ゲーム共通スタイル
-   デザインシステム: Material Design 3 (Dark theme)
+   Sunmax warm game shell
    ============================================================ */
 
-/* ---- MD3 デザイントークン ---- */
+/* ---- Shared design tokens ---- */
 :root {
-  --md-primary:              #4a8fd4;
-  --md-on-primary:           #ffffff;
-  --md-primary-container:    #d9ebff;
-  --md-on-primary-container: #174a7d;
-  --md-secondary:            #f0a500;
-  --md-on-secondary:         #4a3000;
-  --md-secondary-container:  #fff0bf;
-  --md-on-secondary-container: #6d4800;
-  --md-tertiary:             #8abf5a;
-  --md-on-tertiary:          #18360b;
-  --md-tertiary-container:   #e7f5d8;
-  --md-on-tertiary-container: #2d5217;
-  --md-surface:              #fffbf0;
-  --md-on-surface:           #2c2c2c;
-  --md-surface-variant:      #efe4bf;
-  --md-on-surface-variant:   #6a5a1c;
-  --md-surface-container-lowest: #fffdf6;
-  --md-surface-container-low: #fff7da;
-  --md-surface-container:    #fff3cc;
-  --md-surface-container-high: #ffffff;
-  --md-surface-container-highest: #fffaf0;
-  --md-outline:              #d7c98f;
-  --md-outline-variant:      #eadfb1;
+  --md-primary:              #8f6300;
+  --md-on-primary:           #fffaf0;
+  --md-primary-container:    #fff0bf;
+  --md-on-primary-container: #7d5a00;
+  --md-secondary:            #d69c00;
+  --md-on-secondary:         #2f260f;
+  --md-secondary-container:  #fff4c2;
+  --md-on-secondary-container: #6a4f05;
+  --md-tertiary:             #7d5a00;
+  --md-on-tertiary:          #fff7e1;
+  --md-tertiary-container:   #f6e9b8;
+  --md-on-tertiary-container: #5d4b1d;
+  --md-surface:              #fff7dd;
+  --md-on-surface:           #2f260f;
+  --md-surface-variant:      #f6e9b8;
+  --md-on-surface-variant:   #6a571f;
+  --md-surface-container-lowest: #fffdf4;
+  --md-surface-container-low: #fff9e6;
+  --md-surface-container:    #fff2c8;
+  --md-surface-container-high: #fffdf2;
+  --md-surface-container-highest: #fffef9;
+  --md-outline:              #d8bf63;
+  --md-outline-variant:      #ead79c;
   --md-error:                #cf3f3f;
   --md-on-error:             #ffffff;
   --md-shape-xs:   4px;
@@ -36,16 +36,18 @@
   --md-shape-lg:   16px;
   --md-shape-xl:   28px;
   --md-shape-full: 9999px;
-  --md-elev-1: 0 1px 2px rgba(0,0,0,.35), 0 1px 3px 1px rgba(0,0,0,.20);
-  --md-elev-2: 0 1px 2px rgba(0,0,0,.35), 0 2px 6px 2px rgba(0,0,0,.20);
-  --md-elev-3: 0 4px 8px 3px rgba(0,0,0,.20), 0 1px 3px rgba(0,0,0,.35);
-  --md-font: 'Roboto', sans-serif;
+  --md-elev-1: 0 8px 18px rgba(91, 69, 14, 0.10);
+  --md-elev-2: 0 16px 30px rgba(91, 69, 14, 0.14);
+  --md-elev-3: 0 28px 54px rgba(75, 55, 8, 0.18);
+  --md-font: "Hiragino Sans", "Yu Gothic", "Meiryo", "Segoe UI", sans-serif;
   --md-state-hover:   0.08;
   --md-state-pressed: 0.12;
+  --md-shell-border: rgba(184, 146, 33, 0.62);
   --nav-item-width: 13rem;
   --settings-card-width: min(560px, 100%);
   --settings-title-size: 2.25rem;
   --settings-title-margin: 36px;
+  --game-shell-max-width: 1180px;
   --game-screen-width: min(1320px, calc(100vw - 32px));
   --game-screen-height: min(920px, calc(100dvh - 32px));
   --game-screen-min-height: 640px;
@@ -56,10 +58,11 @@
 
 /* ---- ベーススタイル ---- */
 body {
-  font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+  font-family: var(--md-font);
   background:
-    radial-gradient(circle at top, rgba(245, 197, 24, 0.24), transparent 28%),
-    linear-gradient(180deg, #fffdf6 0%, var(--md-surface) 100%);
+    radial-gradient(circle at top left, rgba(240, 208, 64, 0.26), transparent 30%),
+    radial-gradient(circle at top right, rgba(255, 234, 128, 0.24), transparent 24%),
+    linear-gradient(180deg, #fbf2b8 0%, #f5e18d 100%);
   color: var(--md-on-surface);
   display: flex;
   flex-direction: column;
@@ -69,53 +72,82 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 30%, transparent 70%, rgba(255, 255, 255, 0.10)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(139, 121, 94, 0.04) 0,
+      rgba(139, 121, 94, 0.04) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+}
+
 .game-site-footer {
-  width: 100%;
-  margin: auto 0 0;
+  width: min(calc(100% - 24px), var(--game-shell-max-width));
+  margin: auto auto 24px;
   padding: 18px 20px;
-  background: linear-gradient(135deg, #f5c518, #f0a500);
-  border-top: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 -6px 18px rgba(90, 74, 0, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 252, 240, 0.98), rgba(250, 235, 166, 0.96)),
+    radial-gradient(circle at top right, rgba(240, 208, 64, 0.24), transparent 32%);
+  border: 1px solid var(--md-shell-border);
+  border-radius: 28px;
+  box-shadow: var(--md-elev-2);
   text-align: center;
-  color: #5d5330;
+  color: #5d4b1d;
   font-size: 0.92rem;
 }
 
 .portfolio-nav {
-  width: 100%;
-  margin: 0;
-  padding: 14px 18px;
+  width: min(calc(100% - 24px), var(--game-shell-max-width));
+  margin: clamp(18px, 3vw, 30px) auto 0;
+  padding: clamp(16px, 2vw, 24px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
   gap: 12px;
-  background: linear-gradient(135deg, #f5c518, #f0a500);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 6px 18px rgba(90, 74, 0, 0.08);
+  position: relative;
+  z-index: 1200;
+  isolation: isolate;
+  border: 1px solid var(--md-shell-border);
+  border-radius: 36px;
+  background:
+    linear-gradient(135deg, rgba(255, 252, 240, 0.98), rgba(250, 235, 166, 0.96)),
+    radial-gradient(circle at top right, rgba(240, 208, 64, 0.24), transparent 32%);
+  box-shadow: var(--md-elev-3);
 }
 
 .portfolio-nav > a,
 .portfolio-menu > summary {
   list-style: none;
-  width: var(--nav-item-width);
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: 10px 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
-  color: #2c2c2c;
+  background: rgba(255, 249, 227, 0.92);
+  border: 1px solid rgba(184, 146, 33, 0.50);
+  color: var(--md-on-surface);
   text-decoration: none;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .portfolio-nav > a:hover,
 .portfolio-nav > a.active,
 .portfolio-menu > summary:hover,
+.portfolio-menu > summary.active,
 .portfolio-menu[open] > summary {
   background: #ffffff;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  border-color: rgba(184, 146, 33, 0.62);
+  box-shadow: var(--md-elev-1);
   transform: translateY(-2px);
 }
 
@@ -123,28 +155,37 @@ body {
   position: relative;
 }
 
+.portfolio-menu[open] {
+  z-index: 1210;
+}
+
 .portfolio-menu > summary::-webkit-details-marker {
   display: none;
 }
 
 .portfolio-menu > summary::after {
-  content: " ▾";
+  content: " +";
+  color: var(--md-secondary);
+  font-weight: 700;
+}
+
+.portfolio-menu[open] > summary::after {
+  content: " -";
 }
 
 .portfolio-dropdown {
   position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: var(--nav-item-width);
+  top: calc(100% + 10px);
+  left: 0;
+  min-width: min(340px, calc(100vw - 48px));
   display: grid;
   gap: 0.5rem;
-  background: #fffef8;
-  border: 1px solid var(--md-outline);
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(90, 74, 0, 0.14);
+  background: rgba(255, 249, 228, 0.98);
+  border: 1px solid var(--md-shell-border);
+  border-radius: 24px;
+  box-shadow: var(--md-elev-2);
   padding: 0.75rem;
-  z-index: 30;
+  z-index: 1220;
 }
 
 .portfolio-dropdown a {
@@ -154,13 +195,13 @@ body {
   text-decoration: none;
   color: var(--md-on-surface);
   font-weight: 600;
-  background: var(--md-surface-container);
+  background: linear-gradient(180deg, var(--md-surface), #fff0be);
   transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
 .portfolio-dropdown a:hover {
-  background: var(--md-primary);
-  color: #fff;
+  background: #ffffff;
+  color: var(--md-primary);
   transform: translateX(4px);
 }
 
@@ -218,22 +259,36 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 #settings-screen {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: calc(100dvh - 88px);
-  padding: 24px 16px;
+  align-items: flex-start;
+  min-height: 0;
+  padding: clamp(22px, 3vw, 36px) 16px clamp(32px, 4vw, 52px);
   background: transparent;
   overflow-y: auto;
 }
 
 .settings-card {
-  background: var(--md-surface-container-high);
-  border-radius: var(--md-shape-xl);
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 242, 0.98), rgba(255, 247, 221, 0.98)),
+    radial-gradient(circle at top right, rgba(240, 208, 64, 0.18), transparent 30%);
+  border: 1px solid var(--md-shell-border);
+  border-radius: 28px;
   padding: 40px 44px;
   width: var(--settings-card-width);
-  box-shadow: var(--md-elev-2);
+  box-shadow: var(--md-elev-3);
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
+}
+
+.settings-card::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(184, 146, 33, 0.22);
+  pointer-events: none;
 }
 
 .settings-card h1 {
@@ -242,6 +297,9 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
   font-weight: 700;
   margin-bottom: var(--settings-title-margin);
   color: var(--md-primary);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "Times New Roman", serif;
+  letter-spacing: -0.03em;
+  position: relative;
 }
 
 .setting-group {
@@ -282,8 +340,8 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 .how-to-play {
   width: 100%;
   padding: 16px;
-  background: var(--md-surface-container);
-  border-radius: var(--md-shape-lg);
+  background: linear-gradient(180deg, var(--md-surface-container), #fff5d8);
+  border-radius: 18px;
   font-size: 0.8rem;
   color: var(--md-on-surface-variant);
   line-height: 1.9;
@@ -305,10 +363,11 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 .mode-toggle {
   display: flex;
   gap: 4px;
-  background: var(--md-surface-container);
+  background: linear-gradient(180deg, var(--md-surface-container), #fff7dc);
   border-radius: var(--md-shape-full);
   padding: 4px;
   width: 100%;
+  border: 1px solid rgba(184, 146, 33, 0.22);
 }
 
 .mode-btn {
@@ -356,7 +415,7 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
   margin-top: 8px;
   font-size: 1rem;
   font-weight: 700;
-  background: var(--md-primary);
+  background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
   color: var(--md-on-primary);
   border-radius: var(--md-shape-full);
   box-shadow: var(--md-elev-1);
@@ -366,7 +425,7 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 
 /* ---- MD3 ボタンバリアント ---- */
 .btn-filled {
-  background: var(--md-primary);
+  background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
   color: var(--md-on-primary);
   border-radius: var(--md-shape-full);
   padding: 10px 24px;
@@ -400,9 +459,11 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
   width: var(--game-screen-width);
   height: var(--game-screen-height);
   min-height: var(--game-screen-min-height);
-  margin: 16px auto;
-  background: linear-gradient(180deg, #fffef7 0%, var(--md-surface-container-lowest) 100%);
-  border: 1px solid var(--md-outline-variant);
+  margin: clamp(18px, 3vw, 28px) auto;
+  background:
+    linear-gradient(180deg, #fffef7 0%, var(--md-surface-container-lowest) 100%),
+    radial-gradient(circle at top right, rgba(240, 208, 64, 0.10), transparent 32%);
+  border: 1px solid var(--md-shell-border);
   border-radius: 24px;
   box-shadow: var(--md-elev-3);
   overflow: hidden;
@@ -496,7 +557,7 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
   flex: 0 1 320px;
   width: min(320px, 100%);
   height: 6px;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 249, 227, 0.82);
   border-radius: var(--md-shape-full);
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(44, 44, 44, 0.08);
@@ -552,7 +613,7 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
   inset: 0;
   justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,.60);
+  background: rgba(47, 38, 15, 0.58);
   backdrop-filter: blur(4px);
   z-index: 20;
   padding: 16px;
@@ -560,12 +621,13 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 
 .game-over-card,
 .result-card {
-  background: var(--md-surface-container-high);
+  background: linear-gradient(180deg, var(--md-surface-container-high), #fff7dd);
   border-radius: var(--md-shape-xl);
   padding: 40px 48px;
   text-align: center;
   box-shadow: var(--md-elev-3);
   width: min(420px, 100%);
+  border: 1px solid var(--md-shell-border);
 }
 
 .game-over-card h2,
@@ -621,10 +683,11 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
    ============================================================ */
 @media (max-width: 600px) {
   .portfolio-nav {
-    width: 100%;
-    margin-top: 0;
+    width: calc(100% - 16px);
+    margin-top: 8px;
     padding: 12px;
     gap: 8px;
+    border-radius: 24px;
   }
 
   .portfolio-nav > a,
@@ -635,16 +698,16 @@ input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(2
 
   .portfolio-dropdown {
     position: static;
-    transform: none;
     min-width: 0;
     margin-top: 0.5rem;
   }
 
   .game-site-footer {
-    width: 100%;
-    margin-bottom: 0;
+    width: calc(100% - 16px);
+    margin-bottom: 12px;
     padding: 14px 12px;
     font-size: 0.82rem;
+    border-radius: 20px;
   }
 
   .settings-card { padding: 24px 18px; }

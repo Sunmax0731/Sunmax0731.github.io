@@ -3,46 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3Dゲーム | Sunmax</title>
+    <title>ゲーム | Sunmax</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="site-header">
-      <div class="header-inner">
+      <div class="header-inner nav-only">
         <nav class="site-nav" aria-label="グローバルナビゲーション">
           <a href="./">トップページ</a>
+          <a href="games.html" class="active">ゲーム</a>
           <details class="nav-menu">
-            <summary>学習コンテンツ</summary>
+            <summary>ラボ</summary>
             <div class="nav-dropdown">
-              <a href="vehicle-physics.html">車両工学の学習シミュレーション</a>
-              <a href="mathematics.html">数学の可視化コンテンツ</a>
+              <a href="vehicle-physics.html">車両の物理シミュ</a>
+              <a href="mathematics.html">数学の可視化</a>
+              <a href="fluid-simulation.html">流体シミュレーション</a>
+              <a href="face-tracking/">フェイストラッキング</a>
             </div>
           </details>
-          <details class="nav-menu">
-            <summary>3Dゲーム</summary>
-            <div class="nav-dropdown">
-              <a href="games.html" class="active">3Dゲーム一覧</a>
-              <a href="gungi/">軍儀</a>
-              <a href="2048.html">2048</a>
-              <a href="breakout-2d.html">Breakout</a>
-              <a href="life-game.html">Life Game</a>
-              <a href="merge-game.html">Merge Game</a>
-              <a href="mine-sweeper.html">Minesweeper</a>
-              <a href="othello.html">Othello</a>
-              <a href="crowd-runner.html">Crowd Runner</a>
-              <a href="same-game-3d.html">SameGame 3D</a>
-              <a href="color-sort.html">Color Sort</a>
-            </div>
-          </details>
+          <a href="moto-catalog/">バイク図鑑</a>
           <a href="blog/">ブログ</a>
-          <a href="contact.html">お問い合わせ</a>
+          <a href="contact.html">問い合わせ</a>
         </nav>
-
-        <h1>3Dゲーム</h1>
-        <p class="tagline">
-          ブラウザで動作するゲームやインタラクティブ作品をまとめています。2D と 3D の表現、
-          ルール実装、UI 設計、アクション要素の違いを見比べられます。
-        </p>
       </div>
     </header>
 
@@ -51,11 +33,11 @@
         <div class="feature-entry-grid">
           <article class="feature-panel">
             <p class="feature-kicker">Overview</p>
-            <h2>遊べる作品をまとめて比較できるページです</h2>
+            <h2>ゲーム</h2>
             <p>
-              パズル、ボードゲーム、アクションまで、ブラウザでそのまま触れる作品を公開しています。
-              UI の作り方やルール処理、3D 表現、入力の扱いなど、作品ごとの違いも合わせて確認できます。
+              ブラウザで触れるゲーム作品の入口です。
             </p>
+            <p>パズル、対戦、アクションをすぐ試せて、UI やルール設計の違いも見比べられます。</p>
             <ul class="feature-point-list">
               <li>2D / 3D の幅を持たせたゲームを公開</li>
               <li>CPU 対戦やロジック重視の作品も収録</li>
@@ -92,7 +74,33 @@
       </section>
 
       <section class="card-section">
-        <h2>ゲーム一覧</h2>
+        <h2>遊び方から見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="gungi/">
+            <span class="card-eyebrow">Board / Logic</span>
+            <h3>じっくり考える作品</h3>
+            <p>軍儀、Othello、Minesweeper など、ルール理解や読み合いを楽しめる作品をまとめています。</p>
+          </a>
+          <a class="content-card" href="2048.html">
+            <span class="card-eyebrow">Quick Puzzle</span>
+            <h3>短時間で遊べるパズル</h3>
+            <p>2048、Color Sort、Merge Game のように、すぐ試せて違いを見比べやすい作品群です。</p>
+          </a>
+          <a class="content-card" href="breakout-2d.html">
+            <span class="card-eyebrow">Action</span>
+            <h3>操作感を楽しむ作品</h3>
+            <p>Breakout や Crowd Runner など、入力とテンポの気持ちよさを確認したいときの入口です。</p>
+          </a>
+          <a class="content-card" href="same-game-3d.html">
+            <span class="card-eyebrow">System / Visual</span>
+            <h3>見た目やルールの工夫を見る</h3>
+            <p>Life Game や SameGame 3D を通して、表示方法とルール処理の組み合わせを追えます。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>全ゲーム一覧</h2>
         <div class="card-grid">
           <a class="content-card" href="gungi/">
             <h3>軍儀</h3>
@@ -133,6 +141,32 @@
           <a class="content-card" href="color-sort.html">
             <h3>Color Sort</h3>
             <p>色ごとに並べ替える整理系パズルです。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="card-section">
+        <h2>次に見る</h2>
+        <div class="card-grid">
+          <a class="content-card" href="vehicle-physics.html">
+            <span class="card-eyebrow">Lab</span>
+            <h3>車両の物理シミュ</h3>
+            <p>ゲームだけでなく、挙動やモデル化をどう見せるかに興味がある場合はこちらです。</p>
+          </a>
+          <a class="content-card" href="mathematics.html">
+            <span class="card-eyebrow">Visualization</span>
+            <h3>数学の可視化</h3>
+            <p>ルールや構造を図と動きで整理するページ群です。ロジック系ゲームとの相性も良いです。</p>
+          </a>
+          <a class="content-card" href="blog/">
+            <span class="card-eyebrow">Notes</span>
+            <h3>ブログ</h3>
+            <p>制作の過程や気づきを文章で追いたい場合は、技術メモと更新記録を確認できます。</p>
+          </a>
+          <a class="content-card" href="contact.html">
+            <span class="card-eyebrow">Contact</span>
+            <h3>問い合わせ</h3>
+            <p>作品制作や UI 実装について相談したい場合は、連絡ページから直接連絡できます。</p>
           </a>
         </div>
       </section>

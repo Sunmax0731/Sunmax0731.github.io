@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>エンジン3Dシミュレーション | 車両物理シミュレーション</title>
   <link rel="stylesheet" href="vehicle-physics/assets/css/style.css">
+  <link rel="stylesheet" href="detail-template.css">
   <style>
     :root { --domain: #e07030; }
     .controls button.active { background: var(--domain); color: #fff; }
@@ -44,6 +45,56 @@
       <p style="max-width:600px;margin:1rem 0 1.5rem;font-size:1.1rem;">
         ピストン・クランクシャフト・バルブの動作をアイソメトリック3Dでリアルタイム可視化。
       </p>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-template-card">
+        <div class="detail-intro-grid">
+          <article class="detail-intro-main">
+            <p class="detail-intro-kicker">Quick Guide</p>
+            <h2>このページでできること</h2>
+            <p>
+              4 ストロークエンジンの機構を 3D の動きで追いながら、PV 図とバルブタイミングまでつなげて確認できます。
+              見た目の挙動と理論図の対応を同じページ内で見比べられるのがこのページの役割です。
+            </p>
+            <ul class="detail-pill-list">
+              <li>4ストローク</li>
+              <li>PV図</li>
+              <li>バルブタイミング</li>
+              <li>回転同期</li>
+            </ul>
+          </article>
+          <div class="detail-panel-grid">
+            <article class="detail-panel">
+              <h3>操作対象</h3>
+              <div class="detail-link-list">
+                <a href="#engine3d"><span class="detail-link-label">メインエンジン表示</span><span class="detail-link-note">回転数、表示モード、再生速度を変えて動作を見る</span></a>
+                <a href="#pv"><span class="detail-link-label">PV図</span><span class="detail-link-note">圧縮比と最大圧力を変えてサイクルの違いを確認する</span></a>
+                <a href="#timing"><span class="detail-link-label">バルブタイミング</span><span class="detail-link-note">吸排気バルブの開閉時期とオーバーラップを追う</span></a>
+              </div>
+            </article>
+            <article class="detail-panel">
+              <h3>学べること</h3>
+              <ul class="detail-list">
+                <li>ピストン、クランク、バルブの同期関係</li>
+                <li>720° で完結する 4 ストロークの流れ</li>
+                <li>PV 図と実際のピストン位置の対応</li>
+                <li>バルブタイミングが吸排気に与える影響</li>
+              </ul>
+            </article>
+            <article class="detail-panel">
+              <h3>関連リンク</h3>
+              <div class="detail-link-list">
+                <a href="vehicle-physics.html"><span class="detail-link-label">車両の物理シミュへ戻る</span><span class="detail-link-note">ラボ全体へ戻って他の構成要素を見る</span></a>
+                <a href="drivetrain.html"><span class="detail-link-label">駆動系</span><span class="detail-link-note">エンジン出力がどう伝達されるかを続けて読む</span></a>
+                <a href="turbo.html"><span class="detail-link-label">ターボ</span><span class="detail-link-note">過給による出力変化と応答の考え方へ進む</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -109,6 +160,35 @@
           <label>排気閉(ATDC):</label>
           <input type="range" id="evcAngle" min="-20" max="30" value="10">
           <span class="val" id="evcAngleVal">10°</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-next-shell">
+        <div class="detail-next-header">
+          <p class="detail-intro-kicker">Next</p>
+          <h2>次に読む</h2>
+        </div>
+        <div class="detail-next-grid">
+          <a class="detail-next-card" href="drivetrain.html">
+            <h3>駆動系</h3>
+            <p>エンジンで生まれたトルクがギアやデフを通してどう伝わるかを確認できます。</p>
+          </a>
+          <a class="detail-next-card" href="turbo.html">
+            <h3>ターボ</h3>
+            <p>吸気量と出力を高める仕組みを、回転応答や過給の視点から読み進められます。</p>
+          </a>
+          <a class="detail-next-card" href="thermal.html">
+            <h3>熱マネジメント</h3>
+            <p>燃焼と冷却の両面から、熱が車両全体へどう関わるかを広げて見られます。</p>
+          </a>
+          <a class="detail-next-card" href="vehicle-physics.html">
+            <h3>車両ラボ一覧</h3>
+            <p>関連テーマを見渡したい場合は、ハブページから全体のつながりに戻れます。</p>
+          </a>
         </div>
       </div>
     </div>

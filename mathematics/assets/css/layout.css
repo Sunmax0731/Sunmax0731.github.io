@@ -151,7 +151,23 @@
 @media (max-width: 768px) {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .grid-2 { grid-template-columns: 1fr; }
-  .nav-links { display: none; }
+  .site-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  .nav-links {
+    display: flex;
+    gap: var(--space-md);
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links li { flex: 0 0 auto; }
   .container { padding: 0 var(--space-md); }
 }
 

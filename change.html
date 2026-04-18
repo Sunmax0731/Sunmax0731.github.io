@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>変化 — 微積分と動的システム | 数学の世界</title>
+  <link rel="stylesheet" href="detail-template.css">
   <link rel="stylesheet" href="mathematics/assets/css/base.css">
   <link rel="stylesheet" href="mathematics/assets/css/layout.css">
   <link rel="stylesheet" href="mathematics/assets/css/components.css">
@@ -48,6 +49,56 @@
       <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <a href="#visualizations" class="btn btn-primary" style="background: var(--color-change);">デモを見る</a>
         <a href="#topics" class="btn btn-outline">トピック一覧</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-shell-section">
+    <div class="container">
+      <div class="detail-template-card">
+        <div class="detail-intro-grid">
+          <article class="detail-intro-main">
+            <p class="detail-intro-kicker">Quick Guide</p>
+            <h2>このページでできること</h2>
+            <p>
+              微分、積分、ベクトル場、フーリエ級数、ローレンツアトラクターなどを通して、「変化」を記述する数学を動き付きで確認できます。
+              まず可視化に触れ、そのあと応用分野へ読み進めると全体像を掴みやすい構成です。
+            </p>
+            <ul class="detail-pill-list">
+              <li>微積分</li>
+              <li>微分方程式</li>
+              <li>力学系</li>
+              <li>カオス</li>
+            </ul>
+          </article>
+          <div class="detail-panel-grid">
+            <article class="detail-panel">
+              <h3>操作対象</h3>
+              <div class="detail-link-list">
+                <a href="#topics"><span class="detail-link-label">トピック一覧</span><span class="detail-link-note">変化の数学で扱う領域を先に俯瞰する</span></a>
+                <a href="#visualizations"><span class="detail-link-label">インタラクティブ可視化</span><span class="detail-link-note">微分、積分、ローレンツ、フーリエなどを動かして試す</span></a>
+                <a href="#applications"><span class="detail-link-label">応用分野</span><span class="detail-link-note">物理、AI、気象、信号処理への接続を見る</span></a>
+              </div>
+            </article>
+            <article class="detail-panel">
+              <h3>学べること</h3>
+              <ul class="detail-list">
+                <li>接線の傾きと面積近似としての微積分の基本</li>
+                <li>ベクトル場や微分方程式で変化を記述する考え方</li>
+                <li>力学系とカオスの直感的な見え方</li>
+                <li>フーリエ級数のような解析的な道具の役割</li>
+              </ul>
+            </article>
+            <article class="detail-panel">
+              <h3>関連リンク</h3>
+              <div class="detail-link-list">
+                <a href="mathematics.html"><span class="detail-link-label">数学の可視化へ戻る</span><span class="detail-link-note">数学ラボ全体の入口へ戻って関連テーマを見る</span></a>
+                <a href="quantity.html"><span class="detail-link-label">量</span><span class="detail-link-note">数の概念を土台から読み直したい場合はこちら</span></a>
+                <a href="math-sciences.html"><span class="detail-link-label">数理科学</span><span class="detail-link-note">変化の数学が他分野でどう使われるかを広げて見る</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -464,7 +515,7 @@
 </div>
 
   <!-- 応用分野 -->
-  <section class="section" style="background: var(--bg-secondary);">
+  <section class="section" id="applications" style="background: var(--bg-secondary);">
     <div class="container">
       <div class="section-header">
         <h2>応用分野</h2>
@@ -510,6 +561,35 @@
       </div>
     </div>
   </section>
+
+<section class="detail-shell-section">
+  <div class="container">
+    <div class="detail-next-shell">
+      <div class="detail-next-header">
+        <p class="detail-intro-kicker">Next</p>
+        <h2>次に読む</h2>
+      </div>
+      <div class="detail-next-grid">
+        <a class="detail-next-card" href="quantity.html">
+          <h3>量</h3>
+          <p>数の概念や複素数、素数のような基礎から数学の足場を固め直せます。</p>
+        </a>
+        <a class="detail-next-card" href="math-sciences.html">
+          <h3>数理科学</h3>
+          <p>変化を記述する数学が、科学や工学でどう使われるかをさらに俯瞰できます。</p>
+        </a>
+        <a class="detail-next-card" href="vehicle-physics.html">
+          <h3>車両の物理シミュ</h3>
+          <p>微積分や力学系の考え方を、実際の挙動やシミュレーションへつなげて見られます。</p>
+        </a>
+        <a class="detail-next-card" href="mathematics.html">
+          <h3>数学ラボ一覧</h3>
+          <p>他の数学テーマへ戻って、興味のある分野から横断的に読み進められます。</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <footer class="site-footer">
   <div class="container">

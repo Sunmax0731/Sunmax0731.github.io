@@ -1,0 +1,59 @@
+{
+    "version": 3,
+    "simulation": {
+        "dimension": 3,
+        "gridDepth": 96,
+        "viewMode": "planning-3d"
+    },
+    "resolution": [
+        1920,
+        1080
+    ],
+    "settings": [
+        {
+            "name": "iterationCount",
+            "type": "range",
+            "value": "8"
+        }
+    ],
+    "shapes": [
+        {
+            "id": "shape0",
+            "position": {
+                "x": 420,
+                "y": 620,
+                "z": 40
+            },
+            "halfSize": {
+                "x": 260,
+                "y": 360,
+                "z": 40
+            },
+            "rotation": 0,
+            "shape": "0",
+            "function": "3",
+            "emitMaterial": "0",
+            "emissionRate": "6.0",
+            "radius": 24
+        },
+        {
+            "id": "shape1",
+            "position": {
+                "x": 1180,
+                "y": 360,
+                "z": 40
+            },
+            "halfSize": {
+                "x": 80,
+                "y": 160,
+                "z": 40
+            },
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        }
+    ]
+}

@@ -1,0 +1,108 @@
+{
+    "version": 3,
+    "simulation": {
+        "dimension": 3,
+        "gridDepth": 96,
+        "viewMode": "planning-3d"
+    },
+    "resolution": [
+        1920,
+        1080
+    ],
+    "settings": [
+        {
+            "name": "particlesPerCellAxis",
+            "type": "range",
+            "value": "2"
+        },
+        {
+            "name": "renderMode",
+            "type": "combo",
+            "value": "0"
+        },
+        {
+            "name": "gravityStrength",
+            "type": "range",
+            "value": "2.1"
+        }
+    ],
+    "shapes": [
+        {
+            "id": "shape0",
+            "position": {"x": 700, "y": 250, "z": 48},
+            "halfSize": {"x": 120, "y": 120, "z": 22},
+            "rotation": 0,
+            "shape": "1",
+            "function": "3",
+            "emitMaterial": "3",
+            "emissionRate": "0",
+            "radius": 128
+        },
+        {
+            "id": "shape1",
+            "position": {"x": 1180, "y": 260, "z": 48},
+            "halfSize": {"x": 150, "y": 160, "z": 24},
+            "rotation": 0,
+            "shape": "0",
+            "function": "3",
+            "emitMaterial": "3",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape2",
+            "position": {"x": 960, "y": 1034, "z": 48},
+            "halfSize": {"x": 930, "y": 24, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape3",
+            "position": {"x": 66, "y": 540, "z": 48},
+            "halfSize": {"x": 42, "y": 470, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape4",
+            "position": {"x": 1854, "y": 540, "z": 48},
+            "halfSize": {"x": 42, "y": 470, "z": 46},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape5",
+            "position": {"x": 960, "y": 760, "z": 48},
+            "halfSize": {"x": 120, "y": 140, "z": 28},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        },
+        {
+            "id": "shape6",
+            "position": {"x": 960, "y": 590, "z": 48},
+            "halfSize": {"x": 340, "y": 38, "z": 28},
+            "rotation": 0,
+            "shape": "0",
+            "function": "1",
+            "emitMaterial": "0",
+            "emissionRate": "0",
+            "radius": 24
+        }
+    ]
+}
