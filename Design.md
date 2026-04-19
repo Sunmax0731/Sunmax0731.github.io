@@ -24,6 +24,8 @@
 - `i2i-lab/` should not reuse the current stage result as input during `Run I2I`; carry-forward into the next stage should happen only when the user advances the stage.
 - `i2i-lab/` stage inputs should support one base image plus multiple additional reference images for localized fixes or material guidance, and OpenAI Live should send them to image edits with the base image first.
 - `i2i-lab/` stage inputs should accept clipboard screenshots from tools such as Snipping Tool: prefer a one-click paste action when the browser allows clipboard reads, and keep `Ctrl+V` image paste as the fallback path for both base and reference inputs.
+- `i2i-lab/` Studio should support OpenAI-assisted prompt refinement from the selected tags, stage fields, and extra prompt, apply the refined text as a reversible stage-level override, and clear that override when the prompt source changes or the UI language switches.
+- `i2i-lab/` Studio should keep the base-image panel and result viewer adjacent on desktop, and should expose per-stage quick-start presets plus reusable tag families for character, background, icon, and non-character object workflows.
 - `gungi/` may keep its own dark visual theme, but no extra page overlay should be added above the game surface.
 
 この `Design.md` は、Sunmax サイトの全面改装で人間と Codex が共有する基準書とする。別途作成済みの設計メモがある場合は、このファイルへ統合し、設計の正本を一本化する。

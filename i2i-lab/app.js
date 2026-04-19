@@ -427,13 +427,538 @@ TEXT["studio.parameterHelpSeedDetail"] = {
 };
 TEXT["common.baseImage"] = { ja: "\u30d9\u30fc\u30b9", en: "Base" };
 TEXT["common.referenceImages"] = { ja: "\u53c2\u7167", en: "References" };
+TEXT["actions.optimizePrompt"] = {
+  ja: "OpenAI \u3067\u6574\u7406",
+  en: "Optimize with OpenAI",
+};
+TEXT["actions.clearOptimizedPrompt"] = {
+  ja: "\u6574\u7406\u3092\u89e3\u9664",
+  en: "Clear optimized prompt",
+};
+TEXT["studio.promptOptimizeDefault"] = {
+  ja: "\u9078\u629e\u3057\u305f\u30bf\u30b0\u3068\u5165\u529b\u5185\u5bb9\u304b\u3089 OpenAI \u3067\u30d7\u30ed\u30f3\u30d7\u30c8\u3092\u6574\u7406\u3067\u304d\u307e\u3059\u3002",
+  en: "Use OpenAI to refine the draft prompt from the selected tags and stage inputs.",
+};
+TEXT["studio.promptOptimizeNoKey"] = {
+  ja: "OpenAI \u3067\u6574\u7406\u3059\u308b\u306b\u306f Settings \u3067 API \u30ad\u30fc\u3092\u4fdd\u5b58\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+  en: "Save an API key in Settings to optimize prompts with OpenAI.",
+};
+TEXT["studio.promptOptimizeRunning"] = {
+  ja: "OpenAI \u3067\u30d7\u30ed\u30f3\u30d7\u30c8\u3092\u6574\u7406\u3057\u3066\u3044\u307e\u3059\u3002",
+  en: "Optimizing the prompt with OpenAI.",
+};
+TEXT["studio.promptOptimizeActive"] = {
+  ja: "OpenAI \u6574\u7406\u30d7\u30ed\u30f3\u30d7\u30c8\u3092\u9069\u7528\u4e2d\u3002\u66f4\u65b0: {value}",
+  en: "OpenAI-optimized prompt active. Updated: {value}",
+};
+TEXT["messages.promptOptimized"] = {
+  ja: "\u30d7\u30ed\u30f3\u30d7\u30c8\u3092 OpenAI \u3067\u6574\u7406\u3057\u307e\u3057\u305f\u3002",
+  en: "Prompt optimized with OpenAI.",
+};
+TEXT["messages.promptOptimizationCleared"] = {
+  ja: "\u6574\u7406\u6e08\u307f\u30d7\u30ed\u30f3\u30d7\u30c8\u3092\u89e3\u9664\u3057\u307e\u3057\u305f\u3002",
+  en: "Cleared the optimized prompt.",
+};
+TEXT["messages.promptOptimizationFailed"] = {
+  ja: "\u30d7\u30ed\u30f3\u30d7\u30c8\u6574\u7406\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002API \u30ad\u30fc\u3068 OpenAI \u306e\u5fdc\u7b54\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+  en: "Prompt optimization failed. Check the API key and the OpenAI response.",
+};
+TEXT["messages.promptOptimizationStale"] = {
+  ja: "\u5165\u529b\u5185\u5bb9\u304c\u5909\u66f4\u3055\u308c\u305f\u305f\u3081\u3001\u53e4\u3044\u6574\u7406\u7d50\u679c\u306f\u9069\u7528\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u5b9f\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+  en: "The prompt changed while optimizing, so the older result was not applied. Run it again.",
+};
+TEXT["studio.stagePresets"] = {
+  ja: "\u5de5\u7a0b\u30d7\u30ea\u30bb\u30c3\u30c8",
+  en: "Stage presets",
+};
+TEXT["studio.stagePresetDescription"] = {
+  ja: "\u5f53\u524d\u5de5\u7a0b\u5411\u3051\u306e\u5b9a\u756a\u30bb\u30c3\u30c8\u3092\u5373\u5ea7\u306b\u547c\u3073\u51fa\u3057\u307e\u3059\u3002",
+  en: "Load a tuned starting set for the current stage.",
+};
+TEXT["messages.stagePresetApplied"] = {
+  ja: "\u5de5\u7a0b\u30d7\u30ea\u30bb\u30c3\u30c8\u300c{name}\u300d\u3092\u9069\u7528\u3057\u307e\u3057\u305f\u3002",
+  en: "Applied stage preset: {name}.",
+};
 
+const EXTRA_TAG_CATEGORIES = [
+  {
+    id: "icon",
+    nameJa: "アイコン",
+    nameEn: "Icon",
+    descriptionJa: "ゲームUIや単体アイコン向けの可読性プリセット",
+    descriptionEn: "Readability presets for game UI and standalone icons.",
+  },
+  {
+    id: "object",
+    nameJa: "物体",
+    nameEn: "Object",
+    descriptionJa: "非キャラクターのプロップや単体物体向けのプリセット",
+    descriptionEn: "Presets for non-character props and standalone objects.",
+  },
+];
+const EXTRA_BUILT_IN_TAGS = [
+  { id: "tag-character-03", categoryId: "character", labelJa: "ヒロイック", labelEn: "Heroic", valueJa: "ヒロイックな主人公感", valueEn: "heroic protagonist presence", isBuiltIn: true },
+  { id: "tag-character-04", categoryId: "character", labelJa: "マスコット寄り", labelEn: "Mascot-like", valueJa: "単純化されたマスコット感", valueEn: "simple mascot-like character", isBuiltIn: true },
+  { id: "tag-background-03", categoryId: "background", labelJa: "遺跡背景", labelEn: "Ruins", valueJa: "ファンタジー遺跡の背景", valueEn: "fantasy ruins background", isBuiltIn: true },
+  { id: "tag-background-04", categoryId: "background", labelJa: "スタジオ背景", labelEn: "Studio backdrop", valueJa: "単純なスタジオ背景", valueEn: "plain studio backdrop", isBuiltIn: true },
+  { id: "tag-icon-01", categoryId: "icon", labelJa: "ゲームUIアイコン", labelEn: "Game UI icon", valueJa: "ゲームUI向けの単体アイコン", valueEn: "single game UI icon", isBuiltIn: true },
+  { id: "tag-icon-02", categoryId: "icon", labelJa: "小サイズ可読", labelEn: "Readable small", valueJa: "小さい表示でも判別しやすい", valueEn: "readable at small size", isBuiltIn: true },
+  { id: "tag-icon-03", categoryId: "icon", labelJa: "シルエット明快", labelEn: "Clear silhouette", valueJa: "シルエットが明快", valueEn: "clear silhouette", isBuiltIn: true },
+  { id: "tag-icon-04", categoryId: "icon", labelJa: "高コントラスト縁", labelEn: "High-contrast edge", valueJa: "輪郭のコントラストが高い", valueEn: "high-contrast icon edges", isBuiltIn: true },
+  { id: "tag-object-01", categoryId: "object", labelJa: "ハードサーフェス", labelEn: "Hard surface", valueJa: "ハードサーフェスの単体物体", valueEn: "hard-surface prop", isBuiltIn: true },
+  { id: "tag-object-02", categoryId: "object", labelJa: "魔法の遺物", labelEn: "Magic artifact", valueJa: "魔法の遺物", valueEn: "magical artifact", isBuiltIn: true },
+  { id: "tag-object-03", categoryId: "object", labelJa: "消費アイテム", labelEn: "Consumable item", valueJa: "消費アイテム", valueEn: "consumable item", isBuiltIn: true },
+  { id: "tag-object-04", categoryId: "object", labelJa: "機械装置", labelEn: "Mechanical device", valueJa: "機械装置", valueEn: "mechanical device", isBuiltIn: true },
+];
+const ALL_TAG_CATEGORIES = [...TAG_CATEGORIES, ...EXTRA_TAG_CATEGORIES];
+const ALL_BUILT_IN_TAGS = [...BUILT_IN_TAGS, ...EXTRA_BUILT_IN_TAGS];
+const STUDIO_TAG_CATEGORY_IDS = ["character", "background", "icon", "object"];
+const STAGE_PRESETS = {
+  "stage-04": [
+    {
+      id: "preset-stage-04-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "主役の立ち位置と視線導線を先に固めます。",
+      descriptionEn: "Lock the hero placement and focal flow first.",
+      fields: {
+        subject: "全身キャラクターキーアート",
+        pose: "立ち姿、視線誘導が明確",
+        composition: "中央構図",
+        cameraAngle: "アイレベル",
+        background: "シンプルな環境ラフ",
+        stageKeywords: "ラフ構図、視線誘導、主役が読みやすい",
+      },
+      tagIds: ["tag-character-03", "tag-composition-01", "tag-camera-01", "tag-quality-01"],
+      extraPrompt: "キャラクターが主役、全身が読みやすい",
+    },
+    {
+      id: "preset-stage-04-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "景観と遠近の流れを見せるラフに寄せます。",
+      descriptionEn: "Bias the stage toward scenery and depth flow.",
+      fields: {
+        subject: "背景キービジュアル",
+        pose: "人物なし、遠景から中景へ流れる構図",
+        composition: "横長で奥行きが出る構図",
+        cameraAngle: "広角アイレベル",
+        background: "景観と光の流れを見せる",
+        stageKeywords: "ラフ構図、遠近感、空気感",
+      },
+      tagIds: ["tag-background-03", "tag-composition-02", "tag-lighting-01"],
+      extraPrompt: "背景主役、環境の抜けと視線誘導を優先",
+    },
+    {
+      id: "preset-stage-04-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "単体アイコン用に余白とシルエットを優先します。",
+      descriptionEn: "Prioritize whitespace and silhouette for a standalone icon.",
+      fields: {
+        subject: "ゲームアイテムアイコン",
+        pose: "単体を正面寄りに見せる",
+        composition: "中央構図、余白多め",
+        cameraAngle: "正面寄り",
+        background: "無地または極簡単な下地",
+        stageKeywords: "シンプルなシルエット、可読性、小サイズで認識しやすい",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-03", "tag-icon-04"],
+      extraPrompt: "非キャラクター、単体アイコン、余計な背景要素なし",
+    },
+    {
+      id: "preset-stage-04-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "用途と形状が一目で分かる物体ラフです。",
+      descriptionEn: "Start from a single object rough with obvious function and shape.",
+      fields: {
+        subject: "単体プロップデザイン",
+        pose: "3/4ビューで形状が分かる",
+        composition: "中央構図",
+        cameraAngle: "3/4 view",
+        background: "プレーンな背景",
+        stageKeywords: "形状把握、シルエット重視、工業デザイン",
+      },
+      tagIds: ["tag-object-01", "tag-object-04", "tag-icon-03"],
+      extraPrompt: "物体主役、用途と形状が一目で分かる",
+    },
+  ],
+  "stage-05": [
+    {
+      id: "preset-stage-05-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "ポーズとキャラ印象を読みやすく整理します。",
+      descriptionEn: "Refine pose clarity and character impression.",
+      fields: {
+        subject: "全身キャラクターキーアート",
+        character: "ヒロイックな主人公",
+        pose: "立ち姿、体重移動が分かる",
+        outfitDetails: "衣装の大きい面とアクセントを整理",
+        hairstyle: "シルエットが明快な髪型",
+        facialExpression: "落ち着いた自信",
+        background: "主役を邪魔しない環境ラフ",
+      },
+      tagIds: ["tag-character-03", "tag-pose-01", "tag-quality-01"],
+      extraPrompt: "キャラクターの印象とシルエットを優先",
+    },
+    {
+      id: "preset-stage-05-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "人物なしで景観の導線を詰めます。",
+      descriptionEn: "Refine a no-character scene with environment flow.",
+      fields: {
+        subject: "背景シーンラフ",
+        character: "人物なし",
+        pose: "遠景から中景へ流れる導線",
+        outfitDetails: "建築や自然物の密度差",
+        hairstyle: "",
+        facialExpression: "",
+        background: "空気遠近と光源を見せる背景",
+      },
+      tagIds: ["tag-background-03", "tag-background-04", "tag-composition-02"],
+      extraPrompt: "背景主役、景観の流れを整える",
+    },
+    {
+      id: "preset-stage-05-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "単体アイコンの向きと主要面を整理します。",
+      descriptionEn: "Refine viewing angle and major surfaces for an icon.",
+      fields: {
+        subject: "単体ゲームアイテム",
+        character: "非キャラクターの単体オブジェクト",
+        pose: "浮遊した3/4ビュー",
+        outfitDetails: "材質の切り替えと輪郭のアクセント",
+        hairstyle: "",
+        facialExpression: "",
+        background: "フラットなアイコン用背景",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-03", "tag-object-03"],
+      extraPrompt: "小サイズ表示で判別しやすいシルエット",
+    },
+    {
+      id: "preset-stage-05-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "用途が伝わる角度と面構成を優先します。",
+      descriptionEn: "Prioritize a view angle and surfaces that explain the object.",
+      fields: {
+        subject: "単体メカ/プロップ",
+        character: "非キャラクターの物体",
+        pose: "用途が伝わる角度",
+        outfitDetails: "パネルラインや接合部",
+        hairstyle: "",
+        facialExpression: "",
+        background: "プレーン背景",
+      },
+      tagIds: ["tag-object-01", "tag-object-04", "tag-icon-03"],
+      extraPrompt: "物体の構造と用途を読みやすく見せる",
+    },
+  ],
+  "stage-06": [
+    {
+      id: "preset-stage-06-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "線の整理と顔周りの読みやすさを優先します。",
+      descriptionEn: "Focus cleanup on line clarity and face readability.",
+      fields: {
+        subject: "全身キャラクター線画",
+        character: "ヒロイックな主人公",
+        pose: "シルエットが明快",
+        outfit: "大きな形が読みやすい衣装",
+        hairstyle: "輪郭が明快な髪型",
+        facialExpression: "穏やかな自信",
+        qualityKeywords: "輪郭明快、整理された線、主役が読みやすい",
+      },
+      tagIds: ["tag-character-03", "tag-quality-01"],
+      extraPrompt: "顔周りと手元の線を特に整理する",
+    },
+    {
+      id: "preset-stage-06-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "背景線画の遠近と輪郭整理を優先します。",
+      descriptionEn: "Focus cleanup on perspective and environmental contours.",
+      fields: {
+        subject: "背景線画",
+        character: "人物なし",
+        pose: "パースラインが明快",
+        outfit: "建築や地形の大きな面",
+        hairstyle: "",
+        facialExpression: "",
+        qualityKeywords: "遠近感、読みやすい輪郭、密度差",
+      },
+      tagIds: ["tag-background-03", "tag-composition-02"],
+      extraPrompt: "大中小の形を分けて背景線を整理する",
+    },
+    {
+      id: "preset-stage-06-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "輪郭と主要パーツ分割をアイコン向けに整えます。",
+      descriptionEn: "Cleanup icon contours and major part separation.",
+      fields: {
+        subject: "ゲームアイコン線画",
+        character: "非キャラクターオブジェクト",
+        pose: "単体3/4ビュー",
+        outfit: "主要パーツを簡潔に分割",
+        hairstyle: "",
+        facialExpression: "",
+        qualityKeywords: "アイコン可読性、輪郭明快、面の整理",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-03", "tag-icon-04"],
+      extraPrompt: "輪郭と内側の形を小サイズ向けに単純化する",
+    },
+    {
+      id: "preset-stage-06-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "構造線と面の切り替えを優先します。",
+      descriptionEn: "Prioritize structural lines and plane transitions.",
+      fields: {
+        subject: "単体物体線画",
+        character: "非キャラクターの物体",
+        pose: "用途が分かる3/4ビュー",
+        outfit: "構造面の切り替えが明快",
+        hairstyle: "",
+        facialExpression: "",
+        qualityKeywords: "構造線、面の整理、硬質感",
+      },
+      tagIds: ["tag-object-01", "tag-object-04"],
+      extraPrompt: "接合部と大きい形の関係を明瞭にする",
+    },
+  ],
+  "stage-07": [
+    {
+      id: "preset-stage-07-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "キャラ配色と肌・髪・衣装の差を整えます。",
+      descriptionEn: "Tune character palette separation across skin, hair, and outfit.",
+      fields: {
+        subject: "全身キャラクターカラー",
+        character: "ヒロイックな主人公",
+        outfitColors: "ベース1色 + アクセント1色",
+        hairColor: "暗めの主色",
+        eyeColor: "差し色になる高彩度色",
+        colorMood: "主役が立つ整理された配色",
+        lighting: "柔らかい主光源",
+      },
+      tagIds: ["tag-character-03", "tag-quality-02", "tag-lighting-01"],
+      extraPrompt: "主役が背景に埋もれない配色差を作る",
+    },
+    {
+      id: "preset-stage-07-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "空気感と時間帯の色を優先します。",
+      descriptionEn: "Prioritize atmosphere and time-of-day palette.",
+      fields: {
+        subject: "背景カラースタディ",
+        character: "人物なし",
+        outfitColors: "地面・建築・空の配色",
+        hairColor: "",
+        eyeColor: "",
+        colorMood: "空気遠近が出る配色",
+        lighting: "時間帯が伝わる光",
+      },
+      tagIds: ["tag-background-03", "tag-background-04", "tag-lighting-01"],
+      extraPrompt: "空と地面の色差で奥行きを出す",
+    },
+    {
+      id: "preset-stage-07-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "識別しやすい色差と発光差を優先します。",
+      descriptionEn: "Emphasize readable color separation and glow contrast.",
+      fields: {
+        subject: "ゲームアイテムアイコンカラー",
+        character: "非キャラクターオブジェクト",
+        outfitColors: "主色 + 発光アクセント + 影色",
+        hairColor: "",
+        eyeColor: "",
+        colorMood: "高コントラストで小サイズ向き",
+        lighting: "エッジが立つライティング",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-04"],
+      extraPrompt: "シルエットと発光差で小サイズでも認識できるようにする",
+    },
+    {
+      id: "preset-stage-07-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "材質差が伝わる配色設計に寄せます。",
+      descriptionEn: "Bias the color pass toward material separation.",
+      fields: {
+        subject: "単体物体カラー",
+        character: "非キャラクターの物体",
+        outfitColors: "材質ごとに色温度差をつける",
+        hairColor: "",
+        eyeColor: "",
+        colorMood: "機能別に色が分かれる",
+        lighting: "立体感が出る主光源",
+      },
+      tagIds: ["tag-object-01", "tag-object-04", "tag-lighting-01"],
+      extraPrompt: "材質ごとに明度差と色温度差をつける",
+    },
+  ],
+  "stage-08": [
+    {
+      id: "preset-stage-08-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "肌・布・髪の材質差と奥行きを強めます。",
+      descriptionEn: "Increase depth and material separation across skin, cloth, and hair.",
+      fields: {
+        subject: "全身キャラクターレンダー",
+        character: "ヒロイックな主人公",
+        pose: "主役が読みやすい立ち姿",
+        materialNotes: "肌、布、金属アクセントの差を出す",
+        backgroundDetails: "主役を邪魔しない密度",
+        lighting: "主光源 + 弱いリムライト",
+        artStyle: "アニメ寄りの密度感",
+      },
+      tagIds: ["tag-character-03", "tag-lighting-02", "tag-quality-01"],
+      extraPrompt: "顔周りと手元を一段上の密度で描く",
+    },
+    {
+      id: "preset-stage-08-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "背景の奥行きと空気層を強めます。",
+      descriptionEn: "Increase environmental depth and atmospheric layers.",
+      fields: {
+        subject: "背景レンダーパス",
+        character: "人物なし",
+        pose: "視線が奥へ流れる",
+        materialNotes: "石、植物、空気層の差を出す",
+        backgroundDetails: "前景・中景・遠景の密度差",
+        lighting: "時間帯が分かる光",
+        artStyle: "背景美術寄り",
+      },
+      tagIds: ["tag-background-03", "tag-lighting-01", "tag-quality-02"],
+      extraPrompt: "前景中景遠景でコントラスト差をつける",
+    },
+    {
+      id: "preset-stage-08-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "材質と発光でアイコンの存在感を上げます。",
+      descriptionEn: "Raise icon presence with material and glow treatment.",
+      fields: {
+        subject: "ゲームアイテムアイコンレンダー",
+        character: "非キャラクターオブジェクト",
+        pose: "単体3/4ビュー",
+        materialNotes: "金属、ガラス、発光部を分ける",
+        backgroundDetails: "背景要素は最小限",
+        lighting: "エッジが立つライティング",
+        artStyle: "ゲームUI向けの高コントラスト",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-04", "tag-object-02"],
+      extraPrompt: "小サイズでも主要面と発光部が読めるようにする",
+    },
+    {
+      id: "preset-stage-08-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "ハードサーフェスや材質差を描き込みます。",
+      descriptionEn: "Push hard-surface and material rendering for the object.",
+      fields: {
+        subject: "単体物体レンダー",
+        character: "非キャラクターの物体",
+        pose: "用途が伝わる3/4ビュー",
+        materialNotes: "金属、樹脂、塗装面の差を出す",
+        backgroundDetails: "物体が埋もれない簡潔な背景",
+        lighting: "立体感を強調する主光源",
+        artStyle: "工業デザイン寄り",
+      },
+      tagIds: ["tag-object-01", "tag-object-04", "tag-lighting-02"],
+      extraPrompt: "機能パーツごとの材質差を明瞭にする",
+    },
+  ],
+  "stage-09": [
+    {
+      id: "preset-stage-09-character",
+      labelJa: "キャラクターKV",
+      labelEn: "Character key art",
+      descriptionJa: "主役の見栄えと空気感を最終調整します。",
+      descriptionEn: "Finalize hero readability and atmosphere.",
+      fields: {
+        subject: "全身キャラクター最終仕上げ",
+        character: "ヒロイックな主人公",
+        pose: "主役が読みやすい立ち姿",
+        background: "主役を支える簡潔な背景",
+        lighting: "主光源 + 控えめなハイライト",
+        artStyle: "仕上げ重視のアニメイラスト",
+      },
+      tagIds: ["tag-character-03", "tag-quality-01", "tag-lighting-02"],
+      extraPrompt: "顔周りとシルエットの見栄えを最後に整える",
+    },
+    {
+      id: "preset-stage-09-background",
+      labelJa: "背景シーン",
+      labelEn: "Background scene",
+      descriptionJa: "景観の空気感と視線誘導を最終調整します。",
+      descriptionEn: "Finalize atmosphere and visual flow in the scene.",
+      fields: {
+        subject: "背景シーン最終仕上げ",
+        character: "人物なし",
+        pose: "視線が奥へ流れる",
+        background: "空気層が見える景観",
+        lighting: "時間帯を締める光",
+        artStyle: "背景美術仕上げ",
+      },
+      tagIds: ["tag-background-03", "tag-background-04", "tag-quality-02"],
+      extraPrompt: "空気遠近と焦点位置を最後に整える",
+    },
+    {
+      id: "preset-stage-09-icon",
+      labelJa: "ゲームアイコン",
+      labelEn: "Game icon",
+      descriptionJa: "小サイズでの読め方を最終調整します。",
+      descriptionEn: "Finalize icon readability at small sizes.",
+      fields: {
+        subject: "ゲームアイテムアイコン最終仕上げ",
+        character: "非キャラクターオブジェクト",
+        pose: "単体3/4ビュー",
+        background: "背景要素なし",
+        lighting: "エッジと発光を強調する光",
+        artStyle: "ゲームUI仕上げ",
+      },
+      tagIds: ["tag-icon-01", "tag-icon-02", "tag-icon-03", "tag-icon-04"],
+      extraPrompt: "縮小表示でも輪郭と主要情報が潰れないようにする",
+    },
+    {
+      id: "preset-stage-09-object",
+      labelJa: "単体物体",
+      labelEn: "Single object",
+      descriptionJa: "用途と材質感が伝わる最終整えです。",
+      descriptionEn: "Finalize clarity of function and material finish.",
+      fields: {
+        subject: "単体物体最終仕上げ",
+        character: "非キャラクターの物体",
+        pose: "用途が伝わる3/4ビュー",
+        background: "物体を支える簡潔な背景",
+        lighting: "面の切り替えが見える光",
+        artStyle: "プロップ仕上げ",
+      },
+      tagIds: ["tag-object-01", "tag-object-02", "tag-object-04", "tag-icon-03"],
+      extraPrompt: "用途が一目で伝わる見栄えに整える",
+    },
+  ],
+};
 const stageById = new Map(STAGES.map((stage) => [stage.id, stage]));
 const promptSheetByStageId = new Map(PROMPT_SHEETS.map((sheet) => [sheet.stageId, sheet]));
-const categoryById = new Map(TAG_CATEGORIES.map((category) => [category.id, category]));
+const categoryById = new Map(ALL_TAG_CATEGORIES.map((category) => [category.id, category]));
 const providerById = new Map(PROVIDERS.map((provider) => [provider.id, provider]));
 const fieldByName = new Map(FORM_FIELDS.map((field) => [field.name, field]));
 const LIVE_IMAGE_MODEL_PREFERENCE = ["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"];
+const PROMPT_OPTIMIZER_MODEL_PREFERENCE = ["gpt-5.4-mini", "gpt-5-mini", "gpt-4o-mini", "gpt-4o"];
+const PROMPT_OPTIMIZER_MAX_OUTPUT_TOKENS = 260;
 const MAX_REFERENCE_IMAGES = 4;
 const IMAGE_DB_NAME = "sunmax.i2iLab.images";
 const IMAGE_DB_VERSION = 1;
@@ -482,6 +1007,7 @@ let imagePasteTarget = "base";
 let imageDbPromise = null;
 let imageStorageReady = false;
 const imagePayloadCache = new Map();
+let promptAssistState = createPromptAssistState();
 let state = loadState();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -527,6 +1053,7 @@ function bindRefs() {
   refs.stageNumberBadge = document.getElementById("stage-number-badge");
   refs.studioStageDescription = document.getElementById("studio-stage-description");
   refs.stageFocusChips = document.getElementById("stage-focus-chips");
+  refs.stagePresets = document.getElementById("stage-presets");
   refs.pasteInputImage = document.getElementById("paste-input-image");
   refs.removeInputImage = document.getElementById("remove-input-image");
   refs.imageDropzone = document.getElementById("image-dropzone");
@@ -543,8 +1070,11 @@ function bindRefs() {
   refs.tagGroups = document.getElementById("tag-groups");
   refs.extraPrompt = document.getElementById("extra-prompt");
   refs.negativePrompt = document.getElementById("negative-prompt");
+  refs.optimizePrompt = document.getElementById("optimize-prompt");
+  refs.clearOptimizedPrompt = document.getElementById("clear-optimized-prompt");
   refs.copyPrompt = document.getElementById("copy-prompt");
   refs.promptPreview = document.getElementById("prompt-preview");
+  refs.promptOptimizeStatus = document.getElementById("prompt-optimize-status");
   refs.requestPreview = document.getElementById("request-preview");
   refs.copyRequest = document.getElementById("copy-request");
   refs.parameterGrid = document.getElementById("parameter-grid");
@@ -624,6 +1154,10 @@ function bindEvents() {
   refs.stageFormGrid.addEventListener("input", handleStageFormInput);
   refs.extraPrompt.addEventListener("input", handlePromptNotesInput);
   refs.negativePrompt.addEventListener("input", handlePromptNotesInput);
+  refs.optimizePrompt.addEventListener("click", () => {
+    void optimizePromptWithOpenAI();
+  });
+  refs.clearOptimizedPrompt.addEventListener("click", clearOptimizedPromptOverride);
   refs.paramProvider.addEventListener("change", handleParameterInput);
   refs.paramModel.addEventListener("change", handleParameterInput);
   refs.paramStrength.addEventListener("input", handleParameterInput);
@@ -711,6 +1245,12 @@ function handleDocumentClick(event) {
     setCurrentStage(stageButton.dataset.stageId);
     openView("studio");
     closeSidebar();
+    return;
+  }
+
+  const stagePresetButton = event.target.closest("[data-stage-preset-id]");
+  if (stagePresetButton) {
+    applyStagePreset(getCurrentStageId(), stagePresetButton.dataset.stagePresetId);
     return;
   }
 
@@ -812,15 +1352,19 @@ function handleStageFormInput(event) {
   }
   const stageState = getCurrentStageState();
   stageState.fields[fieldName] = event.target.value;
+  markPromptSourceChanged(stageState);
   touchWorkspace();
   persistState();
   refreshDerivedUi();
 }
 
-function handlePromptNotesInput() {
+function handlePromptNotesInput(event) {
   const stageState = getCurrentStageState();
   stageState.extraPrompt = refs.extraPrompt.value;
   stageState.negativePrompt = refs.negativePrompt.value;
+  if (event?.target === refs.extraPrompt) {
+    markPromptSourceChanged(stageState);
+  }
   touchWorkspace();
   persistState();
   refreshDerivedUi();
@@ -1161,6 +1705,8 @@ function handleLanguageChange() {
     return;
   }
   state.locale = nextLocale;
+  clearAllOptimizedPrompts();
+  promptAssistState = createPromptAssistState();
   persistState();
   renderAll();
   showToast("messages.languageChanged");
@@ -1234,6 +1780,9 @@ function createStageState(stageId) {
     fields,
     extraPrompt: "",
     negativePrompt: "",
+    activePresetId: "",
+    optimizedPrompt: "",
+    optimizedPromptUpdatedAt: null,
     baseImage: null,
     referenceImages: [],
     selectedTagIds: [],
@@ -1325,6 +1874,11 @@ function normalizeStageState(candidate, stageId) {
   }
   stageState.extraPrompt = sanitizeText(source.extraPrompt, "");
   stageState.negativePrompt = sanitizeText(source.negativePrompt, "");
+  stageState.activePresetId = sanitizeText(source.activePresetId, "");
+  stageState.optimizedPrompt = sanitizeText(source.optimizedPrompt, "");
+  stageState.optimizedPromptUpdatedAt = typeof source.optimizedPromptUpdatedAt === "string"
+    ? source.optimizedPromptUpdatedAt
+    : null;
   stageState.baseImage = normalizeImage(source.baseImage || source.inputBaseImage || source.inputImage || source.inputImageData || null);
   stageState.referenceImages = Array.isArray(source.referenceImages || source.inputReferenceImages)
     ? (source.referenceImages || source.inputReferenceImages).map(normalizeImage).filter(Boolean).slice(0, MAX_REFERENCE_IMAGES)
@@ -1659,6 +2213,9 @@ function serializeStageStateForStorage(stageState) {
     fields: { ...stageState.fields },
     extraPrompt: stageState.extraPrompt,
     negativePrompt: stageState.negativePrompt,
+    activePresetId: stageState.activePresetId,
+    optimizedPrompt: stageState.optimizedPrompt,
+    optimizedPromptUpdatedAt: stageState.optimizedPromptUpdatedAt,
     baseImage: serializeImageForStorage(stageState.baseImage),
     referenceImages: stageState.referenceImages.map(serializeImageForStorage).filter(Boolean),
     selectedTagIds: [...stageState.selectedTagIds],
@@ -1863,6 +2420,36 @@ async function removeReferenceImage(index) {
   showToast("messages.referenceImageRemoved");
 }
 
+function applyStagePreset(stageId, presetId) {
+  const workspace = getActiveWorkspace();
+  const stageState = workspace?.stages?.[stageId];
+  const preset = getStagePreset(stageId, presetId);
+  if (!workspace || !stageState || !preset) {
+    return;
+  }
+  for (const fieldName of STAGE_FIELDS[stageId] || []) {
+    stageState.fields[fieldName] = "";
+  }
+  for (const [fieldName, value] of Object.entries(preset.fields || {})) {
+    if (fieldByName.has(fieldName)) {
+      stageState.fields[fieldName] = value;
+    }
+  }
+  if (typeof preset.extraPrompt === "string") {
+    stageState.extraPrompt = preset.extraPrompt;
+  }
+  stageState.selectedTagIds = preset.tagIds.filter((tagId) => getAllTags().some((tag) => tag.id === tagId));
+  stageState.activePresetId = preset.id;
+  clearOptimizedPromptForStage(stageState);
+  if (promptAssistState.workspaceId === workspace.id && promptAssistState.stageId === stageId) {
+    promptAssistState = createPromptAssistState();
+  }
+  touchWorkspace();
+  persistState();
+  renderAll();
+  showToast("messages.stagePresetApplied", { name: getStagePresetLabel(preset) });
+}
+
 async function saveApiKey() {
   const value = refs.apiKeyInput.value.trim();
   const mode = state.settings.apiStorageMode;
@@ -1897,6 +2484,47 @@ function clearApiKey() {
   showToast("messages.apiCleared");
 }
 
+function clearOptimizedPromptOverride() {
+  const stageState = getCurrentStageState();
+  if (!stageState?.optimizedPrompt) {
+    return;
+  }
+  clearOptimizedPromptForStage(stageState);
+  promptAssistState = createPromptAssistState();
+  touchWorkspace();
+  persistState();
+  refreshDerivedUi();
+  showToast("messages.promptOptimizationCleared");
+}
+
+function clearOptimizedPromptForStage(stageState) {
+  if (!stageState) {
+    return false;
+  }
+  const changed = Boolean(stageState.optimizedPrompt || stageState.optimizedPromptUpdatedAt);
+  stageState.optimizedPrompt = "";
+  stageState.optimizedPromptUpdatedAt = null;
+  return changed;
+}
+
+function clearAllOptimizedPrompts() {
+  let changed = false;
+  for (const workspace of state.workspaces) {
+    for (const stage of STAGES) {
+      changed = clearOptimizedPromptForStage(workspace.stages[stage.id]) || changed;
+    }
+  }
+  return changed;
+}
+
+function markPromptSourceChanged(stageState, workspaceId = state.activeWorkspaceId, stageId = getCurrentStageId()) {
+  clearOptimizedPromptForStage(stageState);
+  stageState.activePresetId = "";
+  if (promptAssistState.workspaceId === workspaceId && promptAssistState.stageId === stageId) {
+    promptAssistState = createPromptAssistState();
+  }
+}
+
 async function exportStateToTextarea() {
   const exportState = serializeStateForStorage(state);
   const imagePayloads = await collectExportImagePayloads(exportState);
@@ -1921,6 +2549,7 @@ async function importStateFromTextarea() {
       await hydrateImagePayloadCache();
     }
     resultSelectionIds = [];
+    promptAssistState = createPromptAssistState();
     persistState();
     renderAll();
     await deleteUnreferencedImagePayloads(previousKeys);
@@ -1957,6 +2586,7 @@ async function resetCurrentStage() {
   }
   const removedKeys = collectImageKeysFromStageState(workspace.stages[workspace.currentStageId]);
   workspace.stages[workspace.currentStageId] = createStageState(workspace.currentStageId);
+  promptAssistState = createPromptAssistState();
   touchWorkspace();
   refs.inputImage.value = "";
   refs.referenceImageInput.value = "";
@@ -2038,6 +2668,133 @@ async function runGeneration() {
 async function generateMockImage(workspace, stage, prompt) {
   await wait(180);
   return buildMockResultImage(workspace, stage, prompt);
+}
+
+async function optimizePromptWithOpenAI() {
+  const workspace = getActiveWorkspace();
+  const stage = getCurrentStage();
+  const stageState = getCurrentStageState();
+  if (!workspace || !stage || !stageState || stageState.status === "running" || promptAssistState.status === "running") {
+    return;
+  }
+  const apiKey = getStoredApiKey();
+  if (!apiKey) {
+    showToast("messages.apiKeyRequired");
+    openSettingsModal("settings");
+    return;
+  }
+
+  const sourceSignature = getPromptOptimizationSourceSignature(stageState);
+  const draftPrompt = buildDraftPrompt(workspace, stage.id);
+  promptAssistState = {
+    status: "running",
+    workspaceId: workspace.id,
+    stageId: stage.id,
+    error: "",
+  };
+  renderPromptPreviewPanel(workspace, stage, stageState);
+
+  try {
+    const optimizedPrompt = await requestOptimizedPromptFromOpenAI({
+      apiKey,
+      workspace,
+      stage,
+      stageState,
+      draftPrompt,
+    });
+    const currentWorkspace = state.workspaces.find((item) => item.id === workspace.id);
+    const currentStageState = currentWorkspace?.stages?.[stage.id];
+    if (!currentStageState || getPromptOptimizationSourceSignature(currentStageState) !== sourceSignature) {
+      promptAssistState = createPromptAssistState();
+      refreshDerivedUi();
+      showToast("messages.promptOptimizationStale");
+      return;
+    }
+    currentStageState.optimizedPrompt = optimizedPrompt;
+    currentStageState.optimizedPromptUpdatedAt = new Date().toISOString();
+    currentWorkspace.updatedAt = new Date().toISOString();
+    promptAssistState = createPromptAssistState();
+    persistStateOrThrow();
+    refreshDerivedUi();
+    showToast("messages.promptOptimized");
+  } catch (error) {
+    console.error(error);
+    promptAssistState = {
+      status: "error",
+      workspaceId: workspace.id,
+      stageId: stage.id,
+      error: getPromptOptimizationErrorMessage(error),
+    };
+    if (state.activeWorkspaceId === workspace.id && getCurrentStageId() === stage.id) {
+      renderPromptPreviewPanel(workspace, stage, stageState);
+    } else {
+      refreshDerivedUi();
+    }
+    showToast(getPromptOptimizationErrorToastKey(error));
+    if (error?.message === "apiKeyRequired") {
+      openSettingsModal("settings");
+    }
+  }
+}
+
+async function requestOptimizedPromptFromOpenAI({ apiKey, workspace, stage, stageState, draftPrompt }) {
+  let lastError = null;
+  for (const model of PROMPT_OPTIMIZER_MODEL_PREFERENCE) {
+    try {
+      return await requestOptimizedPromptForModel({
+        apiKey,
+        model,
+        workspace,
+        stage,
+        stageState,
+        draftPrompt,
+      });
+    } catch (error) {
+      lastError = error;
+      if (!shouldRetryPromptOptimizerModel(error)) {
+        throw error;
+      }
+    }
+  }
+  throw lastError || new Error("Prompt optimization failed.");
+}
+
+async function requestOptimizedPromptForModel({ apiKey, model, workspace, stage, stageState, draftPrompt }) {
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+      "X-Client-Request-Id": createId("promptopt"),
+    },
+    body: JSON.stringify({
+      model,
+      input: buildPromptOptimizationInput(workspace, stage, stageState, draftPrompt),
+      max_output_tokens: PROMPT_OPTIMIZER_MAX_OUTPUT_TOKENS,
+    }),
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload?.error?.message || "Prompt optimization failed.");
+  }
+  const optimizedPrompt = normalizeOptimizedPromptText(extractResponseText(payload));
+  if (!optimizedPrompt) {
+    throw new Error("Empty prompt optimization response.");
+  }
+  return optimizedPrompt;
+}
+
+function shouldRetryPromptOptimizerModel(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return [
+    "model",
+    "not found",
+    "does not exist",
+    "unsupported",
+    "permission",
+    "access",
+    "not available",
+  ].some((keyword) => message.includes(keyword));
 }
 
 async function generateLiveImage(workspace, stage, prompt, request) {
@@ -2411,12 +3168,12 @@ function renderStudio() {
     .join("");
 
   renderInputImage(workspace, stage.id, stageState);
+  renderStagePresets(stage, stageState);
   renderStageForm(stage, stageState);
   renderStageTags(stage, stageState);
   refs.extraPrompt.value = stageState.extraPrompt;
   refs.negativePrompt.value = stageState.negativePrompt;
-  refs.promptPreview.value = buildPrompt(workspace, stage.id);
-  refs.requestPreview.textContent = JSON.stringify(buildRequestPayload(workspace, stage.id, refs.promptPreview.value), null, 2);
+  renderPromptPreviewPanel(workspace, stage, stageState);
   syncParameterUi(workspace);
   renderParameterHelp();
 
@@ -2514,9 +3271,23 @@ function renderStageForm(stage, stageState) {
   }).join("");
 }
 
+function renderStagePresets(stage, stageState) {
+  const presets = getStagePresets(stage.id);
+  refs.stagePresets.innerHTML = presets.map((preset) => `
+    <button
+      type="button"
+      class="stage-preset-button${stageState.activePresetId === preset.id ? " active" : ""}"
+      data-stage-preset-id="${preset.id}"
+    >
+      <strong>${escapeHtml(getStagePresetLabel(preset))}</strong>
+      <p class="helper-text">${escapeHtml(getStagePresetDescription(preset))}</p>
+    </button>
+  `).join("");
+}
+
 function renderStageTags(stage, stageState) {
   const availableTags = getAllTags();
-  refs.tagGroups.innerHTML = stage.focusCategoryIds.map((categoryId) => {
+  refs.tagGroups.innerHTML = getVisibleStageTagCategoryIds(stage).map((categoryId) => {
     const category = categoryById.get(categoryId);
     const tags = availableTags.filter((tag) => tag.categoryId === categoryId);
     return `
@@ -2545,6 +3316,11 @@ function renderStageTags(stage, stageState) {
       </section>
     `;
   }).join("");
+}
+
+function getVisibleStageTagCategoryIds(stage) {
+  return [...new Set([...(stage?.focusCategoryIds || []), ...STUDIO_TAG_CATEGORY_IDS])]
+    .filter((categoryId) => categoryById.has(categoryId));
 }
 
 function renderResults() {
@@ -2647,12 +3423,12 @@ function renderResultDetail(result) {
 }
 
 function renderTagLibrary() {
-  refs.customTagCategory.innerHTML = TAG_CATEGORIES.map((category) => `
+  refs.customTagCategory.innerHTML = ALL_TAG_CATEGORIES.map((category) => `
     <option value="${category.id}">${escapeHtml(getCategoryName(category))}</option>
   `).join("");
 
   const allTags = getAllTags();
-  refs.tagLibrary.innerHTML = TAG_CATEGORIES.map((category) => {
+  refs.tagLibrary.innerHTML = ALL_TAG_CATEGORIES.map((category) => {
     const tags = allTags.filter((tag) => tag.categoryId === category.id);
     return `
       <section class="tag-category-card">
@@ -2978,9 +3754,11 @@ function toggleTagSelection(tagId, stageId) {
   if (!workspace || !workspace.stages[stageId]) {
     return;
   }
-  const selected = workspace.stages[stageId].selectedTagIds;
+  const stageState = workspace.stages[stageId];
+  const selected = stageState.selectedTagIds;
   const next = selected.includes(tagId) ? selected.filter((id) => id !== tagId) : [...selected, tagId];
-  workspace.stages[stageId].selectedTagIds = next;
+  stageState.selectedTagIds = next;
+  markPromptSourceChanged(stageState, workspace.id, stageId);
   touchWorkspace();
   persistState();
   renderAll();
@@ -2996,7 +3774,7 @@ function selectResult(resultId) {
   renderAll();
 }
 
-function buildPrompt(workspace, stageId) {
+function buildDraftPrompt(workspace, stageId) {
   const stageState = workspace.stages[stageId];
   const stage = stageById.get(stageId);
   const sheet = promptSheetByStageId.get(stageId);
@@ -3034,6 +3812,64 @@ function buildPrompt(workspace, stageId) {
     .map((tag) => getTagPromptValue(tag));
   const parts = [...splitPromptParts(prompt), ...tagValues.flatMap((item) => splitPromptParts(item)), ...splitPromptParts(stageState.extraPrompt)];
   return [...new Set(parts)].join(", ");
+}
+
+function buildPrompt(workspace, stageId) {
+  const stageState = workspace.stages[stageId];
+  return sanitizeText(stageState?.optimizedPrompt, "") || buildDraftPrompt(workspace, stageId);
+}
+
+function buildPromptOptimizationInput(workspace, stage, stageState, draftPrompt) {
+  const localeLabel = state.locale === "ja" ? "Japanese" : "English";
+  const fieldLines = FORM_FIELDS
+    .map((field) => {
+      const value = stageState.fields[field.name];
+      if (!value) {
+        return "";
+      }
+      return `- ${getFieldLabel(field)}: ${value}`;
+    })
+    .filter(Boolean)
+    .join("\n") || "- none";
+  const selectedTags = stageState.selectedTagIds
+    .map((id) => getAllTags().find((tag) => tag.id === id))
+    .filter(Boolean)
+    .map((tag) => `- ${getTagLabel(tag)}: ${getTagPromptValue(tag)}`)
+    .join("\n") || "- none";
+  return [
+    "You improve prompts for image-to-image illustration workflows.",
+    "Rewrite the draft prompt into one stronger prompt string for image generation.",
+    "Requirements:",
+    `- Keep the output in ${localeLabel}.`,
+    "- Preserve concrete subject, character names, pose, composition, camera, outfit, lighting, mood, props, and stage-specific constraints.",
+    "- Remove duplicates, contradictions, weak filler, and repeated tokens.",
+    "- Keep the result concise, visual, and directly usable as an image prompt.",
+    "- Do not add markdown, explanations, labels, numbering, or quotation marks.",
+    "- Return only the final prompt string.",
+    "",
+    `Workspace: ${workspace.name}`,
+    `Stage: ${getStageLabel(stage)} (${stage.code})`,
+    `Stage goal: ${getStageDescription(stage) || "-"}`,
+    "",
+    "Stage fields:",
+    fieldLines,
+    "",
+    "Selected tags:",
+    selectedTags,
+    "",
+    `Extra prompt: ${stageState.extraPrompt || "-"}`,
+    "",
+    `Current draft prompt: ${draftPrompt || "-"}`,
+  ].join("\n");
+}
+
+function getPromptOptimizationSourceSignature(stageState) {
+  return JSON.stringify({
+    locale: state.locale,
+    fields: stageState?.fields || {},
+    extraPrompt: stageState?.extraPrompt || "",
+    selectedTagIds: [...(stageState?.selectedTagIds || [])],
+  });
 }
 
 function buildRequestPayload(workspace, stageId, prompt) {
@@ -3193,8 +4029,24 @@ function getInputImagesForStage(workspace, stageState, stageId) {
   };
 }
 
+function getStagePresets(stageId) {
+  return STAGE_PRESETS[stageId] || [];
+}
+
+function getStagePreset(stageId, presetId) {
+  return getStagePresets(stageId).find((preset) => preset.id === presetId) || null;
+}
+
+function getStagePresetLabel(preset) {
+  return state.locale === "ja" ? preset?.labelJa || "" : preset?.labelEn || "";
+}
+
+function getStagePresetDescription(preset) {
+  return state.locale === "ja" ? preset?.descriptionJa || "" : preset?.descriptionEn || "";
+}
+
 function getAllTags() {
-  return [...BUILT_IN_TAGS, ...state.customTags];
+  return [...ALL_BUILT_IN_TAGS, ...state.customTags];
 }
 
 function getCompletedStageCount(workspace) {
@@ -3336,6 +4188,15 @@ function createModelCatalogState() {
   };
 }
 
+function createPromptAssistState() {
+  return {
+    status: "idle",
+    workspaceId: "",
+    stageId: "",
+    error: "",
+  };
+}
+
 function resetModelCatalog() {
   modelCatalogRequestId += 1;
   modelCatalog = createModelCatalogState();
@@ -3443,6 +4304,43 @@ function splitPromptParts(value) {
     .filter(Boolean);
 }
 
+function extractResponseText(payload) {
+  if (typeof payload?.output_text === "string" && payload.output_text.trim()) {
+    return payload.output_text.trim();
+  }
+  const fragments = [];
+  for (const item of payload?.output || []) {
+    if (typeof item?.text === "string" && item.text.trim()) {
+      fragments.push(item.text.trim());
+    }
+    for (const content of item?.content || []) {
+      if (typeof content?.text === "string" && content.text.trim()) {
+        fragments.push(content.text.trim());
+      } else if (typeof content?.output_text === "string" && content.output_text.trim()) {
+        fragments.push(content.output_text.trim());
+      }
+    }
+  }
+  return fragments.join("\n").trim();
+}
+
+function normalizeOptimizedPromptText(value) {
+  const lines = String(value || "")
+    .replace(/^```[\w-]*\s*/i, "")
+    .replace(/\s*```$/, "")
+    .split(/\r?\n+/)
+    .map((line) => line.replace(/^\s*[-*]\s*/, "").trim())
+    .filter(Boolean);
+  let normalized = lines.join(", ").trim();
+  if (
+    (normalized.startsWith("\"") && normalized.endsWith("\""))
+    || (normalized.startsWith("\u201c") && normalized.endsWith("\u201d"))
+  ) {
+    normalized = normalized.slice(1, -1).trim();
+  }
+  return normalized;
+}
+
 function getStoredApiKey() {
   return state.settings.apiStorageMode === "local"
     ? window.localStorage.getItem(API_KEY_STORAGE_KEY) || ""
@@ -3473,8 +4371,7 @@ function refreshDerivedUi() {
   const workspace = getActiveWorkspace();
   const stage = getCurrentStage();
   if (workspace && stage) {
-    refs.promptPreview.value = buildPrompt(workspace, stage.id);
-    refs.requestPreview.textContent = JSON.stringify(buildRequestPayload(workspace, stage.id, refs.promptPreview.value), null, 2);
+    renderPromptPreviewPanel(workspace, stage, workspace.stages[stage.id]);
     syncParameterUi(workspace);
   }
   renderHeader();
@@ -3510,6 +4407,39 @@ function syncParameterUi(workspace) {
   refs.paramStepsValue.textContent = formatParameterValue("steps", workspace.parameters.steps);
   refs.paramSeed.value = String(workspace.parameters.seed);
   refs.paramSeedValue.textContent = formatParameterValue("seed", workspace.parameters.seed);
+}
+
+function renderPromptPreviewPanel(workspace, stage, stageState) {
+  const prompt = buildPrompt(workspace, stage.id);
+  refs.promptPreview.value = prompt;
+  refs.requestPreview.textContent = JSON.stringify(buildRequestPayload(workspace, stage.id, prompt), null, 2);
+  const isRunning = promptAssistState.status === "running"
+    && promptAssistState.workspaceId === workspace.id
+    && promptAssistState.stageId === stage.id;
+  const hasActiveOverride = Boolean(stageState.optimizedPrompt);
+  const hasError = promptAssistState.status === "error"
+    && promptAssistState.workspaceId === workspace.id
+    && promptAssistState.stageId === stage.id
+    && !hasActiveOverride;
+  refs.optimizePrompt.disabled = stageState.status === "running" || isRunning || !getStoredApiKey();
+  refs.clearOptimizedPrompt.disabled = stageState.status === "running" || isRunning || !hasActiveOverride;
+  refs.promptOptimizeStatus.textContent = hasError
+    ? promptAssistState.error
+    : getPromptOptimizationStatusText(stageState, isRunning);
+}
+
+function getPromptOptimizationStatusText(stageState, isRunning) {
+  if (isRunning) {
+    return t("studio.promptOptimizeRunning");
+  }
+  if (stageState.optimizedPrompt) {
+    const updatedAt = stageState.optimizedPromptUpdatedAt ? formatDateTime(stageState.optimizedPromptUpdatedAt) : "-";
+    return t("studio.promptOptimizeActive", { value: updatedAt });
+  }
+  if (!getStoredApiKey()) {
+    return t("studio.promptOptimizeNoKey");
+  }
+  return t("studio.promptOptimizeDefault");
 }
 
 function renderParameterHelp() {
@@ -3781,6 +4711,26 @@ function getGenerationErrorToastKey(error) {
     return "messages.storageQuotaExceeded";
   }
   return "messages.liveFailed";
+}
+
+function getPromptOptimizationErrorMessage(error) {
+  if (error?.message === "apiKeyRequired") {
+    return t("messages.apiKeyRequired");
+  }
+  if (error?.message === "storageQuotaExceeded") {
+    return t("messages.storageQuotaExceeded");
+  }
+  return error?.message || t("messages.promptOptimizationFailed");
+}
+
+function getPromptOptimizationErrorToastKey(error) {
+  if (error?.message === "apiKeyRequired") {
+    return "messages.apiKeyRequired";
+  }
+  if (error?.message === "storageQuotaExceeded") {
+    return "messages.storageQuotaExceeded";
+  }
+  return "messages.promptOptimizationFailed";
 }
 
 function getClipboardErrorToastKey(error) {

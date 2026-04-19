@@ -240,7 +240,7 @@
 
             <div class="studio-layout">
               <div class="studio-column">
-                <div class="app-card">
+                <div class="app-card studio-card-stage">
                   <div class="card-toolbar">
                     <h3 id="studio-stage-title">Active stage</h3>
                     <span id="stage-number-badge" class="badge-inline"></span>
@@ -249,7 +249,19 @@
                   <div id="stage-focus-chips" class="focus-chip-row"></div>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-presets">
+                  <div class="card-toolbar">
+                    <div>
+                      <h3 data-i18n="studio.stagePresets">Stage presets</h3>
+                      <p class="helper-text" data-i18n="studio.stagePresetDescription">
+                        Load a tuned starting set for the current stage.
+                      </p>
+                    </div>
+                  </div>
+                  <div id="stage-presets" class="stage-preset-grid"></div>
+                </div>
+
+                <div class="app-card studio-card-base">
                   <div class="card-toolbar">
                     <h3 data-i18n="studio.baseImage">Base image</h3>
                     <div class="toolbar-actions">
@@ -345,17 +357,17 @@
                   </div>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-form">
                   <h3 data-i18n="studio.stageForm">Stage form</h3>
                   <div id="stage-form-grid" class="form-grid"></div>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-tags">
                   <h3 data-i18n="studio.presetTags">Preset tags</h3>
                   <div id="tag-groups" class="tag-groups"></div>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-notes">
                   <h3 data-i18n="studio.promptNotes">Prompt notes</h3>
                   <div class="form-grid compact-form">
                     <label class="field-stack field-span-2">
@@ -379,14 +391,33 @@
               </div>
 
               <div class="studio-column">
-                <div class="app-card">
+                <div class="app-card studio-card-prompt">
                   <div class="card-toolbar">
                     <h3 data-i18n="studio.promptPreview">Prompt preview</h3>
-                    <button id="copy-prompt" type="button" class="secondary-button" data-i18n="actions.copy">
-                      Copy
-                    </button>
+                    <div class="toolbar-actions prompt-toolbar-actions">
+                      <button
+                        id="optimize-prompt"
+                        type="button"
+                        class="secondary-button secondary-button-brand"
+                        data-i18n="actions.optimizePrompt"
+                      >
+                        Optimize with OpenAI
+                      </button>
+                      <button
+                        id="clear-optimized-prompt"
+                        type="button"
+                        class="secondary-button"
+                        data-i18n="actions.clearOptimizedPrompt"
+                      >
+                        Clear optimized prompt
+                      </button>
+                      <button id="copy-prompt" type="button" class="secondary-button" data-i18n="actions.copy">
+                        Copy
+                      </button>
+                    </div>
                   </div>
                   <textarea id="prompt-preview" rows="10" readonly></textarea>
+                  <p id="prompt-optimize-status" class="helper-text prompt-optimize-status" aria-live="polite"></p>
                   <details class="request-detail">
                     <summary data-i18n="studio.showRequestJson">Show request JSON</summary>
                     <pre id="request-preview" class="request-preview"></pre>
@@ -403,7 +434,7 @@
                   </details>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-params">
                   <h3 data-i18n="studio.parameters">Generation parameters</h3>
                   <div id="parameter-grid" class="form-grid compact-form">
                     <label class="field-stack" data-parameter-help="provider">
@@ -467,7 +498,7 @@
                   </div>
                 </div>
 
-                <div class="app-card">
+                <div class="app-card studio-card-result">
                   <div class="card-toolbar">
                     <h3 data-i18n="studio.resultViewer">Result viewer</h3>
                     <span id="result-status-badge" class="badge-inline">idle</span>

@@ -20,6 +20,18 @@
     },
     "outputStageId": {
       "type": "string"
+    },
+    "optimizedPrompt": {
+      "type": "string"
+    },
+    "activePresetId": {
+      "type": "string"
+    },
+    "optimizedPromptUpdatedAt": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": true
