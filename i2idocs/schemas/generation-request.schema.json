@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GenerationRequest",
+  "type": "object",
+  "required": [
+    "id",
+    "workspaceId",
+    "stageStateId",
+    "providerId",
+    "inputImageRef",
+    "prompt",
+    "parameters",
+    "requestedAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "stageStateId": {
+      "type": "string"
+    },
+    "providerId": {
+      "type": "string"
+    },
+    "inputImageRef": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "requestedAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

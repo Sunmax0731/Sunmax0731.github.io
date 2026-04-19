@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="I2I production flow support app with a compact visual pipeline, workspace control, and prompt tooling."
+    />
+    <title>I2I Forge | Sunmax</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body class="i2i-app-body">
+    <div class="app-layout">
+      <header class="app-header">
+        <div class="header-content">
+          <button
+            id="sidebar-toggle"
+            class="sidebar-toggle"
+            type="button"
+            aria-label="Toggle sidebar"
+            data-i18n-aria-label="header.toggleSidebar"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+            </svg>
+          </button>
+
+          <div class="header-brand">
+            <h1 class="app-title">I2I Forge</h1>
+            <p class="app-subtitle" data-i18n="header.subtitle">Stage cockpit for image-to-image production</p>
+            <span id="header-stage-inline" class="header-stage-inline">Layout / Stage 4</span>
+          </div>
+
+          <div class="header-stage-status">
+            <span class="header-status-label" data-i18n="header.currentStage">Current stage</span>
+            <strong id="header-stage-name" class="header-stage-name">Layout</strong>
+            <span id="header-stage-pill" class="header-stage-pill">Stage 4</span>
+          </div>
+
+          <span id="header-result-count" class="result-count">0 results</span>
+        </div>
+      </header>
+
+      <div class="content-layout">
+        <div id="sidebar-overlay" class="sidebar-overlay" hidden></div>
+
+        <aside id="app-sidebar" class="sidebar">
+          <section class="filter-section">
+            <div class="card-toolbar sidebar-section-head">
+              <h2 class="filter-section-title" data-i18n="sidebar.workspace">Workspace</h2>
+              <button
+                type="button"
+                class="secondary-button sidebar-manage-button"
+                data-view-target="workspaces"
+                data-i18n="workspace.manage"
+              >
+                Manage
+              </button>
+            </div>
+            <div
+              id="workspace-switcher"
+              class="workspace-switcher"
+              aria-label="Workspace switcher"
+              data-i18n-aria-label="workspace.switcher"
+            ></div>
+            <div id="workspace-quick-stats" class="compact-stat-list"></div>
+          </section>
+
+          <section class="filter-section">
+            <h2 class="filter-section-title" data-i18n="sidebar.views">Views</h2>
+            <div id="view-nav" class="view-nav-grid" aria-label="App views" data-i18n-aria-label="sidebar.views"></div>
+          </section>
+
+          <section class="filter-section">
+            <h2 class="filter-section-title" data-i18n="sidebar.stageFocus">Stage focus</h2>
+            <div class="focus-panel">
+              <h3 id="active-stage-name">Current stage</h3>
+              <p id="active-stage-summary" class="helper-text">
+                Stage goal and the key categories for the active pass appear here.
+              </p>
+              <div id="active-stage-focus" class="focus-chip-row"></div>
+            </div>
+          </section>
+        </aside>
+
+        <main class="main-content">
+          <section class="active-filters-panel compact-context-panel">
+            <div class="context-strip">
+              <span class="context-strip-label" data-i18n="context.live">Live context</span>
+              <div id="context-chips" class="active-filters-list"></div>
+            </div>
+          </section>
+
+          <div class="view-pane view-pane-overview" data-view="overview" hidden>
+            <div class="view-header">
+              <div>
+                <p class="panel-kicker" data-i18n="overview.kicker">Overview</p>
+                <h2 data-i18n="overview.title">Flow at a glance</h2>
+              </div>
+              <div class="inline-actions">
+                <button type="button" class="secondary-button" data-view-target="studio" data-i18n="views.studio">
+                  Studio
+                </button>
+              </div>
+            </div>
+
+            <div id="overview-metrics" class="metric-grid compact-metric-grid"></div>
+
+            <div class="overview-dashboard">
+              <section class="app-card overview-flow-card">
+                <div class="card-toolbar">
+                  <h3 data-i18n="overview.pipeline">Pipeline</h3>
+                  <span class="badge-inline">Stage 4-9</span>
+                </div>
+                <div id="stage-roadmap" class="stage-roadmap stage-flow-roadmap" aria-label="Pipeline flow"></div>
+              </section>
+
+              <div class="overview-bottom-grid">
+                <section class="app-card">
+                  <div class="card-toolbar">
+                    <h3 data-i18n="overview.currentWorkspace">Current workspace</h3>
+                    <button
+                      type="button"
+                      class="secondary-button"
+                      data-view-target="studio"
+                      data-i18n="views.studio"
+                    >
+                      Studio
+                    </button>
+                  </div>
+                  <div id="overview-workspaces" class="overview-stack"></div>
+                </section>
+
+                <section class="app-card">
+                  <div class="card-toolbar">
+                    <h3 data-i18n="overview.latestOutput">Latest output</h3>
+                    <button
+                      type="button"
+                      class="secondary-button"
+                      data-view-target="results"
+                      data-i18n="views.results"
+                    >
+                      Results
+                    </button>
+                  </div>
+                  <div id="overview-results" class="overview-stack"></div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-pane" data-view="workspaces" hidden>
+            <div class="view-header">
+              <div>
+                <p class="panel-kicker" data-i18n="workspace.kicker">Workspace</p>
+                <h2 data-i18n="workspace.title">Workspace control</h2>
+                <p class="helper-text" data-i18n="workspace.description">
+                  Create focused flows, duplicate them, and keep separate passes organized by theme.
+                </p>
+              </div>
+              <div class="inline-actions">
+                <button type="button" class="secondary-button" data-view-target="studio" data-i18n="views.studio">
+                  Studio
+                </button>
+              </div>
+            </div>
+
+            <div class="panel-grid">
+              <form id="workspace-form" class="app-card">
+                <h3 data-i18n="workspace.create">Create workspace</h3>
+                <div class="form-grid compact-form">
+                  <label class="field-stack">
+                    <span data-i18n="workspace.name">Name</span>
+                    <input
+                      id="workspace-name"
+                      name="workspaceName"
+                      type="text"
+                      required
+                      data-i18n-placeholder="workspace.namePlaceholder"
+                    />
+                  </label>
+
+                  <label class="field-stack field-span-2">
+                    <span data-i18n="workspace.descriptionLabel">Description</span>
+                    <textarea
+                      id="workspace-description"
+                      name="workspaceDescription"
+                      rows="3"
+                      data-i18n-placeholder="workspace.descriptionPlaceholder"
+                    ></textarea>
+                  </label>
+                </div>
+
+                <div class="inline-actions">
+                  <button type="submit" class="btn" data-i18n="actions.create">Create</button>
+                </div>
+              </form>
+
+              <div class="app-card">
+                <div class="card-toolbar">
+                  <h3 data-i18n="workspace.saved">Saved workspaces</h3>
+                  <span class="badge-inline">localStorage</span>
+                </div>
+                <div id="workspace-list" class="workspace-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-pane" data-view="studio">
+            <div class="view-header">
+              <div>
+                <p class="panel-kicker" data-i18n="studio.kicker">Studio</p>
+                <h2 data-i18n="studio.title">Production studio</h2>
+                <p class="helper-text" data-i18n="studio.description">
+                  Adjust stage input, tags, prompts, parameters, and result flow from one workspace.
+                </p>
+              </div>
+              <div class="inline-actions">
+                <button
+                  type="button"
+                  class="secondary-button"
+                  data-view-target="settings"
+                  data-i18n="views.settings"
+                >
+                  Settings
+                </button>
+                <button
+                  id="reset-current-stage"
+                  type="button"
+                  class="secondary-button"
+                  data-i18n="studio.resetStage"
+                >
+                  Reset stage
+                </button>
+              </div>
+            </div>
+
+            <div id="stage-stepper" class="stage-stepper" aria-label="Stage stepper"></div>
+
+            <div class="studio-layout">
+              <div class="studio-column">
+                <div class="app-card">
+                  <div class="card-toolbar">
+                    <h3 id="studio-stage-title">Active stage</h3>
+                    <span id="stage-number-badge" class="badge-inline"></span>
+                  </div>
+                  <p id="studio-stage-description" class="helper-text"></p>
+                  <div id="stage-focus-chips" class="focus-chip-row"></div>
+                </div>
+
+                <div class="app-card">
+                  <div class="card-toolbar">
+                    <h3 data-i18n="studio.baseImage">Base image</h3>
+                    <div class="toolbar-actions">
+                      <button
+                        id="paste-input-image"
+                        type="button"
+                        class="secondary-button"
+                        data-i18n="actions.pasteImage"
+                      >
+                        Paste image
+                      </button>
+                      <button
+                        id="remove-input-image"
+                        type="button"
+                        class="secondary-button"
+                        data-i18n="actions.remove"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                  <div class="input-image-stack">
+                    <label id="image-dropzone" class="input-dropzone" tabindex="0">
+                      <input id="input-image" type="file" accept="image/*" hidden />
+                      <span class="preview-frame">
+                        <img id="input-image-preview" alt="Base input preview" hidden />
+                        <span
+                          id="input-image-placeholder"
+                          data-i18n="studio.inputPlaceholder"
+                        >
+                          Click or drop an image to set the base image for the current stage.
+                        </span>
+                      </span>
+                      <span class="dropzone-copy" data-i18n="studio.pasteHint">
+                        Use Paste image or focus this area and press Ctrl+V.
+                      </span>
+                      <span
+                        class="dropzone-copy"
+                        data-i18n="studio.baseCarryHint"
+                      >
+                        The previous stage result is carried only as the base image when you advance.
+                      </span>
+                    </label>
+
+                    <div class="reference-image-panel">
+                      <div class="card-toolbar compact-toolbar">
+                        <div>
+                          <h4 data-i18n="studio.referenceImages">Reference images</h4>
+                          <p
+                            id="reference-image-hint"
+                            class="helper-text"
+                            data-i18n="studio.referenceHint"
+                          >
+                            You can add up to 4 reference images. OpenAI Live sends them after the base image.
+                          </p>
+                        </div>
+                        <div class="toolbar-actions">
+                          <button
+                            id="paste-reference-images"
+                            type="button"
+                            class="secondary-button"
+                            data-i18n="actions.pasteImages"
+                          >
+                            Paste images
+                          </button>
+                          <button
+                            id="add-reference-images"
+                            type="button"
+                            class="secondary-button"
+                            data-i18n="actions.addImages"
+                          >
+                            Add images
+                          </button>
+                        </div>
+                      </div>
+
+                      <label id="reference-dropzone" class="input-dropzone input-dropzone-compact" tabindex="0">
+                        <input id="reference-image-input" type="file" accept="image/*" multiple hidden />
+                        <span
+                          id="reference-image-placeholder"
+                          class="dropzone-copy"
+                          data-i18n="studio.referencePlaceholder"
+                        >
+                          Add images for targeted fixes or reference material.
+                        </span>
+                        <span class="dropzone-copy" data-i18n="studio.referencePasteHint">
+                          Use Paste images or focus this area and press Ctrl+V.
+                        </span>
+                      </label>
+
+                      <div id="reference-image-list" class="reference-image-list"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="app-card">
+                  <h3 data-i18n="studio.stageForm">Stage form</h3>
+                  <div id="stage-form-grid" class="form-grid"></div>
+                </div>
+
+                <div class="app-card">
+                  <h3 data-i18n="studio.presetTags">Preset tags</h3>
+                  <div id="tag-groups" class="tag-groups"></div>
+                </div>
+
+                <div class="app-card">
+                  <h3 data-i18n="studio.promptNotes">Prompt notes</h3>
+                  <div class="form-grid compact-form">
+                    <label class="field-stack field-span-2">
+                      <span data-i18n="studio.extraPrompt">Extra prompt</span>
+                      <textarea
+                        id="extra-prompt"
+                        rows="4"
+                        data-i18n-placeholder="studio.extraPromptPlaceholder"
+                      ></textarea>
+                    </label>
+                    <label class="field-stack field-span-2">
+                      <span data-i18n="studio.negativePrompt">Negative prompt</span>
+                      <textarea
+                        id="negative-prompt"
+                        rows="4"
+                        data-i18n-placeholder="studio.negativePromptPlaceholder"
+                      ></textarea>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="studio-column">
+                <div class="app-card">
+                  <div class="card-toolbar">
+                    <h3 data-i18n="studio.promptPreview">Prompt preview</h3>
+                    <button id="copy-prompt" type="button" class="secondary-button" data-i18n="actions.copy">
+                      Copy
+                    </button>
+                  </div>
+                  <textarea id="prompt-preview" rows="10" readonly></textarea>
+                  <details class="request-detail">
+                    <summary data-i18n="studio.showRequestJson">Show request JSON</summary>
+                    <pre id="request-preview" class="request-preview"></pre>
+                    <div class="inline-actions">
+                      <button
+                        id="copy-request"
+                        type="button"
+                        class="secondary-button"
+                        data-i18n="studio.copyJson"
+                      >
+                        Copy JSON
+                      </button>
+                    </div>
+                  </details>
+                </div>
+
+                <div class="app-card">
+                  <h3 data-i18n="studio.parameters">Generation parameters</h3>
+                  <div id="parameter-grid" class="form-grid compact-form">
+                    <label class="field-stack" data-parameter-help="provider">
+                      <span data-i18n="settings.provider">Provider</span>
+                      <select id="param-provider" name="providerId"></select>
+                    </label>
+                    <label class="field-stack" data-parameter-help="model">
+                      <span class="field-label-row">
+                        <span data-i18n="settings.model">Model</span>
+                        <button
+                          id="param-model-refresh"
+                          type="button"
+                          class="secondary-button parameter-refresh-button"
+                          data-i18n="actions.refresh"
+                        >
+                          Refresh
+                        </button>
+                      </span>
+                      <select id="param-model" name="model"></select>
+                      <p id="param-model-status" class="helper-text parameter-model-status"></p>
+                    </label>
+                    <label class="field-stack" data-parameter-help="strength">
+                      <span class="field-label-row">
+                        <span data-i18n="settings.strength">Strength</span>
+                        <output id="param-strength-value" class="parameter-range-value" for="param-strength">0.42</output>
+                      </span>
+                      <input id="param-strength" name="strength" type="range" min="0" max="1" step="0.01" />
+                      <span class="parameter-range-meta"><span>0.00</span><span>1.00</span></span>
+                    </label>
+                    <label class="field-stack" data-parameter-help="guidance">
+                      <span class="field-label-row">
+                        <span data-i18n="settings.guidance">Guidance</span>
+                        <output id="param-guidance-value" class="parameter-range-value" for="param-guidance">6.5</output>
+                      </span>
+                      <input id="param-guidance" name="guidance" type="range" min="1" max="20" step="0.1" />
+                      <span class="parameter-range-meta"><span>1.0</span><span>20.0</span></span>
+                    </label>
+                    <label class="field-stack" data-parameter-help="steps">
+                      <span class="field-label-row">
+                        <span data-i18n="settings.steps">Steps</span>
+                        <output id="param-steps-value" class="parameter-range-value" for="param-steps">28</output>
+                      </span>
+                      <input id="param-steps" name="steps" type="range" min="8" max="60" step="1" />
+                      <span class="parameter-range-meta"><span>8</span><span>60</span></span>
+                    </label>
+                    <label class="field-stack" data-parameter-help="seed">
+                      <span class="field-label-row">
+                        <span data-i18n="settings.seed">Seed</span>
+                        <output id="param-seed-value" class="parameter-range-value" for="param-seed">2048</output>
+                      </span>
+                      <input id="param-seed" name="seed" type="range" min="0" max="9999" step="1" />
+                      <span class="parameter-range-meta"><span>0</span><span>9999</span></span>
+                    </label>
+                  </div>
+                  <div id="parameter-help-panel" class="parameter-help-panel" aria-live="polite">
+                    <span class="parameter-help-kicker" data-i18n="studio.parameterHelpLabel">Parameter guide</span>
+                    <strong id="parameter-help-title">Select a parameter</strong>
+                    <p id="parameter-help-detail" class="helper-text">
+                      Focus a parameter to see what it changes and when to adjust it.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="app-card">
+                  <div class="card-toolbar">
+                    <h3 data-i18n="studio.resultViewer">Result viewer</h3>
+                    <span id="result-status-badge" class="badge-inline">idle</span>
+                  </div>
+                  <div id="result-status-summary" class="result-status-summary">
+                    <div class="result-status-head">
+                      <span id="result-status-indicator" class="result-status-indicator" aria-hidden="true"></span>
+                      <strong id="result-status-title">待機中</strong>
+                    </div>
+                    <p id="result-status-detail" class="helper-text">この工程の生成を待機しています。</p>
+                  </div>
+                  <div class="result-frame">
+                    <img id="studio-result-image" alt="Result preview" hidden />
+                    <div id="studio-result-placeholder" class="result-placeholder" data-i18n="studio.noResult">
+                      No result yet. Run the current stage to generate a preview.
+                    </div>
+                    <div id="result-progress-overlay" class="result-progress-overlay" hidden>
+                      <div class="result-progress-card">
+                        <span class="result-progress-spinner" aria-hidden="true"></span>
+                        <strong id="result-progress-title">生成中...</strong>
+                        <p id="result-progress-detail" class="helper-text">画像を生成しています。しばらくお待ちください。</p>
+                      </div>
+                    </div>
+                  </div>
+                  <p id="studio-result-caption" class="helper-text"></p>
+
+                  <div class="inline-actions">
+                    <button id="run-generation" type="button" class="btn" data-i18n="studio.run">
+                      Run I2I
+                    </button>
+                    <button
+                      id="advance-stage"
+                      type="button"
+                      class="secondary-button secondary-button-brand"
+                      data-i18n="studio.advanceStage"
+                    >
+                      Advance stage
+                    </button>
+                    <button
+                      id="view-result-detail"
+                      type="button"
+                      class="secondary-button"
+                      data-view-target="results"
+                      data-i18n="studio.openResults"
+                    >
+                      Open results
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-pane" data-view="results" hidden>
+            <div class="view-header">
+              <div>
+                <p class="panel-kicker" data-i18n="results.kicker">Results</p>
+                <h2 data-i18n="results.title">Results and history</h2>
+                <p class="helper-text" data-i18n="results.description">
+                  Review run history and inspect the selected result detail from one page.
+                </p>
+              </div>
+            </div>
+            <div class="results-grid">
+              <section class="app-card">
+                <div class="card-toolbar">
+                  <div>
+                    <h3 data-i18n="results.runLog">Run log</h3>
+                    <span class="badge-inline" data-i18n="results.localLog">local log</span>
+                  </div>
+                  <div class="inline-actions results-bulk-actions">
+                    <span id="results-selection-summary" class="helper-text results-selection-summary">0 selected</span>
+                    <button
+                      id="results-select-all"
+                      type="button"
+                      class="secondary-button"
+                      data-i18n="results.selectAll"
+                    >
+                      Select all
+                    </button>
+                    <button
+                      id="results-delete-selected"
+                      type="button"
+                      class="secondary-button secondary-button-danger"
+                      data-i18n="results.deleteSelected"
+                    >
+                      Delete selected
+                    </button>
+                    <button
+                      id="results-delete-all"
+                      type="button"
+                      class="secondary-button secondary-button-danger"
+                      data-i18n="results.deleteAll"
+                    >
+                      Delete all
+                    </button>
+                  </div>
+                </div>
+                <div id="history-list" class="history-list"></div>
+              </section>
+
+              <section class="app-card">
+                <div class="card-toolbar">
+                  <h3 data-i18n="results.detail">Result detail</h3>
+                </div>
+                <div id="results-detail" class="results-detail"></div>
+              </section>
+            </div>
+          </div>
+
+          <div class="view-pane" data-view="tags" hidden>
+            <div class="view-header">
+              <div>
+                <p class="panel-kicker" data-i18n="tags.kicker">Preset</p>
+                <h2 data-i18n="tags.title">Preset and custom tags</h2>
+                <p class="helper-text" data-i18n="tags.description">
+                  Add reusable tags so common art direction choices stay one click away.
+                </p>
+              </div>
+            </div>
+
+            <div class="panel-grid">
+              <form id="custom-tag-form" class="app-card">
+                <h3 data-i18n="tags.create">Create custom tag</h3>
+                <div class="form-grid compact-form">
+                  <label class="field-stack">
+                    <span data-i18n="tags.category">Category</span>
+                    <select id="custom-tag-category" required></select>
+                  </label>
+                  <label class="field-stack">
+                    <span data-i18n="tags.label">Label</span>
+                    <input id="custom-tag-label" type="text" required data-i18n-placeholder="tags.labelPlaceholder" />
+                  </label>
+                  <label class="field-stack field-span-2">
+                    <span data-i18n="tags.promptValue">Prompt value</span>
+                    <input
+                      id="custom-tag-value"
+                      type="text"
+                      required
+                      data-i18n-placeholder="tags.valuePlaceholder"
+                    />
+                  </label>
+                </div>
+                <div class="inline-actions">
+                  <button type="submit" class="btn" data-i18n="actions.create">Create</button>
+                </div>
+              </form>
+
+              <div class="app-card">
+                <h3 data-i18n="tags.library">Tag library</h3>
+                <div id="tag-library" class="tag-library"></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="settings-modal" class="app-modal" hidden>
+      <button
+        id="settings-modal-overlay"
+        class="app-modal-overlay"
+        type="button"
+        aria-label="Close settings"
+        data-i18n-aria-label="settings.close"
+      ></button>
+      <div class="app-modal-shell" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+        <div class="app-modal-header">
+          <div>
+            <p class="panel-kicker" data-i18n="settings.kicker">Settings</p>
+            <h2 id="settings-modal-title" data-i18n="settings.title">Settings and guide</h2>
+          </div>
+          <button
+            id="close-settings-modal"
+            type="button"
+            class="secondary-button"
+            data-i18n="actions.close"
+          >
+            Close
+          </button>
+        </div>
+
+        <div class="modal-tab-row" role="tablist" aria-label="Settings tabs" data-i18n-aria-label="settings.tabs">
+          <button
+            id="settings-tab-settings"
+            type="button"
+            class="modal-tab-button active"
+            data-modal-tab="settings"
+            data-i18n="views.settings"
+          >
+            Settings
+          </button>
+          <button
+            id="settings-tab-guide"
+            type="button"
+            class="modal-tab-button"
+            data-modal-tab="guide"
+            data-i18n="views.guide"
+          >
+            Guide
+          </button>
+        </div>
+
+        <div id="settings-modal-pane-settings" class="modal-pane">
+          <div class="modal-settings-grid">
+            <div class="app-card">
+              <h3 data-i18n="settings.language">Language</h3>
+              <label class="field-stack">
+                <span data-i18n="settings.languageLabel">Display language</span>
+                <select id="setting-language">
+                  <option value="ja">日本語</option>
+                  <option value="en">English</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.behavior">Behavior</h3>
+              <div class="toggle-list">
+                <label class="toggle-row">
+                  <input id="setting-auto-carry" type="checkbox" />
+                  <span data-i18n="settings.autoCarry">
+                    Carry the latest completed result forward into the next stage input.
+                  </span>
+                </label>
+                <label class="toggle-row">
+                  <input id="setting-compact-history" type="checkbox" />
+                  <span data-i18n="settings.compactHistory">
+                    Use a denser layout for the results log.
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.provider">Provider</h3>
+              <div id="provider-cards" class="provider-card-list"></div>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.apiKey">API key</h3>
+              <div class="form-grid compact-form">
+                <label class="field-stack">
+                  <span data-i18n="settings.storageMode">Storage mode</span>
+                  <select id="api-storage-mode">
+                    <option value="session" data-i18n="settings.sessionOnly">Session only</option>
+                    <option value="local" data-i18n="settings.saveInBrowser">Save in browser</option>
+                  </select>
+                </label>
+
+                <label class="field-stack field-span-2">
+                  <span data-i18n="settings.apiKeyLabel">API key</span>
+                  <input
+                    id="api-key-input"
+                    type="password"
+                    autocomplete="off"
+                    data-i18n-placeholder="settings.apiKeyPlaceholder"
+                  />
+                </label>
+              </div>
+
+              <div class="inline-actions">
+                <button id="save-api-key" type="button" class="btn" data-i18n="actions.save">Save</button>
+                <button
+                  id="clear-api-key"
+                  type="button"
+                  class="secondary-button"
+                  data-i18n="actions.clear"
+                >
+                  Clear
+                </button>
+              </div>
+              <p id="api-key-status" class="helper-text"></p>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.importExport">Import / export state</h3>
+              <div class="inline-actions">
+                <button id="export-state" type="button" class="btn" data-i18n="settings.exportJson">
+                  Export JSON
+                </button>
+                <button
+                  id="import-state"
+                  type="button"
+                  class="secondary-button"
+                  data-i18n="settings.importJson"
+                >
+                  Import JSON
+                </button>
+              </div>
+              <textarea
+                id="state-json"
+                rows="12"
+                data-i18n-placeholder="settings.statePlaceholder"
+              ></textarea>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.storageCleanup">Storage cleanup</h3>
+              <p class="helper-text" data-i18n="settings.storageCleanupDescription">
+                Clear generated previews and stored stage input images from browser storage while keeping prompts and run history.
+              </p>
+              <p id="result-cache-summary" class="helper-text"></p>
+              <div class="inline-actions">
+                <button
+                  id="clear-result-cache"
+                  type="button"
+                  class="secondary-button"
+                  data-i18n="settings.clearResultCache"
+                >
+                  Clear stored images
+                </button>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <h3 data-i18n="settings.whatRunsHere">What runs here</h3>
+              <ul class="plain-list">
+                <li data-i18n="settings.runLocalMock">Browser Mock keeps the public site static-safe.</li>
+                <li data-i18n="settings.runI2I">Run I2I creates a local mock result and stores the flow state.</li>
+                <li data-i18n="settings.externalDraft">
+                  External Draft prepares request JSON for a separate runtime.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="settings-modal-pane-guide" class="modal-pane" hidden>
+          <div class="view-header modal-guide-header">
+            <div>
+              <p class="panel-kicker" data-i18n="guide.kicker">Guide</p>
+              <h2 data-i18n="guide.title">Guide and error hints</h2>
+              <p class="helper-text" data-i18n="guide.description">
+                Use this tab to troubleshoot common local-browser limitations and workflow issues.
+              </p>
+            </div>
+          </div>
+          <div id="error-guide-list" class="panel-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="app-toast" class="app-toast" aria-live="polite"></div>
+
+    <script src="../analytics-config.js"></script>
+    <script src="../analytics.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

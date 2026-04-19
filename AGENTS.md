@@ -15,7 +15,7 @@ This repository is a static GitHub Pages site. Treat redesign work as static HTM
 
 - Shared shell files: `style.css`, `detail-template.css`, `nav.js`, `analytics.js`, `analytics-config.js`
 - Root hub pages: `index.html`, `vehicle-physics.html`, `mathematics.html`, `games.html`, `fluid-simulation.html`, `contact.html`
-- Standalone app or microsite directories: `blog/`, `face-tracking/`, `fluid-simulation/`, `gungi/`, `moto-catalog/`
+- Standalone app or microsite directories: `blog/`, `face-tracking/`, `fluid-simulation/`, `gungi/`, `i2i-lab/`, `moto-catalog/`
 - Legacy redirect and alias paths exist under `3DGames/`, `mathematics/`, `vehicle-physics/`, and several PascalCase root HTML files. Preserve public URL compatibility unless the user asks to break it.
 - Use `redirect-compatibility.md` when a task changes aliases, redirects, canonical URLs, or navigation cleanup.
 

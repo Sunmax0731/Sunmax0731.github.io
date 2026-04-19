@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TagCategory",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "sortOrder",
+    "multiSelect"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "sortOrder": {
+      "type": "integer"
+    },
+    "multiSelect": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

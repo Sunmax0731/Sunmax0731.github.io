@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PromptSheetDefinition",
+  "type": "object",
+  "required": [
+    "stageId",
+    "purpose",
+    "promptTemplate"
+  ],
+  "properties": {
+    "stageId": {
+      "type": "string",
+      "pattern": "^stage-\\d{2}$"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "promptTemplate": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

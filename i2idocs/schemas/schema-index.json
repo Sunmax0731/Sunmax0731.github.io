@@ -1,0 +1,14 @@
+{
+  "schemas": [
+    "stage-definition.schema.json",
+    "prompt-sheet-definition.schema.json",
+    "tag-category.schema.json",
+    "tag-definition.schema.json",
+    "workspace.schema.json",
+    "workspace-stage-state.schema.json",
+    "generation-request.schema.json",
+    "generation-result.schema.json",
+    "user-settings.schema.json",
+    "api-key-setting.schema.json"
+  ]
+}

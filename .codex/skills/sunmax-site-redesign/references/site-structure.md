@@ -29,6 +29,7 @@
 - `face-tracking/`: standalone face tracking app
 - `fluid-simulation/`: dedicated microsite with multiple app entries
 - `gungi/`: standalone game
+- `i2i-lab/`: standalone I2I workflow support app
 - `moto-catalog/`: standalone catalog app
 
 ## Redirect And Compatibility Paths

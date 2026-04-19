@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GenerationResult",
+  "type": "object",
+  "required": [
+    "id",
+    "requestId",
+    "status",
+    "startedAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "startedAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

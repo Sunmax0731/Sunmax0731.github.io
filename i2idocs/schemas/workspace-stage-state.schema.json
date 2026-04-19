@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkspaceStageState",
+  "type": "object",
+  "required": [
+    "id",
+    "workspaceId",
+    "inputStageId",
+    "outputStageId"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "inputStageId": {
+      "type": "string"
+    },
+    "outputStageId": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

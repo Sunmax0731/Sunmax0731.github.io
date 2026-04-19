@@ -10,7 +10,21 @@
 - The `Games` control should mirror `Lab`: use a dropdown that includes the games hub and direct links to each playable title.
 - On `index.html`, `games.html`, `blog/index.html`, `blog/post.html`, and `contact.html`, keep the header navigation-only. Do not place page titles, taglines, profile copy, or section intros inside the header.
 - Move page-specific identity and summary copy into the first content section for each page. On the top page, the profile icon, `Sunmax`, and the short self-introduction belong inside the self-introduction section.
-- `moto-catalog/`, `face-tracking/`, and `gungi/` remain standalone pages without an added overlay header. `gungi/` may keep its own dark visual theme, but no extra page overlay should be added above the game surface.
+- `moto-catalog/`, `face-tracking/`, `i2i-lab/`, and `gungi/` remain standalone pages without an added overlay header.
+- `i2i-lab/` should follow the same standalone utility-shell direction as `moto-catalog/`: app-owned header and sidebar only, with no shared site chrome above it.
+- `i2i-lab/` should prioritize a compact first screen: current stage visible in the header, overview centered on visual pipeline widgets, and no text-heavy dashboard that pushes the default viewport into scrolling.
+- `i2i-lab/` should default to `Studio` as the main surface. Workspace switching belongs in the sidebar, while the workspaces page is reserved for creation and management.
+- `i2i-lab/` settings should open as a modal with tab switching between `Settings` and `Guide`. The modal must include the language switcher and any setup-related controls.
+- `i2i-lab/` should keep `Results` and `History` merged into a single page and avoid mixed-language UI: Japanese mode should present Japanese UI copy, English mode should present English UI copy.
+- `i2i-lab/` should make generation state obvious inside the Studio result area: running, completed, and error states should be visible without relying only on toast notifications.
+- `i2i-lab/` OpenAI Live parameters should load image-model choices from the active API key when possible, present numeric tuning controls as bounded sliders rather than free-form number inputs, and show a focus-linked explanation panel for each parameter inside Studio.
+- `i2i-lab/` results management should support single delete, multi-select delete, and delete-all from the merged results page, while keeping stage result references consistent after cleanup.
+- `i2i-lab/` should keep large image payloads in `IndexedDB` and reserve `localStorage` for lightweight metadata, settings, and references so browser quota failures do not block normal use.
+- `i2i-lab/` should provide a browser-storage cleanup action that removes stored image payloads, including generated previews and pasted stage input images, without deleting the run log, and should clear stale carry references after those cached previews are removed.
+- `i2i-lab/` should not reuse the current stage result as input during `Run I2I`; carry-forward into the next stage should happen only when the user advances the stage.
+- `i2i-lab/` stage inputs should support one base image plus multiple additional reference images for localized fixes or material guidance, and OpenAI Live should send them to image edits with the base image first.
+- `i2i-lab/` stage inputs should accept clipboard screenshots from tools such as Snipping Tool: prefer a one-click paste action when the browser allows clipboard reads, and keep `Ctrl+V` image paste as the fallback path for both base and reference inputs.
+- `gungi/` may keep its own dark visual theme, but no extra page overlay should be added above the game surface.
 
 この `Design.md` は、Sunmax サイトの全面改装で人間と Codex が共有する基準書とする。別途作成済みの設計メモがある場合は、このファイルへ統合し、設計の正本を一本化する。
 
@@ -62,7 +76,7 @@
 5. Blog
 6. Contact
 
-`Lab` 配下には `vehicle-physics`、`mathematics`、`fluid-simulation`、`face-tracking` をまとめる。`moto-catalog` は独立したヘッダー項目として直接アクセスできるようにし、ページ内には追加オーバーレイヘッダーを載せない。`gungi` は `Games` 側の導線で扱う。
+`Lab` 配下には `vehicle-physics`、`mathematics`、`fluid-simulation`、`face-tracking`、`i2i-lab` をまとめる。`moto-catalog` は独立したヘッダー項目として直接アクセスできるようにし、ページ内には追加オーバーレイヘッダーを載せない。`gungi` は `Games` 側の導線で扱う。
 
 ### ページ種別ごとの役割
 

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StageDefinition",
+  "type": "object",
+  "required": [
+    "id",
+    "number",
+    "name",
+    "description",
+    "sortOrder"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^stage-\\d{2}$"
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "sortOrder": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}
