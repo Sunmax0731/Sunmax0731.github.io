@@ -1,1 +1,3 @@
 vscode-codex-usage-status/
+.codex/tmp/
+__pycache__/
