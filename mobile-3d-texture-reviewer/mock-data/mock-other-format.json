@@ -1,0 +1,5 @@
+﻿{
+  "type": "external-preset",
+  "name": "not-a-review-session",
+  "items": [1, 2, 3]
+}
