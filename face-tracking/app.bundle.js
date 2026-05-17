@@ -4168,6 +4168,7 @@
   var lastVideoTime = -1;
   var cameraPermissionGranted = false;
   var currentStream = null;
+  var knownVideoDevices = [];
   var DEVICE_ENUMERATION_TIMEOUT_MS = 4e3;
   var CAMERA_OPEN_TIMEOUT_MS = 1e4;
   async function getCameraPermissionState() {
@@ -4206,19 +4207,50 @@
     ]);
   }
   function getVideoConstraints(deviceId) {
-    const constraints = {};
     if (deviceId) {
-      constraints.deviceId = deviceId;
-    } else {
-      constraints.facingMode = "user";
+      return { deviceId: { exact: deviceId } };
     }
-    return Object.keys(constraints).length > 0 ? constraints : true;
+    return true;
   }
   async function getUserMediaWithTimeout(videoConstraints) {
     return Promise.race([
       navigator.mediaDevices.getUserMedia({ video: videoConstraints }),
       waitForTimeout(CAMERA_OPEN_TIMEOUT_MS, "\u30AB\u30E1\u30E9\u63A5\u7D9A")
     ]);
+  }
+  async function openCameraWithFallback(selectedDeviceId) {
+    const candidates = [];
+    const triedDeviceIds = /* @__PURE__ */ new Set();
+    if (selectedDeviceId) {
+      const selectedDevice = knownVideoDevices.find((device) => device.deviceId === selectedDeviceId);
+      candidates.push({
+        label: selectedDevice?.label || "\u9078\u629E\u4E2D\u306E\u30AB\u30E1\u30E9",
+        constraints: getVideoConstraints(selectedDeviceId)
+      });
+      triedDeviceIds.add(selectedDeviceId);
+    }
+    candidates.push({ label: "\u65E2\u5B9A\u306E\u30AB\u30E1\u30E9", constraints: true });
+    knownVideoDevices.forEach((device, index) => {
+      if (!device.deviceId || triedDeviceIds.has(device.deviceId)) {
+        return;
+      }
+      candidates.push({
+        label: device.label || `\u30AB\u30E1\u30E9 ${index + 1}`,
+        constraints: getVideoConstraints(device.deviceId)
+      });
+      triedDeviceIds.add(device.deviceId);
+    });
+    let lastError = null;
+    for (const candidate of candidates) {
+      try {
+        console.log("[Init] \u30AB\u30E1\u30E9\u5019\u88DC\u3092\u8A66\u884C:", candidate.label, candidate.constraints);
+        return await getUserMediaWithTimeout(candidate.constraints);
+      } catch (error) {
+        lastError = error;
+        console.warn("[Init] \u30AB\u30E1\u30E9\u5019\u88DC\u304C\u5931\u6557:", candidate.label, getErrorName(error), getErrorMessage(error));
+      }
+    }
+    throw lastError ?? new Error("\u5229\u7528\u53EF\u80FD\u306A\u30AB\u30E1\u30E9\u3092\u958B\u59CB\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F");
   }
   function setCameraSelectFallback(message) {
     cameraSelect.innerHTML = "";
@@ -4242,7 +4274,7 @@
     cameraSelect.value = option.value;
   }
   setCameraSelectFallback("\u65E2\u5B9A\u306E\u30AB\u30E1\u30E9\u3092\u4F7F\u7528");
-  cameraRefreshBtn.disabled = true;
+  cameraRefreshBtn.disabled = false;
   async function waitForVideoMetadata(videoEl) {
     if (videoEl.readyState >= 1) {
       return;
@@ -4272,22 +4304,19 @@
         statusEl.textContent = "\u30AB\u30E1\u30E9\u304C\u30D6\u30ED\u30C3\u30AF\u3055\u308C\u3066\u3044\u307E\u3059\u3002\u30D6\u30E9\u30A6\u30B6\u8A2D\u5B9A\u3067\u8A31\u53EF\u3057\u3066\u304F\u3060\u3055\u3044\u3002";
         return;
       }
-      if (permissionState === "prompt") {
-        statusEl.textContent = "\u30AB\u30E1\u30E9\u8A31\u53EF\u3092\u8981\u6C42\u4E2D...";
-        const tempStream = await getUserMediaWithTimeout(true);
-        stopStream(tempStream);
-        cameraPermissionGranted = true;
-        console.log("[Camera] \u30AB\u30E1\u30E9\u8A31\u53EF\u3092\u53D6\u5F97\u3057\u307E\u3057\u305F");
-      }
       statusEl.textContent = "\u30C7\u30D0\u30A4\u30B9\u5217\u6319\u4E2D...";
       console.log("[Camera] enumerateDevices() \u547C\u3073\u51FA\u3057\u4E2D...");
       const devices = await enumerateDevicesWithTimeout();
       const videoDevices = devices.filter((device) => device.kind === "videoinput");
+      knownVideoDevices = videoDevices;
       console.log("[Camera] \u5168\u30C7\u30D0\u30A4\u30B9:", devices);
       console.log("[Camera] \u6620\u50CF\u30C7\u30D0\u30A4\u30B9\u6570:", videoDevices.length, videoDevices);
       cameraSelect.innerHTML = "";
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "\u65E2\u5B9A\u306E\u30AB\u30E1\u30E9\u3092\u4F7F\u7528";
+      cameraSelect.appendChild(defaultOption);
       if (videoDevices.length === 0) {
-        cameraSelect.innerHTML = '<option value="">\u30AB\u30E1\u30E9\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093</option>';
         statusEl.textContent = `\u30C7\u30D0\u30A4\u30B9\u7DCF\u6570: ${devices.length} / \u6620\u50CF: 0`;
         return;
       }
@@ -4300,6 +4329,7 @@
         }
         cameraSelect.appendChild(option);
       });
+      cameraSelect.value = prevId && videoDevices.some((device) => device.deviceId === prevId) ? prevId : "";
       statusEl.textContent = `\u30AB\u30E1\u30E9 ${videoDevices.length} \u53F0\u691C\u51FA`;
     } catch (error) {
       console.error("[Camera] \u30A8\u30E9\u30FC:", getErrorName(error), getErrorMessage(error));
@@ -4332,12 +4362,9 @@
   console.log("[Init] app.ts \u958B\u59CB");
   cameraRefreshBtn.addEventListener("click", () => {
     console.log("[UI] \u4E00\u89A7\u53D6\u5F97\u30DC\u30BF\u30F3 \u30AF\u30EA\u30C3\u30AF");
-    if (!currentStream) {
-      statusEl.textContent = "\u30AB\u30E1\u30E9\u8D77\u52D5\u5F8C\u306B\u4E00\u89A7\u53D6\u5F97\u3067\u304D\u307E\u3059";
-      return;
-    }
     void populateCameraList();
   });
+  void populateCameraList();
   if (navigator.mediaDevices) {
     navigator.mediaDevices.addEventListener("devicechange", () => {
       console.log("[Device] \u30C7\u30D0\u30A4\u30B9\u5909\u66F4\u691C\u51FA");
@@ -4442,7 +4469,7 @@
       const videoConstraints = getVideoConstraints(deviceId);
       console.log("[Init] \u4F7F\u7528\u5236\u7D04:", videoConstraints);
       console.log("[Init] getUserMedia \u547C\u3073\u51FA\u3057\u4E2D...");
-      const stream = await getUserMediaWithTimeout(videoConstraints);
+      const stream = await openCameraWithFallback(deviceId);
       console.log(
         "[Init] getUserMedia \u6210\u529F:",
         stream.getVideoTracks().map((track) => track.label)
