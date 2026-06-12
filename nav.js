@@ -16,21 +16,25 @@ const gameNavItems = [
   { label: "Color Sort", href: "color-sort.html" },
 ];
 
+const toolNavItems = [
+  {
+    label: "モデる？3Dビューア",
+    href: "https://sunmax0731.github.io/mobile-3d-texture-reviewer/",
+  },
+  {
+    label: "サムねいる？サムネ作成ツール",
+    href: "https://sunmax0731.github.io/thumbnail-generator/",
+  },
+  {
+    label: "モザいく？モザイク加工ツール",
+    href: "https://sunmax0731.github.io/image-mosaic-effect/",
+  },
+];
+
 const siteNavItems = [
   { type: "link", label: "トップ", href: "./" },
   { type: "menu", label: "ゲーム", items: gameNavItems },
-  {
-    type: "menu",
-    label: "ラボ",
-    items: [
-      { label: "車両の物理シミュ", href: "vehicle-physics.html" },
-      { label: "数学の可視化", href: "mathematics.html" },
-      { label: "流体シミュレーション", href: "fluid-simulation.html" },
-      { label: "フェイストラッキング", href: "face-tracking/", prefixMatch: true },
-      { label: "I2I Forge", href: "i2i-lab/", prefixMatch: true },
-    ],
-  },
-  { type: "link", label: "3Dテクスチャレビューア", href: "mobile-3d-texture-reviewer/", prefixMatch: true },
+  { type: "menu", label: "ツール", items: toolNavItems },
   { type: "link", label: "バイク図鑑", href: "moto-catalog/", prefixMatch: true },
   { type: "link", label: "ブログ", href: "blog/", prefixMatch: true },
   { type: "link", label: "問い合わせ", href: "contact.html" },
@@ -39,18 +43,7 @@ const siteNavItems = [
 const portfolioNavItems = [
   { type: "link", label: "トップ", href: "./" },
   { type: "menu", label: "ゲーム", items: gameNavItems },
-  {
-    type: "menu",
-    label: "ラボ",
-    items: [
-      { label: "車両の物理シミュ", href: "vehicle-physics.html" },
-      { label: "数学の可視化", href: "mathematics.html" },
-      { label: "流体シミュレーション", href: "fluid-simulation.html" },
-      { label: "フェイストラッキング", href: "face-tracking/", prefixMatch: true },
-      { label: "I2I Forge", href: "i2i-lab/", prefixMatch: true },
-    ],
-  },
-  { type: "link", label: "3Dテクスチャレビューア", href: "mobile-3d-texture-reviewer/", prefixMatch: true },
+  { type: "menu", label: "ツール", items: toolNavItems },
   { type: "link", label: "バイク図鑑", href: "moto-catalog/", prefixMatch: true },
   { type: "link", label: "ブログ", href: "blog/", prefixMatch: true },
   { type: "link", label: "問い合わせ", href: "contact.html" },

@@ -6,8 +6,10 @@
 
 ## Header Layout Addendum (2026-04-18)
 
+- Header navigation update (2026-06-13): the shared main-site header uses `Top`, `Games`, `Tools`, `Moto Catalog`, `Blog`, and `Contact`. Do not expose `Lab` as a top-level header item, and do not expose `3D Texture Reviewer` as a standalone top-level header link.
+- The `Tools` dropdown contains `モデる？3Dビューア`, `サムねいる？サムネ作成ツール`, and `モザいく？モザイク加工ツール` as direct service links.
 - Shared header navigation on the main site should use centered pill buttons, matching the game-page shell rather than a left-aligned utility bar.
-- The `Games` control should mirror `Lab`: use a dropdown that includes the games hub and direct links to each playable title.
+- The `Games` control should use a dropdown that includes the games hub and direct links to each playable title.
 - On `index.html`, `games.html`, `blog/index.html`, `blog/post.html`, and `contact.html`, keep the header navigation-only. Do not place page titles, taglines, profile copy, or section intros inside the header.
 - Move page-specific identity and summary copy into the first content section for each page. On the top page, the profile icon, `Sunmax`, and the short self-introduction belong inside the self-introduction section.
 - `moto-catalog/`, `face-tracking/`, `i2i-lab/`, and `gungi/` remain standalone pages without an added overlay header.
