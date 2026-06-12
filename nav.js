@@ -34,7 +34,7 @@ const toolNavItems = [
 const siteNavItems = [
   { type: "link", label: "トップ", href: "./" },
   { type: "menu", label: "ゲーム", items: gameNavItems },
-  { type: "menu", label: "ツール", items: toolNavItems },
+  { type: "menu", label: "Webアプリ", items: toolNavItems },
   { type: "link", label: "バイク図鑑", href: "moto-catalog/", prefixMatch: true },
   { type: "link", label: "ブログ", href: "blog/", prefixMatch: true },
   { type: "link", label: "問い合わせ", href: "contact.html" },
@@ -43,7 +43,7 @@ const siteNavItems = [
 const portfolioNavItems = [
   { type: "link", label: "トップ", href: "./" },
   { type: "menu", label: "ゲーム", items: gameNavItems },
-  { type: "menu", label: "ツール", items: toolNavItems },
+  { type: "menu", label: "Webアプリ", items: toolNavItems },
   { type: "link", label: "バイク図鑑", href: "moto-catalog/", prefixMatch: true },
   { type: "link", label: "ブログ", href: "blog/", prefixMatch: true },
   { type: "link", label: "問い合わせ", href: "contact.html" },
