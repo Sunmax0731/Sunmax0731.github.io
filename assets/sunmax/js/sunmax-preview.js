@@ -19,7 +19,7 @@
       y: 48,
       colors: ["#9fd8e3", "#4f7782"],
       description:
-        "Unity、C#、Blender、Python、C、C++、HTML、CSS、JavaScript、TypeScriptを中心に、3D表現、シミュレーション、ブラウザで動く制作物の実装に取り組んでいます。",
+        "UnityおよびC#を学生の頃から含め10年ほど開発で使用しています。ここ数年にはBlenderを用いた3Dモデリングにも着手し、AI Agentsを活用したウェブアプリの開発にも挑戦しています。",
     },
     {
       id: "tools",
@@ -32,7 +32,7 @@
       y: 58,
       colors: ["#b9e7d4", "#6fae9b"],
       description:
-        "Codex、Tripo3D、Unity、Blender、GitHub、各種ブラウザ開発ツールを、設計、実装、検証、3Dアセット制作の補助に活用しています。",
+        "Codex、Tripo3D、Unity、Blender、VSCode",
     },
     {
       id: "hobbies",
@@ -45,7 +45,7 @@
       y: 76,
       colors: ["#f0d492", "#7b8d64"],
       description:
-        "バイク、カメラ、読書、ゲーム、技術学習が趣味です。バイク図鑑のように、趣味とWeb実装をつなげた制作物も残しています。",
+        "休みの日はバイクで出かけ風景や動植物など自然のものを一眼レフで撮っています。インドア寄りの趣味では、SFやミステリを中心に読書したり、FPSなどのゲームをしたりしています。",
     },
   ];
 
@@ -63,7 +63,7 @@
       tech: "Browser Game / 3D Board / CPU",
       href: `${assetRoot}gungi/`,
       description:
-        "9x9盤、手駒配置、ツケの3D表現、CPU対戦まで含むブラウザ版ゲームです。",
+        "HxHの蟻編で出てきたテーブルゲームです。オートモードなどもあるのでルールを知らなくても楽しめます。",
     },
     {
       id: "moto-catalog",
@@ -78,11 +78,11 @@
       tech: "React / Catalog UI / Data",
       href: `${assetRoot}moto-catalog/`,
       description:
-        "バイクのスペックやタグをもとに探せる図鑑アプリです。趣味とデータUIを組み合わせた制作物です。",
+        "世界中の様々なバイクを、メーカーはもちろんスペックや機能などの特徴で検索できます。",
     },
     {
       id: "texture-reviewer",
-      title: "モバイル3Dテクスチャレビューア",
+      title: "モデる？",
       category: "3D",
       creature: "ray",
       size: 190,
@@ -93,11 +93,11 @@
       tech: "Three.js / Web 3D / Review Tool",
       href: "https://sunmax0731.github.io/mobile-3d-texture-reviewer/",
       description:
-        "ブラウザ上で3Dモデルとテクスチャの見え方を確認できるレビュー用ツールです。",
+        "3Dモデルに対してテクチャを適用し見栄えを確認できるレビューツールです。ライティングや背景など環境を変えながらレビューできます。",
     },
     {
       id: "thumbnail-generator",
-      title: "サムネイル作成ツール",
+      title: "サムネいる？",
       category: "Tool",
       creature: "shark",
       size: 180,
@@ -108,11 +108,11 @@
       tech: "Canvas / Editor UI / Animation",
       href: "https://sunmax0731.github.io/thumbnail-generator/",
       description:
-        "動画サムネ、待機画面、スケジュール画像をブラウザ上で作成するWebツールです。",
+        "配信活動者に必須の動画サムネやスケジュール画像を作成支援するためのツールです。テンプレートの登録やカラーパレットの登録など多様な機能が豊富です。画像だけでなく、待機画面用のアニメーションも作成できます。",
     },
     {
       id: "image-mosaic",
-      title: "モザイク加工ツール",
+      title: "モザいく？",
       category: "UI/UX",
       creature: "jelly",
       size: 126,
@@ -123,7 +123,7 @@
       tech: "Image Processing / Preset UI",
       href: "https://sunmax0731.github.io/image-mosaic-effect/",
       description:
-        "画像にモザイク加工を適用するブラウザツールです。プリセット選択と確認のしやすさを重視しています。",
+        "画像にモザイク加工を適用するツールです。Skebやfantia用のモザイクプリセットを用意しています。",
     },
   ];
 
@@ -149,7 +149,7 @@
     {
       id: "x",
       title: "X (旧Twitter)",
-      note: "短い近況や制作メモを投稿しています。",
+      note: "日常のつぶやきです。",
       logo: "x",
       href: "https://x.com/Sunmax0731",
       x: 32,
@@ -167,29 +167,11 @@
     {
       id: "booth",
       title: "BOOTH",
-      note: "公開・販売中の制作物へのリンクです。",
+      note: "UnityのEditor拡張を出品しています。",
       logo: "booth",
       href: "https://sunmax.booth.pm/",
       x: 15,
       y: 49,
-    },
-    {
-      id: "form",
-      title: "お問い合わせフォーム",
-      note: "フォーム相当の連絡先としてメールを起動します。",
-      logo: "form",
-      href: "mailto:gkk.jhon@gmail.com?subject=SunmaxEngineering%20Contact",
-      x: 68,
-      y: 58,
-    },
-    {
-      id: "note",
-      title: "note",
-      note: "今後追加する外部リンク候補です。",
-      logo: "note",
-      href: "",
-      x: 57,
-      y: 18,
     },
   ];
 
