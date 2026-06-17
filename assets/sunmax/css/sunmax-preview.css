@@ -614,6 +614,10 @@ body.is-js-ready .background-layer.exit-to-bottom {
   object-fit: contain;
   pointer-events: none;
   filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.28));
+  transform-origin: center;
+  animation: swim-facing 10s steps(1, end) infinite;
+  animation-delay: inherit;
+  will-change: transform;
 }
 
 .creature::before {
@@ -907,6 +911,19 @@ body.is-js-ready .background-layer.exit-to-bottom {
   }
   68% {
     transform: translate3d(calc(var(--swim-distance, 22px) * -0.45), calc(var(--swim-lift, 12px) * 0.6), 0) rotate(-0.8deg);
+  }
+}
+
+@keyframes swim-facing {
+  0%,
+  35%,
+  69%,
+  100% {
+    transform: scaleX(-1);
+  }
+  36%,
+  68% {
+    transform: scaleX(1);
   }
 }
 

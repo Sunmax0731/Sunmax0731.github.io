@@ -61,8 +61,8 @@
       creature: "whale",
       sprite: "red-snapper.png",
       size: 250,
-      x: 9,
-      y: 9,
+      x: 42,
+      y: 68,
       colors: ["#8ba9c2", "#274357"],
       year: "2026",
       tech: "Browser Game / 3D Board / CPU",
@@ -147,7 +147,7 @@
       size: 150,
       href: "mailto:gkk.jhon@gmail.com",
       x: 58,
-      y: 58,
+      y: 64,
     },
     {
       id: "github",
@@ -159,7 +159,7 @@
       size: 170,
       href: "https://github.com/Sunmax0731",
       x: 32,
-      y: 65,
+      y: 71,
     },
     {
       id: "x",
@@ -171,7 +171,7 @@
       size: 166,
       href: "https://x.com/Sunmax0731",
       x: 45,
-      y: 45,
+      y: 51,
     },
     {
       id: "zenn",
@@ -183,7 +183,7 @@
       size: 160,
       href: "https://zenn.dev/sunmax",
       x: 56,
-      y: 42,
+      y: 48,
     },
     {
       id: "booth",
@@ -195,7 +195,7 @@
       size: 178,
       href: "https://sunmax.booth.pm/",
       x: 62,
-      y: 72,
+      y: 78,
     },
   ];
 
@@ -581,8 +581,8 @@
       }
       creature.style.setProperty("--creature-a", profile.colors[0]);
       creature.style.setProperty("--creature-b", profile.colors[1]);
-      creature.style.setProperty("--swim-distance", `${18 + index * 3}px`);
-      creature.style.setProperty("--swim-lift", `${10 + index * 2}px`);
+      creature.style.setProperty("--swim-distance", `${28 + index * 5}px`);
+      creature.style.setProperty("--swim-lift", `${14 + index * 3}px`);
       creature.style.left = `${profile.x}%`;
       creature.style.top = `${profile.y}%`;
       creature.style.animationDelay = `${index * -1.2}s`;
@@ -650,8 +650,8 @@
       }
       creature.style.setProperty("--creature-a", project.colors[0]);
       creature.style.setProperty("--creature-b", project.colors[1]);
-      creature.style.setProperty("--swim-distance", `${22 + index * 4}px`);
-      creature.style.setProperty("--swim-lift", `${12 + index * 2}px`);
+      creature.style.setProperty("--swim-distance", `${32 + index * 5}px`);
+      creature.style.setProperty("--swim-lift", `${16 + index * 3}px`);
       creature.style.left = `${project.x}%`;
       creature.style.top = `${project.y}%`;
       creature.style.animationDelay = `${index * -1.4}s`;
@@ -718,8 +718,8 @@
       }
       hotspot.style.setProperty("--creature-a", contact.colors?.[0] || "#9fd8e3");
       hotspot.style.setProperty("--creature-b", contact.colors?.[1] || "#4f7782");
-      hotspot.style.setProperty("--swim-distance", `${18 + index * 4}px`);
-      hotspot.style.setProperty("--swim-lift", `${10 + index * 2}px`);
+      hotspot.style.setProperty("--swim-distance", `${30 + index * 5}px`);
+      hotspot.style.setProperty("--swim-lift", `${14 + index * 3}px`);
       hotspot.style.left = `${contact.x}%`;
       hotspot.style.top = `${contact.y}%`;
       hotspot.style.animationDelay = `${index * -1.25}s`;
