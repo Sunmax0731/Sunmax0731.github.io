@@ -123,7 +123,7 @@
       title: "モザいく？",
       category: "UI/UX",
       creature: "jelly",
-      sprite: "crucian.png",
+      sprite: "sardine.png",
       size: 126,
       x: 35,
       y: 32,
@@ -142,45 +142,60 @@
       title: "Email",
       note: "仕事のご依頼、ご相談はこちらから。",
       logo: "mail",
+      creature: "fish",
+      sprite: "crucian.png",
+      size: 150,
       href: "mailto:gkk.jhon@gmail.com",
-      x: 8,
-      y: 19,
+      x: 58,
+      y: 58,
     },
     {
       id: "github",
       title: "GitHub",
       note: "ソースコードと制作物の置き場です。",
       logo: "github",
+      creature: "fish",
+      sprite: "char.png",
+      size: 170,
       href: "https://github.com/Sunmax0731",
-      x: 37,
-      y: 30,
+      x: 32,
+      y: 65,
     },
     {
       id: "x",
       title: "X (旧Twitter)",
       note: "日常のつぶやきです。",
       logo: "x",
+      creature: "fish",
+      sprite: "ayu.png",
+      size: 166,
       href: "https://x.com/Sunmax0731",
-      x: 32,
-      y: 17,
+      x: 45,
+      y: 45,
     },
     {
       id: "zenn",
       title: "Zenn",
       note: "学習記録や技術メモをまとめています。",
       logo: "zenn",
+      creature: "fish",
+      sprite: "yamame.png",
+      size: 160,
       href: "https://zenn.dev/sunmax",
-      x: 60,
-      y: 22,
+      x: 56,
+      y: 42,
     },
     {
       id: "booth",
       title: "BOOTH",
       note: "UnityのEditor拡張を出品しています。",
       logo: "booth",
+      creature: "fish",
+      sprite: "sea-bass.png",
+      size: 178,
       href: "https://sunmax.booth.pm/",
-      x: 15,
-      y: 49,
+      x: 62,
+      y: 72,
     },
   ];
 
@@ -688,14 +703,27 @@
     hotspots.innerHTML = "";
     menu.innerHTML = "";
 
-    contacts.forEach((contact) => {
+    contacts.forEach((contact, index) => {
       const hotspot = document.createElement("button");
       hotspot.type = "button";
-      hotspot.className = "contact-hotspot";
+      hotspot.className = `contact-hotspot creature contact-creature ${contact.creature || "fish"}${contact.sprite ? " has-sprite" : ""}`;
       hotspot.dataset.contactId = contact.id;
+      hotspot.dataset.label = contact.title;
+      if (contact.sprite) {
+        hotspot.dataset.sprite = contact.sprite.replace(".png", "");
+      }
+      hotspot.style.setProperty("--size", `${contact.size || 150}px`);
+      if (contact.spriteHeight) {
+        hotspot.style.setProperty("--creature-height", `${Math.round((contact.size || 150) * contact.spriteHeight)}px`);
+      }
+      hotspot.style.setProperty("--creature-a", contact.colors?.[0] || "#9fd8e3");
+      hotspot.style.setProperty("--creature-b", contact.colors?.[1] || "#4f7782");
+      hotspot.style.setProperty("--swim-distance", `${18 + index * 4}px`);
+      hotspot.style.setProperty("--swim-lift", `${10 + index * 2}px`);
       hotspot.style.left = `${contact.x}%`;
       hotspot.style.top = `${contact.y}%`;
-      hotspot.innerHTML = `<span class="hotspot-name">${escapeHtml(contact.title)}</span>`;
+      hotspot.style.animationDelay = `${index * -1.25}s`;
+      hotspot.innerHTML = creatureImage(contact);
       hotspot.setAttribute("aria-label", contact.title);
       hotspot.addEventListener("mouseenter", () => showContact(contact));
       hotspot.addEventListener("focus", () => showContact(contact));
