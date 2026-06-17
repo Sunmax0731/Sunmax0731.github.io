@@ -3,139 +3,104 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>自己紹介 | Sunmax</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>SunmaxEngineering | Interactive Portfolio</title>
+    <link rel="stylesheet" href="assets/sunmax/css/sunmax-preview.css" />
   </head>
-  <body>
-    <header class="site-header">
-      <div class="header-inner nav-only">
-        <nav class="site-nav" aria-label="グローバルナビゲーション">
-          <a href="./" class="active">トップページ</a>
-          <a href="games.html">ゲーム</a>
-          <details class="nav-menu">
-            <summary>Webアプリ</summary>
-            <div class="nav-dropdown">
-              <a href="https://sunmax0731.github.io/mobile-3d-texture-reviewer/">モデる？3Dビューア</a>
-              <a href="https://sunmax0731.github.io/thumbnail-generator/">サムねいる？サムネ作成ツール</a>
-              <a href="https://sunmax0731.github.io/image-mosaic-effect/">モザいく？モザイク加工ツール</a>
-            </div>
-          </details>
-          <a href="moto-catalog/">バイク図鑑</a>
-          <a href="blog/">ブログ</a>
-          <a href="contact.html">問い合わせ</a>
-        </nav>
-      </div>
+  <body data-page="single" data-asset-root="" class="area-top">
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <header class="sunmax-header" data-sunmax-header>
+      <a class="brand" href="#top" aria-label="SunmaxEngineering Top" data-area-link="top">
+        <span class="brand-mark" aria-hidden="true">SE</span>
+        <span>
+          <strong>SunmaxEngineering</strong>
+          <small>Engineer Portfolio</small>
+        </span>
+      </a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="sunmax-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">メニュー</span>
+      </button>
+      <nav id="sunmax-nav" class="sunmax-nav" aria-label="SunmaxEngineering navigation" data-menu-panel>
+        <a href="#contact" data-area-link="contact">CONTACT</a>
+        <a class="is-active" href="#top" data-area-link="top">TOP</a>
+        <a href="#portfolio" data-area-link="portfolio">PORTFOLIO</a>
+      </nav>
     </header>
 
-    <main>
-      <section class="about">
-        <h2>自己紹介</h2>
-        <div class="about-intro">
-          <img class="profile-img" src="profile.png" alt="プロフィール画像" />
-          <div class="about-intro-copy">
-            <h3>Sunmax</h3>
-            <p>Unity と Web を軸に、仕組みが伝わるインタラクティブ表現を制作しています。</p>
-          </div>
+    <main id="main" class="single-stage" data-stage>
+      <div class="background-stack" aria-hidden="true">
+        <div class="background-layer background-river"></div>
+        <div class="background-layer background-harbor"></div>
+        <div class="background-layer background-sea"></div>
+      </div>
+      <nav class="flow-guide area-rail" aria-label="水辺エリア">
+        <a href="#contact" data-area-link="contact">
+          <span class="guide-icon" aria-hidden="true">≋</span>
+          <span>川</span>
+        </a>
+        <a class="is-active" href="#top" data-area-link="top">
+          <span class="guide-icon" aria-hidden="true">⚓</span>
+          <span>港</span>
+        </a>
+        <a href="#portfolio" data-area-link="portfolio">
+          <span class="guide-icon" aria-hidden="true">≈</span>
+          <span>海</span>
+        </a>
+      </nav>
+
+      <section class="area area-top-panel" data-area-panel="top" aria-labelledby="top-title">
+        <div class="creature-field profile-creature-field" data-profile-field aria-label="トップメニューに対応する水中の生き物"></div>
+        <div class="floating-panel menu-panel top-menu-panel">
+          <h1 id="top-title">スキルと使用ツールと趣味</h1>
+          <div class="menu-list" data-profile-menu></div>
         </div>
-        <div class="card-grid">
-          <article class="mini-card">
-            <h3>趣味</h3>
-            <div class="links inline-links static-links">
-              <div class="static-link-card">
-                <span class="static-link-emoji" aria-hidden="true">&#127949;</span>
-                バイク
-              </div>
-              <div class="static-link-card">
-                <span class="static-link-emoji" aria-hidden="true">&#128247;</span>
-                カメラ
-              </div>
-              <div class="static-link-card">
-                <span class="static-link-emoji" aria-hidden="true">&#128218;</span>
-                読書
-              </div>
-              <div class="static-link-card">
-                <span class="static-link-emoji" aria-hidden="true">&#127918;</span>
-                ゲーム
-              </div>
-              <div class="static-link-card">
-                <span class="static-link-emoji" aria-hidden="true">&#128161;</span>
-                技術学習
-              </div>
-            </div>
-          </article>
-          <article class="mini-card">
-            <h3>外部リンク</h3>
-            <p class="mini-card-lead">制作ログや技術メモは以下で更新しています。</p>
-            <div class="links inline-links">
-              <a href="https://github.com/Sunmax0731" target="_blank" rel="noopener">
-                <img src="https://cdn.simpleicons.org/github/181717" alt="GitHub" />
-                GitHub
-              </a>
-              <a href="https://x.com/Sunmax0731" target="_blank" rel="noopener">
-                <img src="https://cdn.simpleicons.org/x/000000" alt="X" />
-                X (Twitter)
-              </a>
-              <a href="https://zenn.dev/sunmax" target="_blank" rel="noopener">
-                <img src="https://static.zenn.studio/images/logo.png" alt="Zenn" />
-                Zenn
-              </a>
-              <a href="https://sunmax.booth.pm/" target="_blank" rel="noopener">
-                <img src="assets/icons/booth.svg" alt="BOOTH" />
-                BOOTH
-              </a>
-            </div>
-          </article>
+        <div class="floating-panel detail-panel top-detail-panel" data-profile-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-profile-title>Sunmax</h2>
+          <p data-profile-text></p>
+        </div>
+        <button class="boat-target" type="button" data-boat aria-label="海へ移動">
+          <span class="object-label">船で海へ</span>
+        </button>
+      </section>
+
+      <section class="area area-portfolio-panel" data-area-panel="portfolio" aria-labelledby="portfolio-title" hidden>
+        <div class="creature-field" data-project-field aria-label="制作物に対応する海の生き物"></div>
+        <div class="floating-panel menu-panel portfolio-menu-panel">
+          <h1 id="portfolio-title">制作物</h1>
+          <div class="project-list" data-project-list></div>
+        </div>
+        <div class="floating-panel detail-panel portfolio-detail-panel" data-project-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-project-title></h2>
+          <p data-project-text></p>
         </div>
       </section>
 
-      <section class="services">
-        <p class="card-eyebrow">Services</p>
-        <h2>運営サービス</h2>
-        <p class="section-lead">
-          ウェブ上で利用できるツールを公開しています。
-          サーバーにファイルをアップロードせずに、利用者のローカル上で動作するので安心です。
-        </p>
-        <div class="card-grid service-grid">
-          <a
-            class="content-card service-card"
-            href="https://sunmax0731.github.io/mobile-3d-texture-reviewer/"
-          >
-            <span class="card-eyebrow">3D Preview</span>
-            <h3>モデる？<br />3Dビューア</h3>
-            <p>ブラウザ上で3Dモデルとテクスチャの見栄えを確認できるレビュアーツールです。</p>
-            <span class="service-link-label">ツールを開く</span>
-          </a>
-          <a
-            class="content-card service-card"
-            href="https://sunmax0731.github.io/thumbnail-generator/"
-          >
-            <span class="card-eyebrow">Thumbnail</span>
-            <h3>サムねいる？<br />サムネ作成ツール</h3>
-            <p>配信活動で使用する動画サムネやアニメーション付き待機画面、スケジュール画像を作成するウェブツールです。</p>
-            <span class="service-link-label">ツールを開く</span>
-          </a>
-          <a
-            class="content-card service-card"
-            href="https://sunmax0731.github.io/image-mosaic-effect/"
-          >
-            <span class="card-eyebrow">Image Effect</span>
-            <h3>モザいく？<br />モザイク加工ツール</h3>
-            <p>ブラウザ上でモザイク加工をするツールです。FantiaやSkeb向けのプリセットを用意しています。</p>
-            <span class="service-link-label">ツールを開く</span>
-          </a>
+      <section class="area area-contact-panel" data-area-panel="contact" aria-labelledby="contact-title" hidden>
+        <div class="contact-hotspots" data-contact-hotspots aria-label="連絡先に対応する陸上のオブジェクト"></div>
+        <div class="floating-panel menu-panel contact-menu-panel">
+          <h1 id="contact-title">連絡先</h1>
+          <div class="contact-link-list" data-contact-menu></div>
         </div>
-      </section>
-
-      <section class="contact">
-        <h2>お問い合わせ</h2>
-        <p>制作や学習に関する相談、ポートフォリオへの問い合わせはメールや SNS から受け付けています。</p>
-        <a href="contact.html" class="btn">問い合わせページへ</a>
+        <div class="floating-panel detail-panel contact-detail-panel" data-contact-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-contact-title></h2>
+          <p data-contact-text></p>
+        </div>
       </section>
     </main>
 
-    <footer>
-      <p>&copy; 2026 Sunmax Engineering. All rights reserved.</p>
-    </footer>
-    <script src="nav.js"></script>
+    <div class="modal-layer" data-modal-layer hidden>
+      <div class="modal-backdrop" data-modal-close></div>
+      <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+        <button class="modal-close" type="button" data-modal-close aria-label="閉じる">×</button>
+        <p class="eyebrow" data-modal-kicker></p>
+        <h2 id="modal-title" data-modal-title></h2>
+        <div class="modal-body" data-modal-body></div>
+      </section>
+    </div>
+
+    <script src="assets/sunmax/js/sunmax-preview.js" defer></script>
   </body>
 </html>
