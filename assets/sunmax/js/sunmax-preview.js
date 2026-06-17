@@ -12,7 +12,7 @@
       id: "skills",
       title: "スキル",
       label: "スキル",
-      icon: "Skill",
+      icon: "skills",
       creature: "ray",
       size: 190,
       x: 58,
@@ -25,7 +25,7 @@
       id: "tools",
       title: "使用ツール",
       label: "使用ツール",
-      icon: "Tool",
+      icon: "tools",
       creature: "jelly",
       size: 128,
       x: 38,
@@ -38,7 +38,7 @@
       id: "hobbies",
       title: "趣味",
       label: "趣味",
-      icon: "Hobby",
+      icon: "hobbies",
       creature: "fish",
       size: 154,
       x: 50,
@@ -223,13 +223,32 @@
       .replaceAll("'", "&#39;");
   }
 
+  function logoPath(file) {
+    return `${assetRoot}assets/sunmax/logos/${file}`;
+  }
+
+  function profileIcon(type) {
+    const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+    const paths = {
+      skills: '<path d="M7 14l-3 3 3 3M17 14l3 3-3 3M14 5l-4 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
+      tools: '<path d="M14.7 6.4l2.9-2.9 2.9 2.9-2.9 2.9M4 20l8.5-8.5M6.5 5.2l3.3 3.3M4.5 7.2l3.3-3.3 11.7 11.7-3.3 3.3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+      hobbies: '<path d="M5 15c2.3-3.8 3.6-5 7-5s4.7 1.2 7 5M7 17h10M8.5 11.5l-2-3M15.5 11.5l2-3M9 6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    };
+    return `<span class="item-icon profile-logo"><svg ${common}>${paths[type] || paths.skills}</svg></span>`;
+  }
+
   function serviceLogo(type) {
+    if (type === "x") {
+      return `<span class="item-icon service-logo"><img src="${logoPath("x-logo.svg")}" alt="" /></span>`;
+    }
+    if (type === "zenn") {
+      return `<span class="item-icon service-logo"><img src="${logoPath("zenn-logo.svg")}" alt="" /></span>`;
+    }
+
     const common = 'viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
     const label = {
       mail: '<path d="M4 6h16v12H4z" fill="none"/><path d="M5 7l7 6 7-6M5 17h14V8H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
       github: '<path d="M12 3.2a8.7 8.7 0 0 0-2.8 17c.4.1.6-.2.6-.5v-1.7c-2.4.5-2.9-1-2.9-1-.4-.9-.9-1.2-.9-1.2-.7-.5 0-.5 0-.5.8.1 1.2.8 1.2.8.7 1.2 1.9.9 2.6.7.1-.5.3-.9.5-1.1-1.9-.2-3.9-.9-3.9-4.2 0-.9.3-1.7.8-2.3-.1-.2-.4-1.1.1-2.3 0 0 .7-.2 2.3.9.7-.2 1.4-.3 2.1-.3s1.5.1 2.1.3c1.6-1.1 2.3-.9 2.3-.9.5 1.2.2 2.1.1 2.3.5.6.8 1.4.8 2.3 0 3.3-2 4-3.9 4.2.3.3.6.8.6 1.6v2.4c0 .3.2.6.6.5A8.7 8.7 0 0 0 12 3.2z" fill="currentColor"/>',
-      x: '<path d="M5 4h4.2l3.4 4.8L16.8 4H20l-5.8 6.7L20.5 20h-4.2l-3.8-5.5L7.7 20H4.5l6.3-7.3z" fill="currentColor"/>',
-      zenn: '<path d="M5 6h13l-8.2 12H18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
       booth: '<path d="M6 4h8a4.4 4.4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>',
       form: '<path d="M6 4h10l2 2v14H6zM9 9h6M9 13h6M9 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
       note: '<path d="M7 5h10v14H7zM10 9h4M10 13h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
@@ -511,7 +530,7 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "menu-button has-icon";
-      button.innerHTML = `<span class="item-icon">${escapeHtml(profile.icon)}</span><span><strong>${escapeHtml(profile.label)}</strong></span>`;
+      button.innerHTML = `${profileIcon(profile.icon)}<span><strong>${escapeHtml(profile.label)}</strong></span>`;
       button.addEventListener("mouseenter", () => showProfile(profile));
       button.addEventListener("focus", () => showProfile(profile));
       button.addEventListener("mouseleave", hideProfileDetail);
