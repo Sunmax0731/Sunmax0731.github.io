@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SunmaxEngineering | Interactive Portfolio</title>
+    <link rel="stylesheet" href="../assets/sunmax/css/sunmax-preview.css" />
+  </head>
+  <body data-page="single" data-asset-root="../" class="area-top">
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <header class="sunmax-header" data-sunmax-header>
+      <a class="brand" href="#top" aria-label="SunmaxEngineering Top" data-area-link="top">
+        <span class="brand-mark" aria-hidden="true">SE</span>
+        <span>
+          <strong>SunmaxEngineering</strong>
+          <small>Engineer Portfolio</small>
+        </span>
+      </a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="sunmax-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">メニュー</span>
+      </button>
+      <nav id="sunmax-nav" class="sunmax-nav" aria-label="SunmaxEngineering navigation" data-menu-panel>
+        <a href="#contact" data-area-link="contact">CONTACT</a>
+        <a class="is-active" href="#top" data-area-link="top">TOP</a>
+        <a href="#portfolio" data-area-link="portfolio">PORTFOLIO</a>
+      </nav>
+    </header>
+
+    <main id="main" class="single-stage" data-stage>
+      <div class="background-stack" aria-hidden="true">
+        <div class="background-layer background-river"></div>
+        <div class="background-layer background-harbor"></div>
+        <div class="background-layer background-sea"></div>
+      </div>
+      <nav class="flow-guide area-rail" aria-label="水辺エリア">
+        <a href="#contact" data-area-link="contact">
+          <span class="guide-icon" aria-hidden="true">≋</span>
+          <span>川</span>
+        </a>
+        <a class="is-active" href="#top" data-area-link="top">
+          <span class="guide-icon" aria-hidden="true">⚓</span>
+          <span>港</span>
+        </a>
+        <a href="#portfolio" data-area-link="portfolio">
+          <span class="guide-icon" aria-hidden="true">≈</span>
+          <span>海</span>
+        </a>
+      </nav>
+
+      <section class="area area-top-panel" data-area-panel="top" aria-labelledby="top-title">
+        <div class="creature-field profile-creature-field" data-profile-field aria-label="トップメニューに対応する水中の生き物"></div>
+        <div class="floating-panel menu-panel top-menu-panel">
+          <h1 id="top-title">スキルと使用ツールと趣味</h1>
+          <div class="menu-list" data-profile-menu></div>
+        </div>
+        <div class="floating-panel detail-panel top-detail-panel" data-profile-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-profile-title>Sunmax</h2>
+          <p data-profile-text></p>
+        </div>
+        <button class="boat-target" type="button" data-boat aria-label="海へ移動">
+          <span class="object-label">船で海へ</span>
+        </button>
+      </section>
+
+      <section class="area area-portfolio-panel" data-area-panel="portfolio" aria-labelledby="portfolio-title" hidden>
+        <div class="creature-field" data-project-field aria-label="制作物に対応する海の生き物"></div>
+        <div class="floating-panel menu-panel portfolio-menu-panel">
+          <h1 id="portfolio-title">制作物</h1>
+          <div class="project-list" data-project-list></div>
+        </div>
+        <div class="floating-panel detail-panel portfolio-detail-panel" data-project-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-project-title></h2>
+          <p data-project-text></p>
+        </div>
+      </section>
+
+      <section class="area area-contact-panel" data-area-panel="contact" aria-labelledby="contact-title" hidden>
+        <div class="contact-hotspots" data-contact-hotspots aria-label="連絡先に対応する陸上のオブジェクト"></div>
+        <div class="floating-panel menu-panel contact-menu-panel">
+          <h1 id="contact-title">連絡先</h1>
+          <div class="contact-link-list" data-contact-menu></div>
+        </div>
+        <div class="floating-panel detail-panel contact-detail-panel" data-contact-detail hidden>
+          <p class="eyebrow">Focus</p>
+          <h2 data-contact-title></h2>
+          <p data-contact-text></p>
+        </div>
+      </section>
+    </main>
+
+    <div class="modal-layer" data-modal-layer hidden>
+      <div class="modal-backdrop" data-modal-close></div>
+      <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+        <button class="modal-close" type="button" data-modal-close aria-label="閉じる">×</button>
+        <p class="eyebrow" data-modal-kicker></p>
+        <h2 id="modal-title" data-modal-title></h2>
+        <div class="modal-body" data-modal-body></div>
+      </section>
+    </div>
+
+    <script src="../assets/sunmax/js/sunmax-preview.js" defer></script>
+  </body>
+</html>
