@@ -14,6 +14,7 @@
       label: "スキル",
       icon: "skills",
       creature: "ray",
+      sprite: "sea-bass.png",
       size: 190,
       x: 58,
       y: 48,
@@ -27,6 +28,8 @@
       label: "使用ツール",
       icon: "tools",
       creature: "jelly",
+      sprite: "seahorse.png",
+      spriteHeight: 1.3,
       size: 128,
       x: 38,
       y: 58,
@@ -40,6 +43,7 @@
       label: "趣味",
       icon: "hobbies",
       creature: "fish",
+      sprite: "horse-mackerel.png",
       size: 154,
       x: 50,
       y: 76,
@@ -55,6 +59,7 @@
       title: "軍儀",
       category: "Unity",
       creature: "whale",
+      sprite: "red-snapper.png",
       size: 250,
       x: 9,
       y: 9,
@@ -70,6 +75,7 @@
       title: "バイク図鑑",
       category: "Web",
       creature: "turtle",
+      sprite: "yellowtail.png",
       size: 205,
       x: 24,
       y: 56,
@@ -85,8 +91,9 @@
       title: "モデる？",
       category: "3D",
       creature: "ray",
+      sprite: "mackerel.png",
       size: 190,
-      x: 64,
+      x: 54,
       y: 20,
       colors: ["#9bcde0", "#3e6075"],
       year: "2026",
@@ -100,6 +107,7 @@
       title: "サムネいる？",
       category: "Tool",
       creature: "shark",
+      sprite: "needlefish.png",
       size: 180,
       x: 56,
       y: 61,
@@ -115,6 +123,7 @@
       title: "モザいく？",
       category: "UI/UX",
       creature: "jelly",
+      sprite: "crucian.png",
       size: 126,
       x: 35,
       y: 32,
@@ -207,6 +216,15 @@
 
   function logoPath(file) {
     return `${assetRoot}assets/sunmax/logos/${file}`;
+  }
+
+  function creaturePath(file) {
+    return `${assetRoot}assets/sunmax/creatures/${file}`;
+  }
+
+  function creatureImage(item) {
+    if (!item.sprite) return "";
+    return `<img class="creature-image" src="${creaturePath(item.sprite)}" alt="" loading="eager" decoding="async" />`;
   }
 
   function profileIcon(type) {
@@ -536,10 +554,16 @@
     profileItems.forEach((profile, index) => {
       const creature = document.createElement("button");
       creature.type = "button";
-      creature.className = `creature profile-creature ${profile.creature}`;
+      creature.className = `creature profile-creature ${profile.creature}${profile.sprite ? " has-sprite" : ""}`;
       creature.dataset.label = profile.title;
       creature.dataset.profileId = profile.id;
+      if (profile.sprite) {
+        creature.dataset.sprite = profile.sprite.replace(".png", "");
+      }
       creature.style.setProperty("--size", `${profile.size}px`);
+      if (profile.spriteHeight) {
+        creature.style.setProperty("--creature-height", `${Math.round(profile.size * profile.spriteHeight)}px`);
+      }
       creature.style.setProperty("--creature-a", profile.colors[0]);
       creature.style.setProperty("--creature-b", profile.colors[1]);
       creature.style.setProperty("--swim-distance", `${18 + index * 3}px`);
@@ -548,6 +572,7 @@
       creature.style.top = `${profile.y}%`;
       creature.style.animationDelay = `${index * -1.2}s`;
       creature.setAttribute("aria-label", `${profile.title}の詳細を表示`);
+      creature.innerHTML = creatureImage(profile);
       creature.addEventListener("click", () =>
         openModal({
           kicker: profile.title,
@@ -597,11 +622,17 @@
     projects.forEach((project, index) => {
       const creature = document.createElement("button");
       creature.type = "button";
-      creature.className = `creature ${project.creature}`;
+      creature.className = `creature ${project.creature}${project.sprite ? " has-sprite" : ""}`;
       creature.dataset.label = project.title;
       creature.dataset.projectId = project.id;
       creature.dataset.category = project.category;
+      if (project.sprite) {
+        creature.dataset.sprite = project.sprite.replace(".png", "");
+      }
       creature.style.setProperty("--size", `${project.size}px`);
+      if (project.spriteHeight) {
+        creature.style.setProperty("--creature-height", `${Math.round(project.size * project.spriteHeight)}px`);
+      }
       creature.style.setProperty("--creature-a", project.colors[0]);
       creature.style.setProperty("--creature-b", project.colors[1]);
       creature.style.setProperty("--swim-distance", `${22 + index * 4}px`);
@@ -610,6 +641,7 @@
       creature.style.top = `${project.y}%`;
       creature.style.animationDelay = `${index * -1.4}s`;
       creature.setAttribute("aria-label", `${project.title}を開く`);
+      creature.innerHTML = creatureImage(project);
       creature.addEventListener("click", () => goToHref(project.href));
       creature.addEventListener("mouseenter", () => showProject(project));
       creature.addEventListener("focus", () => showProject(project));
