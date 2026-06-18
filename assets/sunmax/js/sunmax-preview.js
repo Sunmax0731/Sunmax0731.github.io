@@ -58,9 +58,11 @@
       id: "gungi",
       title: "軍儀",
       category: "Unity",
-      creature: "whale",
-      sprite: "red-snapper.png",
-      size: 250,
+      creature: "crustacean",
+      sprite: "seasonal/autumn-11-kegani-horsehair-crab.png",
+      motion: "crawl",
+      spriteHeight: 0.68,
+      size: 210,
       x: 42,
       y: 68,
       colors: ["#8ba9c2", "#274357"],
@@ -74,9 +76,11 @@
       id: "moto-catalog",
       title: "バイク図鑑",
       category: "Web",
-      creature: "turtle",
-      sprite: "yellowtail.png",
-      size: 205,
+      creature: "fish",
+      sprite: "seasonal/winter-01-buri-yellowtail.png",
+      motion: "swim",
+      spriteHeight: 0.42,
+      size: 220,
       x: 24,
       y: 56,
       colors: ["#b9c984", "#557a5c"],
@@ -90,9 +94,11 @@
       id: "texture-reviewer",
       title: "モデる？",
       category: "3D",
-      creature: "ray",
-      sprite: "mackerel.png",
-      size: 190,
+      creature: "shellfish",
+      sprite: "seasonal/summer-14-awabi-abalone.png",
+      motion: "bob",
+      spriteHeight: 0.66,
+      size: 150,
       x: 54,
       y: 20,
       colors: ["#9bcde0", "#3e6075"],
@@ -106,8 +112,10 @@
       id: "thumbnail-generator",
       title: "サムネいる？",
       category: "Tool",
-      creature: "shark",
-      sprite: "needlefish.png",
+      creature: "crustacean",
+      sprite: "seasonal/summer-07-kurumaebi-prawn.png",
+      motion: "dart",
+      spriteHeight: 0.58,
       size: 180,
       x: 56,
       y: 61,
@@ -122,9 +130,11 @@
       id: "image-mosaic",
       title: "モザいく？",
       category: "UI/UX",
-      creature: "jelly",
-      sprite: "sardine.png",
-      size: 126,
+      creature: "seaweed",
+      sprite: "seasonal/spring-13-wakame-seaweed.png",
+      motion: "sway",
+      spriteHeight: 1.18,
+      size: 132,
       x: 35,
       y: 32,
       colors: ["#f2bad0", "#9272b8"],
@@ -138,9 +148,11 @@
       id: "dog-translator",
       title: "犬語翻訳機",
       category: "AI",
-      creature: "fish",
-      sprite: "sea-bass.png",
-      size: 166,
+      creature: "mollusk",
+      sprite: "seasonal/summer-05-tako-octopus.png",
+      motion: "pulse",
+      spriteHeight: 0.86,
+      size: 150,
       x: 76,
       y: 43,
       colors: ["#cfe9d8", "#4c7f68"],
@@ -154,9 +166,11 @@
       id: "movie-telop-transcriber",
       title: "動画テロップ読み取りツール",
       category: "AI",
-      creature: "ray",
-      sprite: "crucian.png",
-      size: 156,
+      creature: "eel",
+      sprite: "seasonal/autumn-08-tachiuo-cutlassfish.png",
+      motion: "undulate",
+      spriteHeight: 0.42,
+      size: 190,
       x: 78,
       y: 72,
       colors: ["#b8d8f0", "#4c5f86"],
@@ -170,10 +184,11 @@
       id: "blender-mcp",
       title: "BlenderMCP",
       category: "3D",
-      creature: "jelly",
-      sprite: "seahorse.png",
-      spriteHeight: 1.3,
-      size: 132,
+      creature: "crustacean",
+      sprite: "seasonal/winter-12-iseebi-spiny-lobster.png",
+      motion: "crawl",
+      spriteHeight: 0.65,
+      size: 175,
       x: 72,
       y: 23,
       colors: ["#d8c2f2", "#6a5c94"],
@@ -187,9 +202,11 @@
       id: "m5stack-dashboard",
       title: "M5Stack-Dashboard",
       category: "IoT",
-      creature: "fish",
-      sprite: "char.png",
-      size: 148,
+      creature: "mollusk",
+      sprite: "seasonal/spring-07-hotaruika-firefly-squid.png",
+      motion: "pulse",
+      spriteHeight: 0.65,
+      size: 146,
       x: 31,
       y: 81,
       colors: ["#f4d08f", "#8a7140"],
@@ -200,6 +217,77 @@
         "LAN内のM5Stack機器を扱うためのダッシュボードです。ローカル環境での状態確認や管理をしやすくします。",
     },
   ];
+
+  const seasonalSeafood = {
+    spring: [
+      ["spring-01-madai-red-sea-bream.png", "swim", 126, 18, 22, 0.58],
+      ["spring-02-sawara-spanish-mackerel.png", "swim", 138, 38, 18, 0.42],
+      ["spring-03-katsuo-bonito.png", "dart", 132, 61, 24, 0.46],
+      ["spring-04-shirasu-whitebait.png", "dart", 100, 82, 29, 0.46],
+      ["spring-05-asari-clam.png", "bob", 86, 16, 51, 0.72],
+      ["spring-06-hamaguri-clam.png", "bob", 96, 35, 72, 0.64],
+      ["spring-07-hotaruika-firefly-squid.png", "pulse", 86, 50, 48, 0.65],
+      ["spring-08-yariika-spear-squid.png", "pulse", 116, 70, 52, 0.48],
+      ["spring-09-sakuraebi-shrimp.png", "dart", 92, 83, 63, 0.58],
+      ["spring-10-mebaru-rockfish.png", "swim", 112, 58, 82, 0.6],
+      ["spring-11-sayori-halfbeak.png", "dart", 118, 22, 86, 0.32],
+      ["spring-12-ainame-greenling.png", "swim", 112, 42, 62, 0.52],
+      ["spring-13-wakame-seaweed.png", "sway", 88, 74, 80, 1.18],
+      ["spring-14-torigai-cockle.png", "bob", 90, 88, 45, 0.82],
+      ["spring-15-konbu-kelp.png", "sway", 112, 66, 34, 0.72],
+    ],
+    summer: [
+      ["summer-01-aji-horse-mackerel.png", "dart", 116, 16, 24, 0.48],
+      ["summer-02-suzuki-sea-bass.png", "swim", 128, 39, 20, 0.42],
+      ["summer-03-anago-conger-eel.png", "undulate", 120, 61, 26, 0.42],
+      ["summer-04-hamo-pike-conger.png", "undulate", 122, 81, 30, 0.38],
+      ["summer-05-tako-octopus.png", "pulse", 104, 29, 58, 0.86],
+      ["summer-06-maika-squid.png", "pulse", 108, 52, 52, 0.56],
+      ["summer-07-kurumaebi-prawn.png", "dart", 104, 76, 57, 0.58],
+      ["summer-08-iwagaki-oyster.png", "bob", 94, 90, 72, 0.76],
+      ["summer-09-sazae-turban-shell.png", "bob", 88, 18, 78, 0.72],
+      ["summer-10-uni-sea-urchin.png", "bob", 84, 40, 86, 1],
+      ["summer-11-tobiuo-flying-fish.png", "dart", 118, 62, 84, 0.56],
+      ["summer-12-kisu-sillago.png", "swim", 106, 82, 88, 0.42],
+      ["summer-13-isaki-grunt.png", "swim", 112, 23, 39, 0.52],
+      ["summer-14-awabi-abalone.png", "bob", 86, 52, 75, 0.66],
+      ["summer-15-mozuku-seaweed.png", "sway", 92, 73, 38, 0.72],
+    ],
+    autumn: [
+      ["autumn-01-sanma-pacific-saury.png", "dart", 118, 14, 20, 0.28],
+      ["autumn-02-saba-mackerel.png", "swim", 122, 34, 18, 0.44],
+      ["autumn-03-sake-salmon.png", "swim", 132, 57, 24, 0.42],
+      ["autumn-04-modorigatsuo-bonito.png", "dart", 124, 79, 26, 0.44],
+      ["autumn-05-kanpachi-amberjack.png", "swim", 120, 27, 47, 0.42],
+      ["autumn-06-shimaaji-striped-jack.png", "swim", 116, 48, 63, 0.5],
+      ["autumn-07-kawahagi-filefish.png", "bob", 92, 69, 49, 0.8],
+      ["autumn-08-tachiuo-cutlassfish.png", "undulate", 132, 86, 58, 0.34],
+      ["autumn-09-surumeika-squid.png", "pulse", 104, 18, 78, 0.58],
+      ["autumn-10-amaebi-sweet-shrimp.png", "dart", 94, 38, 86, 0.62],
+      ["autumn-11-kegani-horsehair-crab.png", "crawl", 94, 58, 83, 0.68],
+      ["autumn-12-zuwaigani-snow-crab.png", "crawl", 106, 77, 78, 0.52],
+      ["autumn-13-ikura-salmon-roe.png", "bob", 76, 89, 42, 0.9],
+      ["autumn-14-shijimi-clam.png", "bob", 80, 37, 34, 0.72],
+      ["autumn-15-nori-seaweed.png", "sway", 82, 67, 86, 1],
+    ],
+    winter: [
+      ["winter-01-buri-yellowtail.png", "swim", 128, 18, 24, 0.42],
+      ["winter-02-tara-pacific-cod.png", "swim", 116, 39, 18, 0.5],
+      ["winter-03-ankoh-monkfish.png", "bob", 118, 61, 29, 0.62],
+      ["winter-04-fugu-pufferfish.png", "bob", 86, 82, 33, 0.7],
+      ["winter-05-hirame-flounder.png", "hover", 118, 24, 58, 0.5],
+      ["winter-06-kinki-thornyhead.png", "swim", 106, 44, 76, 0.58],
+      ["winter-07-kinmedai-alfonsino.png", "swim", 110, 66, 70, 0.52],
+      ["winter-08-winter-kawahagi-filefish.png", "bob", 88, 84, 58, 0.78],
+      ["winter-09-kaki-oyster.png", "bob", 84, 18, 84, 0.78],
+      ["winter-10-hotate-scallop.png", "bob", 90, 37, 42, 0.72],
+      ["winter-11-botanebi-shrimp.png", "dart", 96, 57, 86, 0.58],
+      ["winter-12-iseebi-spiny-lobster.png", "crawl", 110, 76, 83, 0.65],
+      ["winter-13-winter-kegani-crab.png", "crawl", 94, 90, 74, 0.68],
+      ["winter-14-namako-sea-cucumber.png", "undulate", 92, 53, 50, 0.38],
+      ["winter-15-winter-mozuku-seaweed.png", "sway", 90, 72, 36, 0.8],
+    ],
+  };
 
   const contacts = [
     {
@@ -305,6 +393,61 @@
   function creatureImage(item) {
     if (!item.sprite) return "";
     return `<img class="creature-image" src="${creaturePath(item.sprite)}" alt="" loading="eager" decoding="async" />`;
+  }
+
+  function creatureMotionClass(item) {
+    return item.motion ? ` motion-${item.motion}` : "";
+  }
+
+  function setCreatureMetrics(creature, item) {
+    creature.style.setProperty("--size", `${item.size}px`);
+    if (item.spriteHeight) {
+      const height = Math.round(item.size * item.spriteHeight);
+      creature.style.setProperty("--creature-height", `${height}px`);
+      creature.style.setProperty("--creature-aspect", `${item.size / height}`);
+    }
+  }
+
+  function setCreatureMotion(creature, item, index, baseDistance, baseLift) {
+    const motion = item.motion || "swim";
+    const distance = item.motionDistance ?? baseDistance + index * 4;
+    const lift = item.motionLift ?? baseLift + index * 2;
+    const durationByMotion = {
+      bob: 12,
+      crawl: 16,
+      dart: 7,
+      hover: 13,
+      pulse: 9,
+      sway: 14,
+      swim: 10,
+      undulate: 12,
+    };
+
+    creature.style.setProperty("--swim-distance", `${distance}px`);
+    creature.style.setProperty("--swim-lift", `${lift}px`);
+    creature.style.setProperty("--motion-duration", `${item.motionDuration || durationByMotion[motion] || 10}s`);
+    creature.style.setProperty("--motion-delay", `${index * -1.15}s`);
+  }
+
+  function currentPortfolioSeason() {
+    const month = new Date().getMonth() + 1;
+    if (month >= 3 && month <= 5) return "spring";
+    if (month >= 6 && month <= 8) return "summer";
+    if (month >= 9 && month <= 11) return "autumn";
+    return "winter";
+  }
+
+  function seasonalCreatureFromEntry(entry, index, season) {
+    const [sprite, motion, size, x, y, spriteHeight] = entry;
+    return {
+      id: `${season}-${index + 1}`,
+      sprite: `seasonal/${sprite}`,
+      motion,
+      size,
+      x,
+      y,
+      spriteHeight,
+    };
   }
 
   function profileIcon(type) {
@@ -692,31 +835,48 @@
     });
   }
 
+  function renderSeasonalPortfolioCreatures(field) {
+    const season = currentPortfolioSeason();
+    const entries = seasonalSeafood[season] || seasonalSeafood.spring;
+
+    entries.forEach((entry, index) => {
+      const item = seasonalCreatureFromEntry(entry, index, season);
+      const creature = document.createElement("span");
+      creature.className = `creature seasonal-creature has-sprite${creatureMotionClass(item)}`;
+      creature.dataset.season = season;
+      creature.dataset.sprite = item.sprite.replace(".png", "");
+      setCreatureMetrics(creature, item);
+      setCreatureMotion(creature, item, index, 18, 8);
+      creature.style.left = `${item.x}%`;
+      creature.style.top = `${item.y}%`;
+      creature.setAttribute("aria-hidden", "true");
+      creature.innerHTML = creatureImage(item);
+      field.appendChild(creature);
+    });
+  }
+
   function renderProjects() {
     const field = document.querySelector("[data-project-field]");
     const list = document.querySelector("[data-project-list]");
     if (!field || !list) return;
     field.innerHTML = "";
     list.innerHTML = "";
+    renderSeasonalPortfolioCreatures(field);
 
     projects.forEach((project, index) => {
       const creature = document.createElement("button");
       creature.type = "button";
-      creature.className = `creature ${project.creature}${project.sprite ? " has-sprite" : ""}`;
+      creature.className = `creature project-creature ${project.creature}${project.sprite ? " has-sprite" : ""}${creatureMotionClass(project)}`;
       creature.dataset.label = project.title;
       creature.dataset.projectId = project.id;
       creature.dataset.category = project.category;
       if (project.sprite) {
         creature.dataset.sprite = project.sprite.replace(".png", "");
       }
-      creature.style.setProperty("--size", `${project.size}px`);
-      if (project.spriteHeight) {
-        creature.style.setProperty("--creature-height", `${Math.round(project.size * project.spriteHeight)}px`);
-      }
+      setCreatureMetrics(creature, project);
       creature.style.setProperty("--creature-a", project.colors[0]);
       creature.style.setProperty("--creature-b", project.colors[1]);
-      creature.style.setProperty("--swim-distance", `${32 + index * 5}px`);
-      creature.style.setProperty("--swim-lift", `${16 + index * 3}px`);
+      setCreatureMotion(creature, project, index, 32, 16);
       creature.style.left = `${project.x}%`;
       creature.style.top = `${project.y}%`;
       creature.style.animationDelay = `${index * -1.4}s`;

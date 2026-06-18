@@ -620,6 +620,70 @@ body.is-js-ready .background-layer.exit-to-bottom {
   will-change: transform;
 }
 
+.area-portfolio-panel .project-creature {
+  z-index: 2;
+}
+
+.seasonal-creature {
+  z-index: 1;
+  cursor: default;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.seasonal-creature::after {
+  content: none;
+}
+
+.seasonal-creature .creature-image {
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.2));
+}
+
+.creature.motion-swim {
+  animation: swim var(--motion-duration, 10s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-dart {
+  animation: dart var(--motion-duration, 7s) cubic-bezier(0.36, 0, 0.28, 1) infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-undulate {
+  animation: undulate var(--motion-duration, 12s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-pulse {
+  animation: pulse-drift var(--motion-duration, 9s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-crawl {
+  animation: crawl var(--motion-duration, 16s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-bob,
+.creature.motion-hover {
+  animation: soft-bob var(--motion-duration, 12s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-sway {
+  animation: sway-drift var(--motion-duration, 14s) ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0s);
+}
+
+.creature.motion-bob .creature-image,
+.creature.motion-crawl .creature-image,
+.creature.motion-hover .creature-image,
+.creature.motion-pulse .creature-image,
+.creature.motion-sway .creature-image,
+.creature.motion-undulate .creature-image {
+  animation: none;
+}
+
 .creature::before {
   content: "";
   position: absolute;
@@ -927,6 +991,84 @@ body.is-js-ready .background-layer.exit-to-bottom {
   }
 }
 
+@keyframes dart {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-1deg);
+  }
+  18% {
+    transform: translate3d(calc(var(--swim-distance, 22px) * 0.9), calc(var(--swim-lift, 8px) * -0.8), 0) rotate(2deg);
+  }
+  24% {
+    transform: translate3d(calc(var(--swim-distance, 22px) * 1.25), calc(var(--swim-lift, 8px) * -1.1), 0) rotate(0.5deg);
+  }
+  62% {
+    transform: translate3d(calc(var(--swim-distance, 22px) * -0.35), calc(var(--swim-lift, 8px) * 0.55), 0) rotate(-2deg);
+  }
+}
+
+@keyframes undulate {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-2deg) skewX(0deg);
+  }
+  33% {
+    transform: translate3d(var(--swim-distance, 20px), calc(var(--swim-lift, 10px) * -0.8), 0) rotate(3deg) skewX(-3deg);
+  }
+  66% {
+    transform: translate3d(calc(var(--swim-distance, 20px) * -0.45), calc(var(--swim-lift, 10px) * 0.65), 0) rotate(-3deg) skewX(3deg);
+  }
+}
+
+@keyframes pulse-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  38% {
+    transform: translate3d(calc(var(--swim-distance, 16px) * 0.45), calc(var(--swim-lift, 8px) * -1), 0) scale(1.035);
+  }
+  70% {
+    transform: translate3d(calc(var(--swim-distance, 16px) * -0.32), calc(var(--swim-lift, 8px) * 0.65), 0) scale(0.985);
+  }
+}
+
+@keyframes crawl {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  28% {
+    transform: translate3d(calc(var(--swim-distance, 18px) * 0.48), calc(var(--swim-lift, 8px) * -0.25), 0) rotate(1.2deg);
+  }
+  58% {
+    transform: translate3d(calc(var(--swim-distance, 18px) * -0.35), calc(var(--swim-lift, 8px) * 0.22), 0) rotate(-1.2deg);
+  }
+}
+
+@keyframes soft-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  45% {
+    transform: translate3d(calc(var(--swim-distance, 14px) * 0.18), calc(var(--swim-lift, 8px) * -0.7), 0) rotate(0.8deg);
+  }
+  74% {
+    transform: translate3d(calc(var(--swim-distance, 14px) * -0.16), calc(var(--swim-lift, 8px) * 0.45), 0) rotate(-0.7deg);
+  }
+}
+
+@keyframes sway-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-3deg);
+  }
+  50% {
+    transform: translate3d(calc(var(--swim-distance, 14px) * 0.24), calc(var(--swim-lift, 8px) * -0.5), 0) rotate(4deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1028,7 +1170,7 @@ body.is-js-ready .background-layer.exit-to-bottom {
   .creature.has-sprite {
     width: min(var(--size), 36vw);
     height: auto;
-    aspect-ratio: 2.55 / 1;
+    aspect-ratio: var(--creature-aspect, 2.55 / 1);
   }
 
   .creature.has-sprite[data-sprite="seahorse"] {
