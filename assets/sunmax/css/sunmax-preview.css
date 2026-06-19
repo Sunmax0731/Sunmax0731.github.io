@@ -640,6 +640,20 @@ body.is-js-ready .background-layer.exit-to-bottom {
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.2));
 }
 
+.free-swimmer {
+  animation: none !important;
+  transform-origin: center;
+}
+
+.free-swimmer .creature-image {
+  animation: none !important;
+  transform: scaleX(var(--creature-facing, -1));
+}
+
+.free-swimmer::after {
+  transform: translateX(-50%) rotate(var(--swimmer-counter-rotation, 0deg));
+}
+
 .creature.motion-swim {
   animation: swim var(--motion-duration, 10s) ease-in-out infinite;
   animation-delay: var(--motion-delay, 0s);

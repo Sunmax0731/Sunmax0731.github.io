@@ -372,6 +372,11 @@
   let touchStartY = null;
   let touchStartTarget = null;
   let backgroundTimer = null;
+  let portfolioSwimFrame = 0;
+  let portfolioSwimLastTime = 0;
+  let portfolioSwimNeedsRefresh = true;
+  let portfolioSwimmers = [];
+  const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function escapeHtml(value) {
     return String(value)
@@ -427,6 +432,44 @@
     creature.style.setProperty("--swim-lift", `${lift}px`);
     creature.style.setProperty("--motion-duration", `${item.motionDuration || (durationByMotion[motion] || 10) / Math.max(energy, 0.75)}s`);
     creature.style.setProperty("--motion-delay", `${index * -1.15}s`);
+  }
+
+  function motionSpeedFactor(motion) {
+    return {
+      bob: 0.35,
+      crawl: 0.48,
+      dart: 1.45,
+      hover: 0.34,
+      pulse: 0.56,
+      sway: 0.24,
+      swim: 1,
+      undulate: 0.78,
+    }[motion || "swim"] || 1;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function normalizeAngle(angle) {
+    let next = angle;
+    while (next > Math.PI) next -= Math.PI * 2;
+    while (next < -Math.PI) next += Math.PI * 2;
+    return next;
+  }
+
+  function markFreeSwimmer(creature, item, index, role) {
+    creature.classList.add("free-swimmer");
+    creature.dataset.swimRole = role;
+    creature.dataset.motion = item.motion || "swim";
+    creature.dataset.startX = String(item.x);
+    creature.dataset.startY = String(item.y);
+    creature.dataset.swimIndex = String(index);
+    creature.style.setProperty("--creature-facing", "-1");
   }
 
   function currentPortfolioSeason() {
@@ -610,6 +653,9 @@
     hideContact();
     highlightProfiles("");
     highlightProjects("");
+    if (nextArea === "portfolio") {
+      portfolioSwimNeedsRefresh = true;
+    }
 
     if (!options.skipHash) {
       const nextHash = `#${nextArea}`;
@@ -835,6 +881,133 @@
     });
   }
 
+  function createSwimmerState(element, fieldRect) {
+    const role = element.dataset.swimRole || "ambient";
+    const motion = element.dataset.motion || "swim";
+    const index = Number(element.dataset.swimIndex || 0);
+    const factor = motionSpeedFactor(motion);
+    const startX = clamp(Number(element.dataset.startX || 50) / 100, 0.06, 0.94);
+    const startY = clamp(Number(element.dataset.startY || 50) / 100, 0.1, 0.9);
+    const rect = element.getBoundingClientRect();
+    const active = role === "project";
+    const baseSpeed = active ? randomBetween(26, 46) : randomBetween(6, 15);
+    const speed = baseSpeed * factor;
+    const angle = randomBetween(-Math.PI * 0.82, Math.PI * 0.82) + (index % 2 ? Math.PI : 0);
+    element.style.left = "0px";
+    element.style.top = "0px";
+
+    return {
+      element,
+      role,
+      motion,
+      x: startX * fieldRect.width,
+      y: startY * fieldRect.height,
+      width: rect.width || Number.parseFloat(element.style.getPropertyValue("--size")) || 120,
+      height: rect.height || 60,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed * 0.42,
+      targetAngle: angle,
+      speed,
+      turn: active ? randomBetween(1.4, 2.1) : randomBetween(0.45, 0.9),
+      wander: active ? randomBetween(0.45, 0.95) : randomBetween(0.18, 0.42),
+      nextTurn: randomBetween(0.6, 2.2),
+      phase: randomBetween(0, Math.PI * 2),
+    };
+  }
+
+  function refreshPortfolioSwimming() {
+    const field = document.querySelector("[data-project-field]");
+    if (!field) return;
+    const fieldRect = field.getBoundingClientRect();
+    if (fieldRect.width < 1 || fieldRect.height < 1) {
+      portfolioSwimNeedsRefresh = true;
+      return;
+    }
+
+    portfolioSwimmers = Array.from(field.querySelectorAll(".free-swimmer")).map((element) =>
+      createSwimmerState(element, fieldRect),
+    );
+    portfolioSwimNeedsRefresh = false;
+    portfolioSwimLastTime = performance.now();
+  }
+
+  function updateSwimmerDirection(swimmer, dt, fieldRect) {
+    swimmer.nextTurn -= dt;
+    if (swimmer.nextTurn <= 0) {
+      swimmer.targetAngle += randomBetween(-swimmer.wander, swimmer.wander);
+      swimmer.nextTurn = randomBetween(0.7, swimmer.role === "project" ? 1.8 : 3.2);
+    }
+
+    const marginX = clamp(swimmer.width * 0.68, 54, 170);
+    const marginY = clamp(swimmer.height * 0.9, 44, 145);
+    let steerX = Math.cos(swimmer.targetAngle);
+    let steerY = Math.sin(swimmer.targetAngle) * 0.55;
+
+    if (swimmer.x < marginX) steerX += (marginX - swimmer.x) / marginX * 2.5;
+    if (swimmer.x > fieldRect.width - marginX) steerX -= (swimmer.x - (fieldRect.width - marginX)) / marginX * 2.5;
+    if (swimmer.y < marginY) steerY += (marginY - swimmer.y) / marginY * 1.8;
+    if (swimmer.y > fieldRect.height - marginY) steerY -= (swimmer.y - (fieldRect.height - marginY)) / marginY * 1.8;
+
+    const length = Math.hypot(steerX, steerY) || 1;
+    const desiredVx = (steerX / length) * swimmer.speed;
+    const desiredVy = (steerY / length) * swimmer.speed * 0.62;
+    const easing = clamp(dt * swimmer.turn, 0, 1);
+    swimmer.vx += (desiredVx - swimmer.vx) * easing;
+    swimmer.vy += (desiredVy - swimmer.vy) * easing;
+  }
+
+  function renderSwimmer(swimmer) {
+    const directionAngle = Math.atan2(swimmer.vy, swimmer.vx);
+    const facingRight = swimmer.vx >= 0;
+    const rawRotation = facingRight ? directionAngle : directionAngle - Math.PI;
+    const rotation = clamp((normalizeAngle(rawRotation) * 180) / Math.PI, -20, 20);
+
+    swimmer.element.style.setProperty("--creature-facing", facingRight ? "-1" : "1");
+    swimmer.element.style.setProperty("--swimmer-counter-rotation", `${rotation * -1}deg`);
+    swimmer.element.style.transform = `translate3d(${swimmer.x}px, ${swimmer.y}px, 0) translate(-50%, -50%) rotate(${rotation}deg)`;
+  }
+
+  function animatePortfolioSwimming(time) {
+    portfolioSwimFrame = window.requestAnimationFrame(animatePortfolioSwimming);
+    if (reduceMotionQuery.matches || currentArea !== "portfolio") {
+      portfolioSwimLastTime = time;
+      return;
+    }
+
+    if (portfolioSwimNeedsRefresh || !portfolioSwimmers.length) {
+      refreshPortfolioSwimming();
+      return;
+    }
+
+    const field = document.querySelector("[data-project-field]");
+    const fieldRect = field?.getBoundingClientRect();
+    if (!fieldRect || fieldRect.width < 1 || fieldRect.height < 1) {
+      portfolioSwimNeedsRefresh = true;
+      return;
+    }
+
+    const dt = clamp((time - portfolioSwimLastTime) / 1000, 0, 0.05);
+    portfolioSwimLastTime = time;
+
+    portfolioSwimmers.forEach((swimmer) => {
+      updateSwimmerDirection(swimmer, dt, fieldRect);
+      swimmer.phase += dt * (swimmer.role === "project" ? 2.4 : 1.1);
+      swimmer.x += swimmer.vx * dt;
+      swimmer.y += (swimmer.vy + Math.sin(swimmer.phase) * (swimmer.role === "project" ? 8 : 3)) * dt;
+      swimmer.x = clamp(swimmer.x, swimmer.width * 0.2, fieldRect.width - swimmer.width * 0.2);
+      swimmer.y = clamp(swimmer.y, swimmer.height * 0.35, fieldRect.height - swimmer.height * 0.35);
+      renderSwimmer(swimmer);
+    });
+  }
+
+  function setupPortfolioSwimming() {
+    if (portfolioSwimFrame) return;
+    window.addEventListener("resize", () => {
+      portfolioSwimNeedsRefresh = true;
+    });
+    portfolioSwimFrame = window.requestAnimationFrame(animatePortfolioSwimming);
+  }
+
   function renderSeasonalPortfolioCreatures(field) {
     const season = currentPortfolioSeason();
     const entries = seasonalSeafood[season] || seasonalSeafood.spring;
@@ -847,6 +1020,7 @@
       creature.dataset.sprite = item.sprite.replace(".png", "");
       setCreatureMetrics(creature, item);
       setCreatureMotion(creature, item, index, 14, 6, 0.62);
+      markFreeSwimmer(creature, item, index, "ambient");
       creature.style.left = `${item.x}%`;
       creature.style.top = `${item.y}%`;
       creature.setAttribute("aria-hidden", "true");
@@ -877,6 +1051,7 @@
       creature.style.setProperty("--creature-a", project.colors[0]);
       creature.style.setProperty("--creature-b", project.colors[1]);
       setCreatureMotion(creature, project, index, 44, 22, 1.55);
+      markFreeSwimmer(creature, project, index, "project");
       creature.style.left = `${project.x}%`;
       creature.style.top = `${project.y}%`;
       creature.style.animationDelay = `${index * -1.4}s`;
@@ -1013,6 +1188,7 @@
   renderProfileCreatures();
   renderProjects();
   renderContacts();
+  setupPortfolioSwimming();
   setupDirectionalNavigation();
   setArea(areaFromHash(), { skipHash: true, replace: true, skipAnimation: true });
 })();
