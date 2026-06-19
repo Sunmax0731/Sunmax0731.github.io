@@ -447,6 +447,7 @@
   const swimFields = {
     top: {
       selector: "[data-profile-field]",
+      minYRatio: 0.39,
       lastTime: 0,
       needsRefresh: true,
       swimmers: [],
@@ -542,6 +543,12 @@
     while (next > Math.PI) next -= Math.PI * 2;
     while (next < -Math.PI) next += Math.PI * 2;
     return next;
+  }
+
+  function swimTopLimit(config, fieldRect, swimmerHeight, swimmerWidth = 0) {
+    if (!config?.minYRatio) return swimmerHeight * 0.35;
+    const waterline = fieldRect.height * config.minYRatio;
+    return waterline + swimmerHeight * 0.52 + swimmerWidth * 0.2;
   }
 
   function markFreeSwimmer(creature, item, index, role) {
@@ -966,14 +973,17 @@
     });
   }
 
-  function createSwimmerState(element, fieldRect) {
+  function createSwimmerState(element, fieldRect, config) {
     const role = element.dataset.swimRole || "ambient";
     const motion = element.dataset.motion || "swim";
     const index = Number(element.dataset.swimIndex || 0);
     const factor = motionSpeedFactor(motion);
     const startX = clamp(Number(element.dataset.startX || 50) / 100, 0.06, 0.94);
-    const startY = clamp(Number(element.dataset.startY || 50) / 100, 0.1, 0.9);
+    const startY = Number(element.dataset.startY || 50) / 100;
     const rect = element.getBoundingClientRect();
+    const width = rect.width || Number.parseFloat(element.style.getPropertyValue("--size")) || 120;
+    const height = rect.height || 60;
+    const topLimit = swimTopLimit(config, fieldRect, height, width);
     const active = role === "project" || role === "profile";
     const baseSpeed = active ? randomBetween(24, 44) : randomBetween(6, 15);
     const speed = baseSpeed * factor;
@@ -986,9 +996,9 @@
       role,
       motion,
       x: startX * fieldRect.width,
-      y: startY * fieldRect.height,
-      width: rect.width || Number.parseFloat(element.style.getPropertyValue("--size")) || 120,
-      height: rect.height || 60,
+      y: clamp(startY * fieldRect.height, topLimit, fieldRect.height - height * 0.35),
+      width,
+      height,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed * 0.42,
       targetAngle: angle,
@@ -1011,12 +1021,12 @@
       return;
     }
 
-    config.swimmers = Array.from(field.querySelectorAll(".free-swimmer")).map((element) => createSwimmerState(element, fieldRect));
+    config.swimmers = Array.from(field.querySelectorAll(".free-swimmer")).map((element) => createSwimmerState(element, fieldRect, config));
     config.needsRefresh = false;
     config.lastTime = performance.now();
   }
 
-  function updateSwimmerDirection(swimmer, dt, fieldRect) {
+  function updateSwimmerDirection(swimmer, dt, fieldRect, config) {
     swimmer.nextTurn -= dt;
     if (swimmer.nextTurn <= 0) {
       swimmer.targetAngle += randomBetween(-swimmer.wander, swimmer.wander);
@@ -1025,12 +1035,13 @@
 
     const marginX = clamp(swimmer.width * 0.68, 54, 170);
     const marginY = clamp(swimmer.height * 0.9, 44, 145);
+    const topLimit = swimTopLimit(config, fieldRect, swimmer.height, swimmer.width);
     let steerX = Math.cos(swimmer.targetAngle);
     let steerY = Math.sin(swimmer.targetAngle) * 0.55;
 
     if (swimmer.x < marginX) steerX += (marginX - swimmer.x) / marginX * 2.5;
     if (swimmer.x > fieldRect.width - marginX) steerX -= (swimmer.x - (fieldRect.width - marginX)) / marginX * 2.5;
-    if (swimmer.y < marginY) steerY += (marginY - swimmer.y) / marginY * 1.8;
+    if (swimmer.y < topLimit + marginY) steerY += (topLimit + marginY - swimmer.y) / marginY * 1.8;
     if (swimmer.y > fieldRect.height - marginY) steerY -= (swimmer.y - (fieldRect.height - marginY)) / marginY * 1.8;
 
     const length = Math.hypot(steerX, steerY) || 1;
@@ -1055,10 +1066,19 @@
   function animateFreeSwimming(time) {
     swimFrame = window.requestAnimationFrame(animateFreeSwimming);
     const config = swimFields[currentArea];
-    if (reduceMotionQuery.matches || !config) {
+    if (!config) {
       Object.values(swimFields).forEach((fieldConfig) => {
         fieldConfig.lastTime = time;
       });
+      return;
+    }
+
+    if (reduceMotionQuery.matches) {
+      if (config.needsRefresh || !config.swimmers.length) {
+        refreshSwimming(currentArea);
+      }
+      config.swimmers.forEach(renderSwimmer);
+      config.lastTime = time;
       return;
     }
 
@@ -1079,12 +1099,12 @@
 
     config.swimmers.forEach((swimmer) => {
       const active = swimmer.role !== "ambient";
-      updateSwimmerDirection(swimmer, dt, fieldRect);
+      updateSwimmerDirection(swimmer, dt, fieldRect, config);
       swimmer.phase += dt * (active ? 2.4 : 1.1);
       swimmer.x += swimmer.vx * dt;
       swimmer.y += (swimmer.vy + Math.sin(swimmer.phase) * (active ? 8 : 3)) * dt;
       swimmer.x = clamp(swimmer.x, swimmer.width * 0.2, fieldRect.width - swimmer.width * 0.2);
-      swimmer.y = clamp(swimmer.y, swimmer.height * 0.35, fieldRect.height - swimmer.height * 0.35);
+      swimmer.y = clamp(swimmer.y, swimTopLimit(config, fieldRect, swimmer.height, swimmer.width), fieldRect.height - swimmer.height * 0.35);
       renderSwimmer(swimmer);
     });
   }
