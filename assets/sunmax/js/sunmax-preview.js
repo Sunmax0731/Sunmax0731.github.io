@@ -289,6 +289,77 @@
     ],
   };
 
+  const seasonalHarborSeafood = {
+    spring: [
+      ["spring-04-shirasu-whitebait.png", "dart", 82, 17, 28, 0.46],
+      ["spring-11-sayori-halfbeak.png", "dart", 108, 35, 22, 0.32],
+      ["spring-10-mebaru-rockfish.png", "hover", 102, 58, 31, 0.6],
+      ["spring-12-ainame-greenling.png", "swim", 112, 78, 34, 0.52],
+      ["base/sea-bass.png", "swim", 128, 69, 51, 0.42],
+      ["base/horse-mackerel.png", "dart", 104, 44, 47, 0.44],
+      ["base/needlefish.png", "dart", 106, 84, 57, 0.28],
+      ["spring-05-asari-clam.png", "bob", 76, 21, 66, 0.72],
+      ["spring-06-hamaguri-clam.png", "bob", 84, 38, 78, 0.64],
+      ["spring-14-torigai-cockle.png", "bob", 82, 61, 72, 0.82],
+      ["spring-09-sakuraebi-shrimp.png", "dart", 80, 76, 75, 0.58],
+      ["spring-07-hotaruika-firefly-squid.png", "pulse", 76, 89, 44, 0.65],
+      ["spring-13-wakame-seaweed.png", "sway", 86, 54, 86, 1.18],
+      ["spring-15-konbu-kelp.png", "sway", 92, 87, 83, 0.72],
+      ["base/sardine.png", "dart", 88, 28, 88, 0.44],
+    ],
+    summer: [
+      ["summer-01-aji-horse-mackerel.png", "dart", 106, 18, 31, 0.48],
+      ["summer-02-suzuki-sea-bass.png", "swim", 122, 39, 27, 0.42],
+      ["summer-12-kisu-sillago.png", "swim", 100, 63, 24, 0.42],
+      ["summer-13-isaki-grunt.png", "swim", 104, 82, 35, 0.52],
+      ["summer-03-anago-conger-eel.png", "undulate", 116, 74, 55, 0.42],
+      ["summer-05-tako-octopus.png", "pulse", 96, 26, 61, 0.86],
+      ["summer-06-maika-squid.png", "pulse", 98, 48, 50, 0.56],
+      ["summer-07-kurumaebi-prawn.png", "dart", 92, 87, 63, 0.58],
+      ["summer-08-iwagaki-oyster.png", "bob", 80, 18, 80, 0.76],
+      ["summer-09-sazae-turban-shell.png", "bob", 76, 39, 83, 0.72],
+      ["summer-10-uni-sea-urchin.png", "bob", 74, 59, 88, 1],
+      ["summer-14-awabi-abalone.png", "bob", 78, 77, 81, 0.66],
+      ["summer-15-mozuku-seaweed.png", "sway", 84, 90, 85, 0.72],
+      ["base/mackerel.png", "swim", 102, 53, 70, 0.42],
+      ["base/seahorse.png", "hover", 78, 30, 42, 1.3],
+    ],
+    autumn: [
+      ["autumn-02-saba-mackerel.png", "swim", 112, 18, 26, 0.44],
+      ["autumn-06-shimaaji-striped-jack.png", "swim", 106, 38, 23, 0.5],
+      ["autumn-07-kawahagi-filefish.png", "hover", 84, 61, 32, 0.8],
+      ["autumn-08-tachiuo-cutlassfish.png", "undulate", 120, 82, 39, 0.34],
+      ["autumn-09-surumeika-squid.png", "pulse", 94, 72, 57, 0.58],
+      ["autumn-10-amaebi-sweet-shrimp.png", "dart", 82, 48, 61, 0.62],
+      ["autumn-11-kegani-horsehair-crab.png", "crawl", 82, 27, 78, 0.68],
+      ["autumn-12-zuwaigani-snow-crab.png", "crawl", 94, 58, 81, 0.52],
+      ["autumn-14-shijimi-clam.png", "bob", 74, 78, 76, 0.72],
+      ["autumn-15-nori-seaweed.png", "sway", 76, 89, 86, 1],
+      ["base/sardine.png", "dart", 86, 31, 45, 0.44],
+      ["base/sea-bass.png", "swim", 118, 52, 44, 0.42],
+      ["base/needlefish.png", "dart", 104, 88, 62, 0.28],
+      ["autumn-13-ikura-salmon-roe.png", "bob", 70, 40, 88, 0.9],
+      ["autumn-05-kanpachi-amberjack.png", "swim", 110, 68, 70, 0.42],
+    ],
+    winter: [
+      ["winter-04-fugu-pufferfish.png", "hover", 78, 20, 31, 0.7],
+      ["winter-05-hirame-flounder.png", "hover", 106, 42, 70, 0.5],
+      ["winter-08-winter-kawahagi-filefish.png", "hover", 82, 62, 35, 0.78],
+      ["winter-09-kaki-oyster.png", "bob", 78, 24, 81, 0.78],
+      ["winter-10-hotate-scallop.png", "bob", 82, 47, 83, 0.72],
+      ["winter-11-botanebi-shrimp.png", "dart", 84, 70, 75, 0.58],
+      ["winter-12-iseebi-spiny-lobster.png", "crawl", 94, 86, 80, 0.65],
+      ["winter-14-namako-sea-cucumber.png", "undulate", 84, 58, 58, 0.38],
+      ["winter-15-winter-mozuku-seaweed.png", "sway", 82, 82, 55, 0.8],
+      ["base/sea-bass.png", "swim", 112, 34, 25, 0.42],
+      ["base/horse-mackerel.png", "dart", 96, 56, 24, 0.44],
+      ["base/mackerel.png", "swim", 98, 77, 42, 0.42],
+      ["base/sardine.png", "dart", 82, 88, 62, 0.44],
+      ["winter-03-ankoh-monkfish.png", "hover", 102, 30, 58, 0.62],
+      ["winter-13-winter-kegani-crab.png", "crawl", 82, 64, 88, 0.68],
+    ],
+  };
+
   const contacts = [
     {
       id: "email",
@@ -372,10 +443,21 @@
   let touchStartY = null;
   let touchStartTarget = null;
   let backgroundTimer = null;
-  let portfolioSwimFrame = 0;
-  let portfolioSwimLastTime = 0;
-  let portfolioSwimNeedsRefresh = true;
-  let portfolioSwimmers = [];
+  let swimFrame = 0;
+  const swimFields = {
+    top: {
+      selector: "[data-profile-field]",
+      lastTime: 0,
+      needsRefresh: true,
+      swimmers: [],
+    },
+    portfolio: {
+      selector: "[data-project-field]",
+      lastTime: 0,
+      needsRefresh: true,
+      swimmers: [],
+    },
+  };
   const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function escapeHtml(value) {
@@ -482,9 +564,10 @@
 
   function seasonalCreatureFromEntry(entry, index, season) {
     const [sprite, motion, size, x, y, spriteHeight] = entry;
+    const spritePath = sprite.startsWith("base/") ? sprite.slice(5) : sprite.includes("/") ? sprite : `seasonal/${sprite}`;
     return {
       id: `${season}-${index + 1}`,
-      sprite: `seasonal/${sprite}`,
+      sprite: spritePath,
       motion,
       size,
       x,
@@ -653,8 +736,8 @@
     hideContact();
     highlightProfiles("");
     highlightProjects("");
-    if (nextArea === "portfolio") {
-      portfolioSwimNeedsRefresh = true;
+    if (swimFields[nextArea]) {
+      swimFields[nextArea].needsRefresh = true;
     }
 
     if (!options.skipHash) {
@@ -819,6 +902,7 @@
     const field = document.querySelector("[data-profile-field]");
     if (!field) return;
     field.innerHTML = "";
+    renderSeasonalHarborCreatures(field);
 
     profileItems.forEach((profile, index) => {
       const creature = document.createElement("button");
@@ -837,6 +921,7 @@
       creature.style.setProperty("--creature-b", profile.colors[1]);
       creature.style.setProperty("--swim-distance", `${28 + index * 5}px`);
       creature.style.setProperty("--swim-lift", `${14 + index * 3}px`);
+      markFreeSwimmer(creature, profile, index + 20, "profile");
       creature.style.left = `${profile.x}%`;
       creature.style.top = `${profile.y}%`;
       creature.style.animationDelay = `${index * -1.2}s`;
@@ -889,8 +974,8 @@
     const startX = clamp(Number(element.dataset.startX || 50) / 100, 0.06, 0.94);
     const startY = clamp(Number(element.dataset.startY || 50) / 100, 0.1, 0.9);
     const rect = element.getBoundingClientRect();
-    const active = role === "project";
-    const baseSpeed = active ? randomBetween(26, 46) : randomBetween(6, 15);
+    const active = role === "project" || role === "profile";
+    const baseSpeed = active ? randomBetween(24, 44) : randomBetween(6, 15);
     const speed = baseSpeed * factor;
     const angle = randomBetween(-Math.PI * 0.82, Math.PI * 0.82) + (index % 2 ? Math.PI : 0);
     element.style.left = "0px";
@@ -915,27 +1000,27 @@
     };
   }
 
-  function refreshPortfolioSwimming() {
-    const field = document.querySelector("[data-project-field]");
+  function refreshSwimming(area) {
+    const config = swimFields[area];
+    if (!config) return;
+    const field = document.querySelector(config.selector);
     if (!field) return;
     const fieldRect = field.getBoundingClientRect();
     if (fieldRect.width < 1 || fieldRect.height < 1) {
-      portfolioSwimNeedsRefresh = true;
+      config.needsRefresh = true;
       return;
     }
 
-    portfolioSwimmers = Array.from(field.querySelectorAll(".free-swimmer")).map((element) =>
-      createSwimmerState(element, fieldRect),
-    );
-    portfolioSwimNeedsRefresh = false;
-    portfolioSwimLastTime = performance.now();
+    config.swimmers = Array.from(field.querySelectorAll(".free-swimmer")).map((element) => createSwimmerState(element, fieldRect));
+    config.needsRefresh = false;
+    config.lastTime = performance.now();
   }
 
   function updateSwimmerDirection(swimmer, dt, fieldRect) {
     swimmer.nextTurn -= dt;
     if (swimmer.nextTurn <= 0) {
       swimmer.targetAngle += randomBetween(-swimmer.wander, swimmer.wander);
-      swimmer.nextTurn = randomBetween(0.7, swimmer.role === "project" ? 1.8 : 3.2);
+      swimmer.nextTurn = randomBetween(0.7, swimmer.role === "ambient" ? 3.2 : 1.8);
     }
 
     const marginX = clamp(swimmer.width * 0.68, 54, 170);
@@ -967,45 +1052,51 @@
     swimmer.element.style.transform = `translate3d(${swimmer.x}px, ${swimmer.y}px, 0) translate(-50%, -50%) rotate(${rotation}deg)`;
   }
 
-  function animatePortfolioSwimming(time) {
-    portfolioSwimFrame = window.requestAnimationFrame(animatePortfolioSwimming);
-    if (reduceMotionQuery.matches || currentArea !== "portfolio") {
-      portfolioSwimLastTime = time;
+  function animateFreeSwimming(time) {
+    swimFrame = window.requestAnimationFrame(animateFreeSwimming);
+    const config = swimFields[currentArea];
+    if (reduceMotionQuery.matches || !config) {
+      Object.values(swimFields).forEach((fieldConfig) => {
+        fieldConfig.lastTime = time;
+      });
       return;
     }
 
-    if (portfolioSwimNeedsRefresh || !portfolioSwimmers.length) {
-      refreshPortfolioSwimming();
+    if (config.needsRefresh || !config.swimmers.length) {
+      refreshSwimming(currentArea);
       return;
     }
 
-    const field = document.querySelector("[data-project-field]");
+    const field = document.querySelector(config.selector);
     const fieldRect = field?.getBoundingClientRect();
     if (!fieldRect || fieldRect.width < 1 || fieldRect.height < 1) {
-      portfolioSwimNeedsRefresh = true;
+      config.needsRefresh = true;
       return;
     }
 
-    const dt = clamp((time - portfolioSwimLastTime) / 1000, 0, 0.05);
-    portfolioSwimLastTime = time;
+    const dt = clamp((time - config.lastTime) / 1000, 0, 0.05);
+    config.lastTime = time;
 
-    portfolioSwimmers.forEach((swimmer) => {
+    config.swimmers.forEach((swimmer) => {
+      const active = swimmer.role !== "ambient";
       updateSwimmerDirection(swimmer, dt, fieldRect);
-      swimmer.phase += dt * (swimmer.role === "project" ? 2.4 : 1.1);
+      swimmer.phase += dt * (active ? 2.4 : 1.1);
       swimmer.x += swimmer.vx * dt;
-      swimmer.y += (swimmer.vy + Math.sin(swimmer.phase) * (swimmer.role === "project" ? 8 : 3)) * dt;
+      swimmer.y += (swimmer.vy + Math.sin(swimmer.phase) * (active ? 8 : 3)) * dt;
       swimmer.x = clamp(swimmer.x, swimmer.width * 0.2, fieldRect.width - swimmer.width * 0.2);
       swimmer.y = clamp(swimmer.y, swimmer.height * 0.35, fieldRect.height - swimmer.height * 0.35);
       renderSwimmer(swimmer);
     });
   }
 
-  function setupPortfolioSwimming() {
-    if (portfolioSwimFrame) return;
+  function setupFreeSwimming() {
+    if (swimFrame) return;
     window.addEventListener("resize", () => {
-      portfolioSwimNeedsRefresh = true;
+      Object.values(swimFields).forEach((config) => {
+        config.needsRefresh = true;
+      });
     });
-    portfolioSwimFrame = window.requestAnimationFrame(animatePortfolioSwimming);
+    swimFrame = window.requestAnimationFrame(animateFreeSwimming);
   }
 
   function renderSeasonalPortfolioCreatures(field) {
@@ -1020,6 +1111,28 @@
       creature.dataset.sprite = item.sprite.replace(".png", "");
       setCreatureMetrics(creature, item);
       setCreatureMotion(creature, item, index, 14, 6, 0.62);
+      markFreeSwimmer(creature, item, index, "ambient");
+      creature.style.left = `${item.x}%`;
+      creature.style.top = `${item.y}%`;
+      creature.setAttribute("aria-hidden", "true");
+      creature.innerHTML = creatureImage(item);
+      field.appendChild(creature);
+    });
+  }
+
+  function renderSeasonalHarborCreatures(field) {
+    const season = currentPortfolioSeason();
+    const entries = seasonalHarborSeafood[season] || seasonalHarborSeafood.spring;
+
+    entries.forEach((entry, index) => {
+      const item = seasonalCreatureFromEntry(entry, index, `harbor-${season}`);
+      const creature = document.createElement("span");
+      creature.className = `creature seasonal-creature harbor-seasonal-creature has-sprite${creatureMotionClass(item)}`;
+      creature.dataset.season = season;
+      creature.dataset.habitat = "harbor";
+      creature.dataset.sprite = item.sprite.replace(".png", "");
+      setCreatureMetrics(creature, item);
+      setCreatureMotion(creature, item, index, 11, 5, 0.55);
       markFreeSwimmer(creature, item, index, "ambient");
       creature.style.left = `${item.x}%`;
       creature.style.top = `${item.y}%`;
@@ -1188,7 +1301,7 @@
   renderProfileCreatures();
   renderProjects();
   renderContacts();
-  setupPortfolioSwimming();
+  setupFreeSwimming();
   setupDirectionalNavigation();
   setArea(areaFromHash(), { skipHash: true, replace: true, skipAnimation: true });
 })();

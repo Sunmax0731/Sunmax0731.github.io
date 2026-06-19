@@ -625,11 +625,20 @@ body.is-js-ready .background-layer.exit-to-bottom {
   opacity: 0.82;
 }
 
+.area-top-panel .profile-creature {
+  z-index: 2;
+  opacity: 0.78;
+}
+
 .seasonal-creature {
   z-index: 1;
   cursor: default;
   opacity: 0.22;
   pointer-events: none;
+}
+
+.harbor-seasonal-creature {
+  opacity: 0.2;
 }
 
 .seasonal-creature::after {
