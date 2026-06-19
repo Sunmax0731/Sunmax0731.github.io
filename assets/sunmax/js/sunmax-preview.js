@@ -408,10 +408,10 @@
     }
   }
 
-  function setCreatureMotion(creature, item, index, baseDistance, baseLift) {
+  function setCreatureMotion(creature, item, index, baseDistance, baseLift, energy = 1) {
     const motion = item.motion || "swim";
-    const distance = item.motionDistance ?? baseDistance + index * 4;
-    const lift = item.motionLift ?? baseLift + index * 2;
+    const distance = item.motionDistance ?? (baseDistance + index * 4) * energy;
+    const lift = item.motionLift ?? (baseLift + index * 2) * energy;
     const durationByMotion = {
       bob: 12,
       crawl: 16,
@@ -425,7 +425,7 @@
 
     creature.style.setProperty("--swim-distance", `${distance}px`);
     creature.style.setProperty("--swim-lift", `${lift}px`);
-    creature.style.setProperty("--motion-duration", `${item.motionDuration || durationByMotion[motion] || 10}s`);
+    creature.style.setProperty("--motion-duration", `${item.motionDuration || (durationByMotion[motion] || 10) / Math.max(energy, 0.75)}s`);
     creature.style.setProperty("--motion-delay", `${index * -1.15}s`);
   }
 
@@ -846,7 +846,7 @@
       creature.dataset.season = season;
       creature.dataset.sprite = item.sprite.replace(".png", "");
       setCreatureMetrics(creature, item);
-      setCreatureMotion(creature, item, index, 18, 8);
+      setCreatureMotion(creature, item, index, 14, 6, 0.62);
       creature.style.left = `${item.x}%`;
       creature.style.top = `${item.y}%`;
       creature.setAttribute("aria-hidden", "true");
@@ -876,7 +876,7 @@
       setCreatureMetrics(creature, project);
       creature.style.setProperty("--creature-a", project.colors[0]);
       creature.style.setProperty("--creature-b", project.colors[1]);
-      setCreatureMotion(creature, project, index, 32, 16);
+      setCreatureMotion(creature, project, index, 44, 22, 1.55);
       creature.style.left = `${project.x}%`;
       creature.style.top = `${project.y}%`;
       creature.style.animationDelay = `${index * -1.4}s`;
