@@ -630,6 +630,11 @@ body.is-js-ready .background-layer.exit-to-bottom {
   opacity: 0.78;
 }
 
+.area-contact-panel .contact-creature {
+  z-index: 2;
+  opacity: 0.76;
+}
+
 .seasonal-creature {
   z-index: 1;
   cursor: default;
@@ -639,6 +644,10 @@ body.is-js-ready .background-layer.exit-to-bottom {
 
 .harbor-seasonal-creature {
   opacity: 0.2;
+}
+
+.river-seasonal-creature {
+  opacity: 0.21;
 }
 
 .seasonal-creature::after {

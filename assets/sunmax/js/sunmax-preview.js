@@ -360,6 +360,77 @@
     ],
   };
 
+  const seasonalRiverSeafood = {
+    spring: [
+      ["base/ayu.png", "dart", 112, 18, 31, 0.44],
+      ["base/yamame.png", "swim", 118, 38, 28, 0.46],
+      ["base/char.png", "swim", 108, 58, 34, 0.5],
+      ["base/crucian.png", "hover", 102, 78, 38, 0.58],
+      ["base/needlefish.png", "dart", 100, 88, 50, 0.28],
+      ["base/sardine.png", "dart", 82, 27, 51, 0.44],
+      ["spring-04-shirasu-whitebait.png", "dart", 76, 48, 47, 0.46],
+      ["spring-09-sakuraebi-shrimp.png", "dart", 76, 68, 58, 0.58],
+      ["autumn-14-shijimi-clam.png", "bob", 74, 18, 78, 0.72],
+      ["summer-09-sazae-turban-shell.png", "bob", 72, 39, 82, 0.72],
+      ["spring-10-mebaru-rockfish.png", "hover", 92, 58, 75, 0.6],
+      ["spring-12-ainame-greenling.png", "swim", 98, 80, 72, 0.52],
+      ["summer-03-anago-conger-eel.png", "undulate", 108, 88, 86, 0.42],
+      ["summer-07-kurumaebi-prawn.png", "dart", 82, 65, 88, 0.58],
+      ["spring-13-wakame-seaweed.png", "sway", 76, 30, 88, 1.18],
+    ],
+    summer: [
+      ["base/ayu.png", "dart", 124, 16, 34, 0.44],
+      ["base/yamame.png", "swim", 112, 36, 30, 0.46],
+      ["base/char.png", "swim", 106, 57, 42, 0.5],
+      ["base/crucian.png", "hover", 108, 77, 36, 0.58],
+      ["base/sea-bass.png", "swim", 120, 86, 54, 0.42],
+      ["base/needlefish.png", "dart", 100, 24, 56, 0.28],
+      ["base/sardine.png", "dart", 86, 48, 53, 0.44],
+      ["summer-03-anago-conger-eel.png", "undulate", 118, 68, 63, 0.42],
+      ["summer-07-kurumaebi-prawn.png", "dart", 88, 87, 72, 0.58],
+      ["autumn-11-kegani-horsehair-crab.png", "crawl", 78, 22, 81, 0.68],
+      ["autumn-14-shijimi-clam.png", "bob", 72, 42, 86, 0.72],
+      ["summer-09-sazae-turban-shell.png", "bob", 70, 60, 82, 0.72],
+      ["summer-10-uni-sea-urchin.png", "bob", 68, 76, 88, 1],
+      ["summer-15-mozuku-seaweed.png", "sway", 76, 90, 86, 0.72],
+      ["base/seahorse.png", "hover", 76, 34, 70, 1.3],
+    ],
+    autumn: [
+      ["autumn-03-sake-salmon.png", "swim", 128, 18, 33, 0.42],
+      ["base/ayu.png", "dart", 110, 38, 28, 0.44],
+      ["base/yamame.png", "swim", 114, 58, 36, 0.46],
+      ["base/char.png", "swim", 104, 79, 42, 0.5],
+      ["base/crucian.png", "hover", 106, 88, 59, 0.58],
+      ["base/mackerel.png", "swim", 100, 27, 52, 0.42],
+      ["base/sardine.png", "dart", 82, 49, 55, 0.44],
+      ["summer-03-anago-conger-eel.png", "undulate", 112, 70, 63, 0.42],
+      ["autumn-10-amaebi-sweet-shrimp.png", "dart", 78, 87, 74, 0.62],
+      ["autumn-11-kegani-horsehair-crab.png", "crawl", 78, 20, 82, 0.68],
+      ["autumn-14-shijimi-clam.png", "bob", 72, 40, 86, 0.72],
+      ["autumn-13-ikura-salmon-roe.png", "bob", 64, 60, 82, 0.9],
+      ["spring-13-wakame-seaweed.png", "sway", 72, 78, 87, 1.18],
+      ["spring-12-ainame-greenling.png", "swim", 96, 34, 73, 0.52],
+      ["spring-10-mebaru-rockfish.png", "hover", 88, 66, 78, 0.6],
+    ],
+    winter: [
+      ["base/char.png", "swim", 104, 18, 38, 0.5],
+      ["base/yamame.png", "swim", 108, 38, 34, 0.46],
+      ["base/crucian.png", "hover", 104, 58, 46, 0.58],
+      ["base/ayu.png", "dart", 96, 78, 43, 0.44],
+      ["winter-03-ankoh-monkfish.png", "hover", 104, 88, 58, 0.62],
+      ["winter-05-hirame-flounder.png", "hover", 104, 26, 62, 0.5],
+      ["summer-03-anago-conger-eel.png", "undulate", 108, 48, 67, 0.42],
+      ["winter-11-botanebi-shrimp.png", "dart", 82, 68, 72, 0.58],
+      ["winter-13-winter-kegani-crab.png", "crawl", 76, 87, 80, 0.68],
+      ["autumn-14-shijimi-clam.png", "bob", 72, 18, 84, 0.72],
+      ["winter-10-hotate-scallop.png", "bob", 76, 38, 86, 0.72],
+      ["summer-09-sazae-turban-shell.png", "bob", 68, 58, 83, 0.72],
+      ["winter-15-winter-mozuku-seaweed.png", "sway", 74, 78, 87, 0.8],
+      ["base/sardine.png", "dart", 82, 88, 70, 0.44],
+      ["spring-12-ainame-greenling.png", "swim", 92, 62, 88, 0.52],
+    ],
+  };
+
   const contacts = [
     {
       id: "email",
@@ -454,6 +525,13 @@
     },
     portfolio: {
       selector: "[data-project-field]",
+      lastTime: 0,
+      needsRefresh: true,
+      swimmers: [],
+    },
+    contact: {
+      selector: "[data-contact-hotspots]",
+      minYRatio: 0.46,
       lastTime: 0,
       needsRefresh: true,
       swimmers: [],
@@ -984,7 +1062,7 @@
     const width = rect.width || Number.parseFloat(element.style.getPropertyValue("--size")) || 120;
     const height = rect.height || 60;
     const topLimit = swimTopLimit(config, fieldRect, height, width);
-    const active = role === "project" || role === "profile";
+    const active = role === "project" || role === "profile" || role === "contact";
     const baseSpeed = active ? randomBetween(24, 44) : randomBetween(6, 15);
     const speed = baseSpeed * factor;
     const angle = randomBetween(-Math.PI * 0.82, Math.PI * 0.82) + (index % 2 ? Math.PI : 0);
@@ -1162,6 +1240,28 @@
     });
   }
 
+  function renderSeasonalRiverCreatures(field) {
+    const season = currentPortfolioSeason();
+    const entries = seasonalRiverSeafood[season] || seasonalRiverSeafood.spring;
+
+    entries.forEach((entry, index) => {
+      const item = seasonalCreatureFromEntry(entry, index, `river-${season}`);
+      const creature = document.createElement("span");
+      creature.className = `creature seasonal-creature river-seasonal-creature has-sprite${creatureMotionClass(item)}`;
+      creature.dataset.season = season;
+      creature.dataset.habitat = "river";
+      creature.dataset.sprite = item.sprite.replace(".png", "");
+      setCreatureMetrics(creature, item);
+      setCreatureMotion(creature, item, index, 10, 4, 0.52);
+      markFreeSwimmer(creature, item, index, "ambient");
+      creature.style.left = `${item.x}%`;
+      creature.style.top = `${item.y}%`;
+      creature.setAttribute("aria-hidden", "true");
+      creature.innerHTML = creatureImage(item);
+      field.appendChild(creature);
+    });
+  }
+
   function renderProjects() {
     const field = document.querySelector("[data-project-field]");
     const list = document.querySelector("[data-project-list]");
@@ -1235,24 +1335,22 @@
     if (!hotspots || !menu) return;
     hotspots.innerHTML = "";
     menu.innerHTML = "";
+    renderSeasonalRiverCreatures(hotspots);
 
     contacts.forEach((contact, index) => {
       const hotspot = document.createElement("button");
       hotspot.type = "button";
-      hotspot.className = `contact-hotspot creature contact-creature ${contact.creature || "fish"}${contact.sprite ? " has-sprite" : ""}`;
+      hotspot.className = `contact-hotspot creature contact-creature ${contact.creature || "fish"}${contact.sprite ? " has-sprite" : ""}${creatureMotionClass(contact)}`;
       hotspot.dataset.contactId = contact.id;
       hotspot.dataset.label = contact.title;
       if (contact.sprite) {
         hotspot.dataset.sprite = contact.sprite.replace(".png", "");
       }
-      hotspot.style.setProperty("--size", `${contact.size || 150}px`);
-      if (contact.spriteHeight) {
-        hotspot.style.setProperty("--creature-height", `${Math.round((contact.size || 150) * contact.spriteHeight)}px`);
-      }
+      setCreatureMetrics(hotspot, contact);
       hotspot.style.setProperty("--creature-a", contact.colors?.[0] || "#9fd8e3");
       hotspot.style.setProperty("--creature-b", contact.colors?.[1] || "#4f7782");
-      hotspot.style.setProperty("--swim-distance", `${30 + index * 5}px`);
-      hotspot.style.setProperty("--swim-lift", `${14 + index * 3}px`);
+      setCreatureMotion(hotspot, contact, index, 30, 14, 1.28);
+      markFreeSwimmer(hotspot, contact, index + 20, "contact");
       hotspot.style.left = `${contact.x}%`;
       hotspot.style.top = `${contact.y}%`;
       hotspot.style.animationDelay = `${index * -1.25}s`;
