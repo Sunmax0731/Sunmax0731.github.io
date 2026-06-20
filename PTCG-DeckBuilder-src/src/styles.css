@@ -22,6 +22,11 @@ body.resizingSplit {
   user-select: none;
 }
 
+body.resizingColumn {
+  cursor: col-resize;
+  user-select: none;
+}
+
 button,
 input,
 select,
@@ -405,15 +410,27 @@ textarea:focus {
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   min-width: 0;
+}
+
+.filterPair {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  grid-column: span 2;
+}
+
+.filterTriple {
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 0.7fr) minmax(120px, 0.7fr);
 }
 
 .filterField {
   min-width: 0;
   display: grid;
-  grid-template-columns: 84px minmax(0, 1fr);
+  grid-template-columns: 72px minmax(0, 1fr);
   align-items: center;
   gap: 6px;
 }
@@ -506,6 +523,74 @@ textarea:focus {
   font-size: 12px;
   font-weight: 700;
   cursor: context-menu;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.tableHeadCell {
+  min-width: 0;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 9px;
+  align-items: stretch;
+}
+
+.columnSortButton {
+  min-width: 0;
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  justify-content: flex-start;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 750;
+  overflow: hidden;
+}
+
+.columnSortButton:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.columnSortButton.sortable {
+  cursor: pointer;
+}
+
+.columnSortButton span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.columnSortButton small {
+  color: #1f7a4b;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.columnResizeHandle {
+  width: 9px;
+  min-height: 100%;
+  cursor: col-resize;
+  position: relative;
+  touch-action: none;
+}
+
+.columnResizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 4px;
+  border-left: 1px solid #c6d3cb;
+}
+
+.columnResizeHandle:hover::after {
+  border-color: #1f7a4b;
 }
 
 .mono {
@@ -913,6 +998,10 @@ textarea:focus {
   .inspector {
     grid-column: 1 / -1;
   }
+
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -961,6 +1050,12 @@ textarea:focus {
   .libraryHeader,
   .filters {
     grid-template-columns: 1fr;
+  }
+
+  .filterPair,
+  .filterTriple {
+    grid-template-columns: 1fr;
+    grid-column: auto;
   }
 
   .libraryHeaderTop {

@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "node server.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
+    "adm-zip": "^0.5.16",
     "csv-parse": "^6.1.0",
+    "express": "^5.2.1",
     "jszip": "^3.10.1",
     "lucide-react": "^0.561.0",
     "pdfjs-dist": "^6.0.227",

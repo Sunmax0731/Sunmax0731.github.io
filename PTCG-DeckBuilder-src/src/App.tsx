@@ -47,23 +47,6 @@ import type { CardInfo, DeckCard, Locale, ManagedDeck } from "./types";
 
 type ViewMode = "list" | "grid";
 type ModalMode = "policy" | "history" | null;
-type SortKey =
-  | "idAsc"
-  | "idDesc"
-  | "nameAsc"
-  | "expansionAsc"
-  | "collectionNoAsc"
-  | "stageAsc"
-  | "categoryAsc"
-  | "typeAsc"
-  | "hpAsc"
-  | "hpDesc"
-  | "weaknessAsc"
-  | "resistanceAsc"
-  | "retreatAsc"
-  | "movesAsc"
-  | "abilitiesAsc"
-  | "countDesc";
 type ColumnKey =
   | "id"
   | "name"
@@ -81,17 +64,20 @@ type ColumnKey =
   | "retreat"
   | "abilities"
   | "moves";
+type SortableColumnKey = Extract<ColumnKey, "id" | "hp" | "type" | "weakness" | "category" | "stage" | "retreat">;
+type SortDirection = "asc" | "desc";
 
 type ColumnDef = {
   key: ColumnKey;
   labelKey?: string;
   label?: string;
   className?: string;
-  width: string;
+  width: number;
   render: (card: CardInfo, count: number) => string | ReactNode;
 };
 
 const appBaseUrl = (import.meta as unknown as { env?: { BASE_URL?: string } }).env?.BASE_URL || "/";
+const sortableColumnKeys = new Set<ColumnKey>(["id", "hp", "type", "weakness", "category", "stage", "retreat"]);
 
 function cardName(cardById: Map<number, CardInfo>, id: number) {
   return cardById.get(id)?.name || `Card ${id}`;
@@ -146,6 +132,56 @@ function uniqueValues(cards: CardInfo[], getter: (card: CardInfo) => string) {
 
 function cardDeckCount(cards: DeckCard[] | undefined, cardId: number) {
   return cards?.find((item) => item.cardId === cardId)?.count || 0;
+}
+
+function sortText(value: string) {
+  return value || "-";
+}
+
+function compareNullableNumber(a: number | null, b: number | null) {
+  if (a == null && b == null) {
+    return 0;
+  }
+  if (a == null) {
+    return 1;
+  }
+  if (b == null) {
+    return -1;
+  }
+  return a - b;
+}
+
+function compareCardsByColumn(a: CardInfo, b: CardInfo, column: SortableColumnKey, direction: SortDirection) {
+  let result = 0;
+  if (column === "id") {
+    result = a.id - b.id;
+  } else if (column === "hp") {
+    result = compareNullableNumber(hpNumber(a), hpNumber(b)) || a.id - b.id;
+  } else if (column === "retreat") {
+    result = sortText(a.retreat).localeCompare(sortText(b.retreat), undefined, { numeric: true }) || a.id - b.id;
+  } else if (column === "type") {
+    result = typeValue(a).localeCompare(typeValue(b)) || a.id - b.id;
+  } else if (column === "weakness") {
+    result = sortText(a.weakness).localeCompare(sortText(b.weakness)) || a.id - b.id;
+  } else if (column === "category") {
+    result = sortText(a.category).localeCompare(sortText(b.category)) || a.id - b.id;
+  } else if (column === "stage") {
+    result = sortText(a.stage).localeCompare(sortText(b.stage)) || a.id - b.id;
+  }
+  return direction === "asc" ? result : -result;
+}
+
+function cardMetaSignature(cards: DeckCard[]) {
+  return JSON.stringify(
+    [...cards]
+      .map((card) => ({
+        cardId: card.cardId,
+        count: card.count,
+        role: card.role || "",
+        note: card.note || ""
+      }))
+      .sort((a, b) => a.cardId - b.cardId)
+  );
 }
 
 function sameNameCount(cards: DeckCard[], cardById: Map<number, CardInfo>, targetCard: CardInfo, excludeCardId?: number) {
@@ -203,6 +239,10 @@ function deckTotal(deck?: ManagedDeck | null) {
   return (deck?.cards || []).reduce((sum, card) => sum + card.count, 0);
 }
 
+function safeFilename(value: string) {
+  return (value || "deck").replace(/[\\/:*?"<>|]+/g, "_").trim() || "deck";
+}
+
 export default function App() {
   const [locale, setLocale] = useState<Locale>(() => defaultLocale());
   const [cards, setCards] = useState<CardInfo[]>([]);
@@ -225,7 +265,8 @@ export default function App() {
   const [abilityQuery, setAbilityQuery] = useState("");
   const [hpMin, setHpMin] = useState("");
   const [hpMax, setHpMax] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("idAsc");
+  const [sortColumn, setSortColumn] = useState<SortableColumnKey>("id");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
   const [changeIntent, setChangeIntent] = useState("");
@@ -233,6 +274,7 @@ export default function App() {
   const [topPanePercent, setTopPanePercent] = useState(48);
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>(["id", "name", "category", "type", "hp", "abilities", "count"]);
+  const [columnWidths, setColumnWidths] = useState<Partial<Record<ColumnKey, number>>>({});
   const [visibleGridFields, setVisibleGridFields] = useState<ColumnKey[]>([
     "id",
     "expansion",
@@ -299,34 +341,53 @@ export default function App() {
   useEffect(() => () => revokeZipDataBundle(zipBundle), [zipBundle]);
 
   useEffect(() => {
-    const storedDecks = loadDecks();
-    if (storedDecks.length > 0) {
-      const selected = loadSelectedDeckId() || storedDecks[0].id;
-      setDecks(storedDecks);
-      setSelectedDeckId(storedDecks.some((deck) => deck.id === selected) ? selected : storedDecks[0].id);
-      return;
-    }
-    if (appBaseUrl !== "/") {
-      const initial = createDeck("deck_v0");
-      setDecks([initial]);
-      setSelectedDeckId(initial.id);
-      saveDecks([initial]);
-      return;
-    }
-    fetch("/api/sample-deck")
-      .then((response) => response.json())
-      .then((sample: { cards: DeckCard[] }) => {
-        const initial = createDeck(t(locale, "sampleDeck"), sample.cards);
-        setDecks([initial]);
-        setSelectedDeckId(initial.id);
-        saveDecks([initial]);
-      })
-      .catch(() => {
+    let cancelled = false;
+    async function initializeDecks() {
+      const storedDecks = await loadDecks();
+      if (cancelled) {
+        return;
+      }
+      if (storedDecks.length > 0) {
+        const selected = loadSelectedDeckId() || storedDecks[0].id;
+        setDecks(storedDecks);
+        setSelectedDeckId(storedDecks.some((deck) => deck.id === selected) ? selected : storedDecks[0].id);
+        return;
+      }
+      if (appBaseUrl !== "/") {
         const initial = createDeck("deck_v0");
         setDecks([initial]);
         setSelectedDeckId(initial.id);
-        saveDecks([initial]);
-      });
+        void persistDecks([initial]);
+        return;
+      }
+      try {
+        const response = await fetch("/api/sample-deck");
+        const sample = (await response.json()) as { cards: DeckCard[] };
+        if (cancelled) {
+          return;
+        }
+        const initial = createDeck(t(locale, "sampleDeck"), sample.cards);
+        setDecks([initial]);
+        setSelectedDeckId(initial.id);
+        void persistDecks([initial]);
+      } catch {
+        if (cancelled) {
+          return;
+        }
+        const initial = createDeck("deck_v0");
+        setDecks([initial]);
+        setSelectedDeckId(initial.id);
+        void persistDecks([initial]);
+      }
+    }
+    void initializeDecks().catch((err) => {
+      if (!cancelled) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -356,22 +417,22 @@ export default function App() {
   const cardById = useMemo(() => new Map(cards.map((card) => [card.id, card])), [cards]);
   const columnDefs = useMemo<ColumnDef[]>(
     () => [
-      { key: "id", labelKey: "cardId", className: "mono", width: "64px", render: (card) => String(card.id) },
-      { key: "name", labelKey: "name", className: "cardTitle", width: "minmax(180px, 1.3fr)", render: (card) => card.name },
-      { key: "expansion", labelKey: "expansion", width: "110px", render: (card) => textOrDash(card.expansion) },
-      { key: "collectionNo", labelKey: "collectionNo", width: "120px", render: (card) => textOrDash(card.collectionNo) },
-      { key: "stage", labelKey: "stage", width: "minmax(130px, 1fr)", render: (card) => textOrDash(card.stage) },
-      { key: "rule", labelKey: "rule", width: "minmax(110px, 0.8fr)", render: (card) => textOrDash(card.rule) },
-      { key: "category", labelKey: "category", width: "minmax(120px, 0.9fr)", render: (card) => textOrDash(card.category) },
-      { key: "previousStage", labelKey: "previousStage", width: "110px", render: (card) => textOrDash(card.previousStage) },
-      { key: "hp", label: "HP", width: "58px", render: (card) => textOrDash(card.hp) },
-      { key: "type", labelKey: "type", width: "90px", render: (card) => typeValue(card) },
-      { key: "weakness", labelKey: "weakness", width: "92px", render: (card) => textOrDash(card.weakness) },
-      { key: "resistance", labelKey: "resistance", width: "92px", render: (card) => textOrDash(card.resistance) },
-      { key: "retreat", labelKey: "retreat", width: "74px", render: (card) => textOrDash(card.retreat) },
-      { key: "abilities", labelKey: "abilities", width: "minmax(170px, 1.2fr)", render: (card) => abilitySummary(card) },
-      { key: "moves", labelKey: "moves", width: "minmax(170px, 1.2fr)", render: (card) => moveSummary(card) },
-      { key: "count", labelKey: "count", width: "72px", render: (_card, count) => <span className="countPill">{count}</span> }
+      { key: "id", labelKey: "cardId", className: "mono", width: 64, render: (card) => String(card.id) },
+      { key: "name", labelKey: "name", className: "cardTitle", width: 220, render: (card) => card.name },
+      { key: "expansion", labelKey: "expansion", width: 120, render: (card) => textOrDash(card.expansion) },
+      { key: "collectionNo", labelKey: "collectionNo", width: 126, render: (card) => textOrDash(card.collectionNo) },
+      { key: "stage", labelKey: "stage", width: 150, render: (card) => textOrDash(card.stage) },
+      { key: "rule", labelKey: "rule", width: 120, render: (card) => textOrDash(card.rule) },
+      { key: "category", labelKey: "category", width: 132, render: (card) => textOrDash(card.category) },
+      { key: "previousStage", labelKey: "previousStage", width: 112, render: (card) => textOrDash(card.previousStage) },
+      { key: "hp", label: "HP", width: 64, render: (card) => textOrDash(card.hp) },
+      { key: "type", labelKey: "type", width: 96, render: (card) => typeValue(card) },
+      { key: "weakness", labelKey: "weakness", width: 100, render: (card) => textOrDash(card.weakness) },
+      { key: "resistance", labelKey: "resistance", width: 100, render: (card) => textOrDash(card.resistance) },
+      { key: "retreat", labelKey: "retreat", width: 82, render: (card) => textOrDash(card.retreat) },
+      { key: "abilities", labelKey: "abilities", width: 210, render: (card) => abilitySummary(card) },
+      { key: "moves", labelKey: "moves", width: 220, render: (card) => moveSummary(card) },
+      { key: "count", labelKey: "count", width: 76, render: (_card, count) => <span className="countPill">{count}</span> }
     ],
     []
   );
@@ -383,7 +444,10 @@ export default function App() {
     const selected = columnDefs.filter((column) => visibleGridFields.includes(column.key));
     return selected.length > 0 ? selected : columnDefs.filter((column) => ["id", "category", "type", "hp"].includes(column.key));
   }, [columnDefs, visibleGridFields]);
-  const listGridTemplate = useMemo(() => visibleColumnDefs.map((column) => column.width).join(" "), [visibleColumnDefs]);
+  const listGridTemplate = useMemo(
+    () => visibleColumnDefs.map((column) => `${columnWidths[column.key] || column.width}px`).join(" "),
+    [columnWidths, visibleColumnDefs]
+  );
   const categories = useMemo(() => {
     const values = new Set(cards.map((card) => card.category || "Other"));
     return [...values].sort((a, b) => a.localeCompare(b));
@@ -473,53 +537,7 @@ export default function App() {
         const abilityNeedle = abilityQuery.trim().toLowerCase();
         return !abilityNeedle || abilitySearchText(card).toLowerCase().includes(abilityNeedle);
       })
-      .sort((a, b) => {
-        if (sortKey === "idDesc") {
-          return b.id - a.id;
-        }
-        if (sortKey === "nameAsc") {
-          return a.name.localeCompare(b.name);
-        }
-        if (sortKey === "expansionAsc") {
-          return a.expansion.localeCompare(b.expansion) || a.id - b.id;
-        }
-        if (sortKey === "collectionNoAsc") {
-          return a.collectionNo.localeCompare(b.collectionNo, undefined, { numeric: true }) || a.id - b.id;
-        }
-        if (sortKey === "stageAsc") {
-          return a.stage.localeCompare(b.stage) || a.id - b.id;
-        }
-        if (sortKey === "categoryAsc") {
-          return a.category.localeCompare(b.category) || a.id - b.id;
-        }
-        if (sortKey === "typeAsc") {
-          return typeValue(a).localeCompare(typeValue(b)) || a.id - b.id;
-        }
-        if (sortKey === "hpAsc" || sortKey === "hpDesc") {
-          const aHp = hpNumber(a) ?? -1;
-          const bHp = hpNumber(b) ?? -1;
-          return sortKey === "hpAsc" ? aHp - bHp || a.id - b.id : bHp - aHp || a.id - b.id;
-        }
-        if (sortKey === "weaknessAsc") {
-          return a.weakness.localeCompare(b.weakness) || a.id - b.id;
-        }
-        if (sortKey === "resistanceAsc") {
-          return a.resistance.localeCompare(b.resistance) || a.id - b.id;
-        }
-        if (sortKey === "retreatAsc") {
-          return a.retreat.localeCompare(b.retreat, undefined, { numeric: true }) || a.id - b.id;
-        }
-        if (sortKey === "movesAsc") {
-          return moveSummary(a).localeCompare(moveSummary(b)) || a.id - b.id;
-        }
-        if (sortKey === "abilitiesAsc") {
-          return abilitySummary(a).localeCompare(abilitySummary(b)) || a.id - b.id;
-        }
-        if (sortKey === "countDesc") {
-          return cardDeckCount(draft?.cards, b.id) - cardDeckCount(draft?.cards, a.id) || a.id - b.id;
-        }
-        return a.id - b.id;
-      });
+      .sort((a, b) => compareCardsByColumn(a, b, sortColumn, sortDirection));
   }, [
     abilityQuery,
     cards,
@@ -533,7 +551,8 @@ export default function App() {
     resistanceFilter,
     retreatFilter,
     ruleFilter,
-    sortKey,
+    sortColumn,
+    sortDirection,
     stageFilter,
     typeFilter,
     viewMode,
@@ -544,6 +563,14 @@ export default function App() {
 
   function updateDraft(next: ManagedDeck) {
     setDraft(next);
+  }
+
+  async function persistDecks(next: ManagedDeck[]) {
+    try {
+      await saveDecks(next);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
   }
 
   function shouldReplaceWithSample() {
@@ -569,7 +596,7 @@ export default function App() {
         const initial = createDeck(t(locale, "sampleDeck"), bundle.sampleDeck);
         setDecks([initial]);
         setSelectedDeckId(initial.id);
-        saveDecks([initial]);
+        void persistDecks([initial]);
       }
       setSelectedCardId(null);
     } catch (err) {
@@ -634,7 +661,7 @@ export default function App() {
     const deck = createDeck(`deck_${decks.length + 1}`);
     const next = [...decks, deck];
     setDecks(next);
-    saveDecks(next);
+    void persistDecks(next);
     setSelectedDeckId(deck.id);
     setSelectedCardId(null);
   }
@@ -646,7 +673,7 @@ export default function App() {
     const deck = cloneDeck(draft);
     const next = [...decks, deck];
     setDecks(next);
-    saveDecks(next);
+    void persistDecks(next);
     setSelectedDeckId(deck.id);
   }
 
@@ -657,7 +684,7 @@ export default function App() {
     const next = decks.filter((deck) => deck.id !== draft.id);
     const fallback = next.length > 0 ? next : [createDeck("deck_1")];
     setDecks(fallback);
-    saveDecks(fallback);
+    void persistDecks(fallback);
     setSelectedDeckId(fallback[0].id);
     setSelectedCardId(null);
   }
@@ -667,8 +694,15 @@ export default function App() {
       return;
     }
     const original = decks.find((deck) => deck.id === draft.id);
-    const historyEntry = original ? makeHistoryEntry(original.cards, draft.cards, changeIntent.trim()) : null;
-    const changed = Boolean(historyEntry && (historyEntry.added.length > 0 || historyEntry.removed.length > 0 || changeIntent.trim()));
+    const metaChanged = original
+      ? original.name !== draft.name ||
+        original.description !== draft.description ||
+        JSON.stringify(original.categoryNotes) !== JSON.stringify(draft.categoryNotes) ||
+        cardMetaSignature(original.cards) !== cardMetaSignature(draft.cards)
+      : false;
+    const historyIntent = changeIntent.trim() || (metaChanged ? t(locale, "metadataChanged") : "");
+    const historyEntry = original ? makeHistoryEntry(original.cards, draft.cards, historyIntent) : null;
+    const changed = Boolean(historyEntry && (historyEntry.added.length > 0 || historyEntry.removed.length > 0 || historyIntent));
     const saved: ManagedDeck = {
       ...draft,
       cards: sortCards(draft.cards),
@@ -677,7 +711,7 @@ export default function App() {
     };
     const next = decks.map((deck) => (deck.id === saved.id ? saved : deck));
     setDecks(next);
-    saveDecks(next);
+    void persistDecks(next);
     setChangeIntent("");
   }
 
@@ -685,7 +719,41 @@ export default function App() {
     if (!draft) {
       return;
     }
-    downloadText(`${draft.name || "deck"}.csv`, expandedCsv(draft.cards), "text/csv;charset=utf-8");
+    downloadText(`${safeFilename(draft.name)}.csv`, expandedCsv(draft.cards), "text/csv;charset=utf-8");
+  }
+
+  function exportCurrentJson() {
+    if (!draft) {
+      return;
+    }
+    const payload = {
+      schemaVersion: 1,
+      kind: "ptcg-deck-review",
+      exportedAt: new Date().toISOString(),
+      app: "tools/deck-builder",
+      deck: {
+        id: draft.id,
+        name: draft.name,
+        description: draft.description,
+        createdAt: draft.createdAt,
+        updatedAt: draft.updatedAt,
+        totalCards: deckTotal(draft),
+        cards: sortCards(draft.cards).map((card) => ({
+          cardId: card.cardId,
+          count: card.count,
+          role: card.role || "",
+          note: card.note || ""
+        })),
+        categoryNotes: draft.categoryNotes,
+        history: draft.history.map((entry) => ({
+          savedAt: entry.savedAt,
+          intent: entry.intent,
+          added: entry.added,
+          removed: entry.removed
+        }))
+      }
+    };
+    downloadText(`${safeFilename(draft.name)}.review.json`, `${JSON.stringify(payload, null, 2)}\n`, "application/json;charset=utf-8");
   }
 
   function importCsvFile(file: File) {
@@ -693,7 +761,7 @@ export default function App() {
       const imported = createDeck(file.name.replace(/\.csv$/i, "") || `deck_${decks.length + 1}`, cardsFromCsv(text));
       const next = [...decks, imported];
       setDecks(next);
-      saveDecks(next);
+      void persistDecks(next);
       setSelectedDeckId(imported.id);
     });
   }
@@ -739,6 +807,89 @@ export default function App() {
   function openGridMenu(event: ReactMouseEvent) {
     event.preventDefault();
     setGridMenu(menuPosition(event));
+  }
+
+  function toggleSort(column: ColumnDef) {
+    if (!sortableColumnKeys.has(column.key)) {
+      return;
+    }
+    const key = column.key as SortableColumnKey;
+    if (sortColumn === key) {
+      setSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortColumn(key);
+    setSortDirection("asc");
+  }
+
+  function sortMark(column: ColumnDef) {
+    if (sortColumn !== column.key) {
+      return "";
+    }
+    return sortDirection === "asc" ? "▲" : "▼";
+  }
+
+  function resizeMinWidth(column: ColumnDef) {
+    if (column.key === "id" || column.key === "hp" || column.key === "count") {
+      return 54;
+    }
+    if (column.key === "name" || column.key === "moves" || column.key === "abilities") {
+      return 140;
+    }
+    return 76;
+  }
+
+  function startColumnResize(event: React.PointerEvent<HTMLSpanElement>, column: ColumnDef) {
+    event.preventDefault();
+    event.stopPropagation();
+    const handle = event.currentTarget;
+    const pointerId = event.pointerId;
+    const startX = event.clientX;
+    const startWidth = columnWidths[column.key] || column.width;
+    const minWidth = resizeMinWidth(column);
+    handle.setPointerCapture(pointerId);
+    const move = (moveEvent: PointerEvent) => {
+      moveEvent.preventDefault();
+      const nextWidth = Math.max(minWidth, Math.round(startWidth + moveEvent.clientX - startX));
+      setColumnWidths((current) => ({ ...current, [column.key]: nextWidth }));
+    };
+    const stop = () => {
+      document.body.classList.remove("resizingColumn");
+      if (handle.hasPointerCapture(pointerId)) {
+        handle.releasePointerCapture(pointerId);
+      }
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+    };
+    document.body.classList.add("resizingColumn");
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop, { once: true });
+    window.addEventListener("pointercancel", stop, { once: true });
+  }
+
+  function renderHeaderCell(column: ColumnDef) {
+    const sortable = sortableColumnKeys.has(column.key);
+    const mark = sortMark(column);
+    return (
+      <span key={column.key} className="tableHeadCell">
+        <button
+          type="button"
+          className={sortable ? "columnSortButton sortable" : "columnSortButton"}
+          disabled={!sortable}
+          onClick={() => toggleSort(column)}
+        >
+          <span>{columnLabel(column)}</span>
+          {mark ? <small>{mark}</small> : null}
+        </button>
+        <span
+          className="columnResizeHandle"
+          role="separator"
+          aria-orientation="vertical"
+          onPointerDown={(event) => startColumnResize(event, column)}
+        />
+      </span>
+    );
   }
 
   function startResize(event: React.PointerEvent<HTMLDivElement>) {
@@ -899,6 +1050,13 @@ export default function App() {
     deckCard,
     card: cardById.get(deckCard.cardId)
   }));
+  const visibleDeckCards = useMemo(
+    () =>
+      deckCards
+        .filter((item): item is { deckCard: DeckCard; card: CardInfo } => Boolean(item.card))
+        .sort((a, b) => compareCardsByColumn(a.card, b.card, sortColumn, sortDirection)),
+    [deckCards, sortColumn, sortDirection]
+  );
 
   return (
     <div
@@ -913,7 +1071,7 @@ export default function App() {
         </div>
         <div className="topActions">
           <button type="button" onClick={() => importZipRef.current?.click()} disabled={zipLoading}>
-            <Upload size={16} />
+            <Download size={16} />
             {zipLoading ? t(locale, "loadingZip") : t(locale, "loadZip")}
           </button>
           <input
@@ -933,11 +1091,15 @@ export default function App() {
             {zipBundle ? `${t(locale, "zipLoaded")}: ${zipBundle.name}` : cards.length > 0 ? t(locale, "localApiData") : t(locale, "zipNotLoaded")}
           </span>
           <button type="button" onClick={exportCurrentCsv} disabled={!draft}>
-            <Download size={16} />
+            <Upload size={16} />
             {t(locale, "exportCsv")}
           </button>
+          <button type="button" onClick={exportCurrentJson} disabled={!draft}>
+            <FileText size={16} />
+            {t(locale, "exportReviewJson")}
+          </button>
           <button type="button" onClick={() => importCsvRef.current?.click()}>
-            <Upload size={16} />
+            <Download size={16} />
             {t(locale, "importCsv")}
           </button>
           <input
@@ -1070,19 +1232,17 @@ export default function App() {
               {viewMode === "list" ? (
                 <div className="cardList">
                   <div className="cardRow tableHead" style={{ gridTemplateColumns: listGridTemplate }} onContextMenu={openColumnMenu}>
-                    {visibleColumnDefs.map((column) => (
-                      <span key={column.key}>{columnLabel(column)}</span>
-                    ))}
+                    {visibleColumnDefs.map((column) => renderHeaderCell(column))}
                   </div>
-                  {deckCards.map(({ deckCard, card }, index) =>
-                    card ? renderCardRow(card, deckCard.count, true, index) : null
+                  {visibleDeckCards.map(({ deckCard, card }) =>
+                    renderCardRow(card, deckCard.count, true, draft?.cards.findIndex((item) => item.cardId === deckCard.cardId))
                   )}
-                  {deckCards.length === 0 ? <div className="dropEmpty">{t(locale, "dropHere")}</div> : null}
+                  {visibleDeckCards.length === 0 ? <div className="dropEmpty">{t(locale, "dropHere")}</div> : null}
                 </div>
               ) : (
                 <div className="cardGrid">
-                  {deckCards.map(({ deckCard, card }, index) =>
-                    card ? renderCardTile(card, deckCard.count, true, index) : null
+                  {visibleDeckCards.map(({ deckCard, card }) =>
+                    renderCardTile(card, deckCard.count, true, draft?.cards.findIndex((item) => item.cardId === deckCard.cardId))
                   )}
                   <div className="dropTile" onDragOver={(event) => event.preventDefault()} onDrop={(event) => dropCard(event)}>
                     {t(locale, "dropHere")}
@@ -1116,44 +1276,80 @@ export default function App() {
                         <input value={query} placeholder={t(locale, "searchPlaceholder")} onChange={(event) => setQuery(event.target.value)} />
                       </div>
                     </label>
-                    <label className="filterField">
-                      <span>{t(locale, "category")}</span>
-                      <select value={category} onChange={(event) => setCategory(event.target.value)}>
-                        <option value="all">{t(locale, "allCategories")}</option>
-                        {categories.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="filterField">
-                      <span>{t(locale, "type")}</span>
-                      <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
-                        <option value="all">{t(locale, "allTypes")}</option>
-                        {types.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    <div className="filterPair">
+                      <label className="filterField">
+                        <span>{t(locale, "category")}</span>
+                        <select value={category} onChange={(event) => setCategory(event.target.value)}>
+                          <option value="all">{t(locale, "allCategories")}</option>
+                          {categories.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="filterField">
+                        <span>{t(locale, "stage")}</span>
+                        <select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}>
+                          <option value="all">{t(locale, "allValues")}</option>
+                          {stages.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="filterPair">
+                      <label className="filterField">
+                        <span>{t(locale, "type")}</span>
+                        <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+                          <option value="all">{t(locale, "allTypes")}</option>
+                          {types.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="filterField">
+                        <span>{t(locale, "weakness")}</span>
+                        <select value={weaknessFilter} onChange={(event) => setWeaknessFilter(event.target.value)}>
+                          <option value="all">{t(locale, "allValues")}</option>
+                          {weaknesses.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="filterPair filterTriple">
+                      <label className="filterField">
+                        <span>{t(locale, "retreat")}</span>
+                        <select value={retreatFilter} onChange={(event) => setRetreatFilter(event.target.value)}>
+                          <option value="all">{t(locale, "allValues")}</option>
+                          {retreats.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="filterField compactFilter">
+                        <span>{t(locale, "hpMin")}</span>
+                        <input type="number" min="0" value={hpMin} onChange={(event) => setHpMin(event.target.value)} />
+                      </label>
+                      <label className="filterField compactFilter">
+                        <span>{t(locale, "hpMax")}</span>
+                        <input type="number" min="0" value={hpMax} onChange={(event) => setHpMax(event.target.value)} />
+                      </label>
+                    </div>
                     <label className="filterField">
                       <span>{t(locale, "expansion")}</span>
                       <select value={expansionFilter} onChange={(event) => setExpansionFilter(event.target.value)}>
                         <option value="all">{t(locale, "allValues")}</option>
                         {expansions.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="filterField">
-                      <span>{t(locale, "stage")}</span>
-                      <select value={stageFilter} onChange={(event) => setStageFilter(event.target.value)}>
-                        <option value="all">{t(locale, "allValues")}</option>
-                        {stages.map((value) => (
                           <option key={value} value={value}>
                             {value}
                           </option>
@@ -1172,17 +1368,6 @@ export default function App() {
                       </select>
                     </label>
                     <label className="filterField">
-                      <span>{t(locale, "weakness")}</span>
-                      <select value={weaknessFilter} onChange={(event) => setWeaknessFilter(event.target.value)}>
-                        <option value="all">{t(locale, "allValues")}</option>
-                        {weaknesses.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="filterField">
                       <span>{t(locale, "resistance")}</span>
                       <select value={resistanceFilter} onChange={(event) => setResistanceFilter(event.target.value)}>
                         <option value="all">{t(locale, "allValues")}</option>
@@ -1193,25 +1378,6 @@ export default function App() {
                         ))}
                       </select>
                     </label>
-                    <label className="filterField">
-                      <span>{t(locale, "retreat")}</span>
-                      <select value={retreatFilter} onChange={(event) => setRetreatFilter(event.target.value)}>
-                        <option value="all">{t(locale, "allValues")}</option>
-                        {retreats.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="filterField compactFilter">
-                      <span>{t(locale, "hpMin")}</span>
-                      <input type="number" min="0" value={hpMin} onChange={(event) => setHpMin(event.target.value)} />
-                    </label>
-                    <label className="filterField compactFilter">
-                      <span>{t(locale, "hpMax")}</span>
-                      <input type="number" min="0" value={hpMax} onChange={(event) => setHpMax(event.target.value)} />
-                    </label>
                     <label className="filterField searchField">
                       <span>{t(locale, "moves")}</span>
                       <input value={moveQuery} placeholder={t(locale, "moveSearch")} onChange={(event) => setMoveQuery(event.target.value)} />
@@ -1220,36 +1386,13 @@ export default function App() {
                       <span>{t(locale, "abilities")}</span>
                       <input value={abilityQuery} placeholder={t(locale, "abilitySearch")} onChange={(event) => setAbilityQuery(event.target.value)} />
                     </label>
-                    <label className="filterField">
-                      <span>{t(locale, "sort")}</span>
-                      <select value={sortKey} onChange={(event) => setSortKey(event.target.value as SortKey)}>
-                        <option value="idAsc">{t(locale, "sortIdAsc")}</option>
-                        <option value="idDesc">{t(locale, "sortIdDesc")}</option>
-                        <option value="nameAsc">{t(locale, "sortName")}</option>
-                        <option value="expansionAsc">{t(locale, "sortExpansion")}</option>
-                        <option value="collectionNoAsc">{t(locale, "sortCollectionNo")}</option>
-                        <option value="stageAsc">{t(locale, "sortStage")}</option>
-                        <option value="categoryAsc">{t(locale, "sortCategory")}</option>
-                        <option value="typeAsc">{t(locale, "sortType")}</option>
-                        <option value="hpAsc">{t(locale, "sortHpAsc")}</option>
-                        <option value="hpDesc">{t(locale, "sortHpDesc")}</option>
-                        <option value="weaknessAsc">{t(locale, "sortWeakness")}</option>
-                        <option value="resistanceAsc">{t(locale, "sortResistance")}</option>
-                        <option value="retreatAsc">{t(locale, "sortRetreat")}</option>
-                        <option value="movesAsc">{t(locale, "sortMoves")}</option>
-                        <option value="abilitiesAsc">{t(locale, "sortAbilities")}</option>
-                        <option value="countDesc">{t(locale, "sortCount")}</option>
-                      </select>
-                    </label>
                   </div>
                 ) : null}
               </div>
               {viewMode === "list" ? (
                 <div className="cardList libraryList">
                   <div className="cardRow tableHead" style={{ gridTemplateColumns: listGridTemplate }} onContextMenu={openColumnMenu}>
-                    {visibleColumnDefs.map((column) => (
-                      <span key={column.key}>{columnLabel(column)}</span>
-                    ))}
+                    {visibleColumnDefs.map((column) => renderHeaderCell(column))}
                   </div>
                   {filteredCards.map((card) =>
                     renderCardRow(card, draft?.cards.find((item) => item.cardId === card.id)?.count || 0, false)

@@ -1,6 +1,10 @@
 import type { CardDelta, DeckCard, ManagedDeck } from "./types";
 
-const storageKey = "ptcg.localDeckBuilder.decks.v1";
+const dbName = "ptcg.localDeckBuilder";
+const dbVersion = 1;
+const storeName = "settings";
+const decksKey = "decks.v1";
+const legacyStorageKey = "ptcg.localDeckBuilder.decks.v1";
 const selectedKey = "ptcg.localDeckBuilder.selectedDeck.v1";
 
 function nowIso() {
@@ -30,21 +34,119 @@ export function sortCards(cards: DeckCard[]) {
   return [...cards].filter((card) => card.count > 0);
 }
 
-export function loadDecks(): ManagedDeck[] {
-  const raw = localStorage.getItem(storageKey);
+function normalizeDeck(deck: Partial<ManagedDeck>): ManagedDeck | null {
+  if (!deck || typeof deck.id !== "string" || typeof deck.name !== "string") {
+    return null;
+  }
+  const now = nowIso();
+  return {
+    schemaVersion: 1,
+    id: deck.id,
+    name: deck.name,
+    description: deck.description || "",
+    createdAt: deck.createdAt || now,
+    updatedAt: deck.updatedAt || now,
+    cards: sortCards(
+      Array.isArray(deck.cards)
+        ? deck.cards
+            .map((card) => ({
+              cardId: Number(card.cardId),
+              count: Number(card.count),
+              role: card.role || "",
+              note: card.note || ""
+            }))
+            .filter((card) => Number.isInteger(card.cardId) && card.cardId > 0 && Number.isFinite(card.count))
+        : []
+    ),
+    categoryNotes: deck.categoryNotes || {},
+    history: Array.isArray(deck.history) ? deck.history : []
+  };
+}
+
+function normalizeDecks(value: unknown): ManagedDeck[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map((deck) => normalizeDeck(deck as Partial<ManagedDeck>)).filter((deck): deck is ManagedDeck => Boolean(deck));
+}
+
+function openDeckDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, dbVersion);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName);
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function readIndexedDbDecks() {
+  const db = await openDeckDb();
+  try {
+    return await new Promise<unknown>((resolve, reject) => {
+      const transaction = db.transaction(storeName, "readonly");
+      const request = transaction.objectStore(storeName).get(decksKey);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+      transaction.onerror = () => reject(transaction.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+async function writeIndexedDbDecks(decks: ManagedDeck[]) {
+  const db = await openDeckDb();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction(storeName, "readwrite");
+      transaction.objectStore(storeName).put(decks, decksKey);
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+  } finally {
+    db.close();
+  }
+}
+
+function loadLegacyDecks(): ManagedDeck[] {
+  const raw = localStorage.getItem(legacyStorageKey);
   if (!raw) {
     return [];
   }
   try {
-    const decks = JSON.parse(raw) as ManagedDeck[];
-    return Array.isArray(decks) ? decks : [];
+    return normalizeDecks(JSON.parse(raw));
   } catch {
     return [];
   }
 }
 
-export function saveDecks(decks: ManagedDeck[]) {
-  localStorage.setItem(storageKey, JSON.stringify(decks, null, 2));
+export async function loadDecks(): Promise<ManagedDeck[]> {
+  try {
+    const decks = normalizeDecks(await readIndexedDbDecks());
+    if (decks.length > 0) {
+      return decks;
+    }
+    const legacyDecks = loadLegacyDecks();
+    if (legacyDecks.length > 0) {
+      await saveDecks(legacyDecks);
+      localStorage.removeItem(legacyStorageKey);
+      return legacyDecks;
+    }
+  } catch {
+    return loadLegacyDecks();
+  }
+  return [];
+}
+
+export async function saveDecks(decks: ManagedDeck[]) {
+  const normalized = normalizeDecks(decks);
+  await writeIndexedDbDecks(normalized);
 }
 
 export function loadSelectedDeckId() {

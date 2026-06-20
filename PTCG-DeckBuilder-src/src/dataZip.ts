@@ -109,6 +109,16 @@ async function zipText(zip: JSZip, entryName: string) {
   return entry.async("text");
 }
 
+async function optionalZipText(zip: JSZip, entryNames: string[]) {
+  for (const entryName of entryNames) {
+    const entry = zip.file(entryName);
+    if (entry) {
+      return entry.async("text");
+    }
+  }
+  return "";
+}
+
 async function zipBlobUrl(zip: JSZip, entryName: string, type: string) {
   const entry = zip.file(entryName);
   if (!entry) {
@@ -196,7 +206,7 @@ export async function loadDataZip(file: File): Promise<ZipDataBundle> {
   const [jpCsv, enCsv, sampleCsv, jpPdfUrl, enPdfUrl] = await Promise.all([
     zipText(zip, "JP_Card_Data.csv"),
     zipText(zip, "EN_Card_Data.csv"),
-    zipText(zip, "sample_submission/deck.csv"),
+    optionalZipText(zip, ["sample_submission/deck.csv", "sample_submission_deck.csv"]),
     zipBlobUrl(zip, "Card_ID List_JP.pdf", "application/pdf"),
     zipBlobUrl(zip, "Card_ID List_EN.pdf", "application/pdf")
   ]);
