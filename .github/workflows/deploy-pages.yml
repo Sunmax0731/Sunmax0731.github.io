@@ -28,6 +28,46 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Build PTCG Deck Builder
+        run: |
+          if [ ! -d "PTCG-DeckBuilder-src" ]; then
+            echo "PTCG-DeckBuilder-src not found; skipping."
+            exit 0
+          fi
+
+          cd PTCG-DeckBuilder-src
+          npm ci
+          VITE_BASE=/PTCG-DeckBuilder/ npm run build
+          cd ..
+
+          rm -rf PTCG-DeckBuilder
+          mkdir -p PTCG-DeckBuilder
+          cp -a PTCG-DeckBuilder-src/dist/. PTCG-DeckBuilder/
+
+          # Do not publish source, lock files, or local build intermediates as Pages content.
+          rm -rf PTCG-DeckBuilder-src
+
+      - name: Verify PTCG Deck Builder public artifact
+        run: |
+          if [ ! -d "PTCG-DeckBuilder" ]; then
+            echo "PTCG-DeckBuilder artifact was not generated."
+            exit 1
+          fi
+
+          forbidden_file="$(find PTCG-DeckBuilder -type f \( \
+            -iname '*.zip' -o \
+            -iname '*.csv' -o \
+            -iname '*.pdf' -o \
+            -iname '*.png' -o \
+            -iname '*.jpg' -o \
+            -iname '*.jpeg' -o \
+            -iname '*.webp' \
+          \) -print -quit)"
+          if [ -n "$forbidden_file" ]; then
+            echo "Forbidden data/media file in PTCG artifact: $forbidden_file"
+            exit 1
+          fi
+
       - name: Configure Google Analytics
         env:
           GOOGLE_ANALYTICS_MEASUREMENT_ID: ${{ vars.GOOGLE_ANALYTICS_MEASUREMENT_ID }}
@@ -67,6 +107,9 @@ jobs:
           injected = 0
 
           for path in Path(".").rglob("*.html"):
+              if "PTCG-DeckBuilder" in path.parts:
+                  continue
+
               data = path.read_bytes()
               if redirect_pattern.search(data) or b"analytics.js" in data:
                   continue
@@ -78,6 +121,13 @@ jobs:
 
           print(f"Injected analytics loader into {injected} HTML files.")
           PY
+
+      - name: Verify PTCG Deck Builder has no analytics loader
+        run: |
+          if grep -RIl --binary-files=without-match -E 'analytics\.js|googletagmanager|google-analytics|SENTRY|sentry' PTCG-DeckBuilder; then
+            echo "Analytics or logging loader found in PTCG artifact."
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

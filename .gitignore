@@ -3,3 +3,6 @@ vscode-codex-usage-status/
 __pycache__/
 output/
 test-results/
+PTCG-DeckBuilder/
+PTCG-DeckBuilder-src/node_modules/
+PTCG-DeckBuilder-src/dist/
