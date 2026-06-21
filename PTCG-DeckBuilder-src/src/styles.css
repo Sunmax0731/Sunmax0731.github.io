@@ -229,6 +229,34 @@ textarea:focus {
   flex: 1;
 }
 
+.deckExportPanel {
+  display: grid;
+  gap: 7px;
+  padding-top: 2px;
+}
+
+.deckSelectionTools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.deckSelectionTools button {
+  min-height: 30px;
+  font-size: 12px;
+}
+
+.deckZipButton {
+  width: 100%;
+}
+
+.deckSelectionCount {
+  color: #66736b;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .deckList {
   padding: 8px;
   display: grid;
@@ -236,23 +264,59 @@ textarea:focus {
   overflow: auto;
 }
 
+.deckItemRow {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d2ddd5;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 6px;
+}
+
+.deckItemRow.active {
+  border-color: #1f7a4b;
+  background: #edf8f1;
+}
+
+.deckExportToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deckExportToggle input {
+  width: 16px;
+  min-height: 16px;
+}
+
 .deckItem {
-  min-height: 54px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
   display: grid;
   align-items: center;
   justify-items: start;
   gap: 3px;
   text-align: left;
+  padding: 5px 6px;
 }
 
-.deckItem.active {
-  border-color: #1f7a4b;
-  background: #edf8f1;
+.deckItem:hover {
+  border: 0;
+  background: rgba(31, 122, 75, 0.06);
 }
 
 .deckItem strong {
+  max-width: 100%;
   font-size: 13px;
   line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .deckItem span,
@@ -372,11 +436,15 @@ textarea:focus {
 }
 
 .libraryHeader {
+  position: sticky;
+  top: 0;
+  z-index: 6;
   display: grid;
   gap: 8px;
   padding: 10px 12px;
   border-bottom: 1px solid #edf1ee;
   background: #ffffff;
+  box-shadow: 0 1px 0 rgba(22, 33, 27, 0.04);
 }
 
 .libraryHeaderTop {

@@ -8,6 +8,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode
 } from "react";
+import JSZip from "jszip";
 import {
   Copy,
   Download,
@@ -243,14 +244,25 @@ function safeFilename(value: string) {
   return (value || "deck").replace(/[\\/:*?"<>|]+/g, "_").trim() || "deck";
 }
 
+function downloadBlob(filename: string, blob: Blob) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function App() {
   const [locale, setLocale] = useState<Locale>(() => defaultLocale());
   const [cards, setCards] = useState<CardInfo[]>([]);
   const [zipBundle, setZipBundle] = useState<ZipDataBundle | null>(null);
   const [zipDragActive, setZipDragActive] = useState(false);
   const [zipLoading, setZipLoading] = useState(false);
+  const [zipExporting, setZipExporting] = useState(false);
   const [decks, setDecks] = useState<ManagedDeck[]>([]);
   const [selectedDeckId, setSelectedDeckId] = useState("");
+  const [selectedDeckExportIds, setSelectedDeckExportIds] = useState<string[]>([]);
   const [draft, setDraft] = useState<ManagedDeck | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -396,6 +408,20 @@ export default function App() {
     if (selected) {
       saveSelectedDeckId(selected.id);
     }
+  }, [decks, selectedDeckId]);
+
+  useEffect(() => {
+    setSelectedDeckExportIds((current) => {
+      const deckIds = new Set(decks.map((deck) => deck.id));
+      const next = current.filter((id) => deckIds.has(id));
+      if (next.length > 0) {
+        return next;
+      }
+      if (selectedDeckId && deckIds.has(selectedDeckId)) {
+        return [selectedDeckId];
+      }
+      return decks[0] ? [decks[0].id] : [];
+    });
   }, [decks, selectedDeckId]);
 
   useEffect(() => {
@@ -560,6 +586,12 @@ export default function App() {
   ]);
   const filteredCards = useMemo(() => matchedCards.slice(0, viewMode === "grid" ? 120 : 300), [matchedCards, viewMode]);
   const cardSheetUrl = zipBundle?.cardSheetUrls[locale] || `/api/card-sheet/${locale}`;
+  const selectedDecksForExport = useMemo(() => {
+    const selectedIds = new Set(selectedDeckExportIds);
+    return decks
+      .filter((deck) => selectedIds.has(deck.id))
+      .map((deck) => (draft && draft.id === deck.id ? draft : deck));
+  }, [decks, draft, selectedDeckExportIds]);
 
   function updateDraft(next: ManagedDeck) {
     setDraft(next);
@@ -663,6 +695,7 @@ export default function App() {
     setDecks(next);
     void persistDecks(next);
     setSelectedDeckId(deck.id);
+    setSelectedDeckExportIds([deck.id]);
     setSelectedCardId(null);
   }
 
@@ -675,6 +708,7 @@ export default function App() {
     setDecks(next);
     void persistDecks(next);
     setSelectedDeckId(deck.id);
+    setSelectedDeckExportIds([deck.id]);
   }
 
   function deleteDeck() {
@@ -756,6 +790,56 @@ export default function App() {
     downloadText(`${safeFilename(draft.name)}.review.json`, `${JSON.stringify(payload, null, 2)}\n`, "application/json;charset=utf-8");
   }
 
+  function toggleDeckExportId(deckId: string) {
+    setSelectedDeckExportIds((current) => (current.includes(deckId) ? current.filter((id) => id !== deckId) : [...current, deckId]));
+  }
+
+  async function exportSelectedDeckZip() {
+    if (selectedDecksForExport.length === 0 || zipExporting) {
+      return;
+    }
+    setZipExporting(true);
+    setError("");
+    try {
+      const zip = new JSZip();
+      const usedNames = new Map<string, number>();
+      const manifestDecks = selectedDecksForExport.map((deck, index) => {
+        const baseName = safeFilename(deck.name || `deck_${index + 1}`);
+        const usedCount = usedNames.get(baseName) || 0;
+        usedNames.set(baseName, usedCount + 1);
+        const folderName = usedCount === 0 ? baseName : `${baseName}_${usedCount + 1}`;
+        const file = `decks/${folderName}/deck.csv`;
+        zip.file(file, expandedCsv(deck.cards));
+        return {
+          id: deck.id,
+          name: deck.name,
+          totalCards: deckTotal(deck),
+          file
+        };
+      });
+      zip.file(
+        "manifest.json",
+        `${JSON.stringify(
+          {
+            schemaVersion: 1,
+            kind: "ptcg-deck-csv-bundle",
+            exportedAt: new Date().toISOString(),
+            deckCount: manifestDecks.length,
+            decks: manifestDecks
+          },
+          null,
+          2
+        )}\n`
+      );
+      const blob = await zip.generateAsync({ type: "blob", mimeType: "application/zip" });
+      downloadBlob(`ptcg-decks-${new Date().toISOString().slice(0, 10)}.zip`, blob);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setZipExporting(false);
+    }
+  }
+
   function importCsvFile(file: File) {
     file.text().then((text) => {
       const imported = createDeck(file.name.replace(/\.csv$/i, "") || `deck_${decks.length + 1}`, cardsFromCsv(text));
@@ -763,6 +847,7 @@ export default function App() {
       setDecks(next);
       void persistDecks(next);
       setSelectedDeckId(imported.id);
+      setSelectedDeckExportIds([imported.id]);
     });
   }
 
@@ -1169,18 +1254,40 @@ export default function App() {
                 {t(locale, "history")}
               </button>
             </div>
+            <div className="deckExportPanel">
+              <div className="deckSelectionTools">
+                <button type="button" onClick={() => setSelectedDeckExportIds(decks.map((deck) => deck.id))} disabled={decks.length === 0}>
+                  {t(locale, "selectAllDecks")}
+                </button>
+                <button type="button" onClick={() => setSelectedDeckExportIds([])} disabled={selectedDeckExportIds.length === 0}>
+                  {t(locale, "clearDeckSelection")}
+                </button>
+              </div>
+              <button type="button" className="primary deckZipButton" onClick={() => void exportSelectedDeckZip()} disabled={selectedDecksForExport.length === 0 || zipExporting}>
+                <Download size={16} />
+                {zipExporting ? t(locale, "exportingDeckZip") : t(locale, "exportSelectedZip")}
+              </button>
+              <span className="deckSelectionCount">
+                {t(locale, "selectedDecks")} {selectedDecksForExport.length} / {decks.length}
+              </span>
+            </div>
           </div>
           <div className="deckList">
             {decks.map((deck) => (
-              <button
-                type="button"
-                key={deck.id}
-                className={deck.id === selectedDeckId ? "deckItem active" : "deckItem"}
-                onClick={() => setSelectedDeckId(deck.id)}
-              >
-                <strong>{deck.name}</strong>
-                <span>{deckTotal(deck)} / 60</span>
-              </button>
+              <div key={deck.id} className={deck.id === selectedDeckId ? "deckItemRow active" : "deckItemRow"}>
+                <label className="deckExportToggle">
+                  <input
+                    type="checkbox"
+                    checked={selectedDeckExportIds.includes(deck.id)}
+                    onChange={() => toggleDeckExportId(deck.id)}
+                    aria-label={`${deck.name} ${t(locale, "zipTarget")}`}
+                  />
+                </label>
+                <button type="button" className="deckItem" onClick={() => setSelectedDeckId(deck.id)}>
+                  <strong>{deck.name}</strong>
+                  <span>{deckTotal(deck)} / 60</span>
+                </button>
+              </div>
             ))}
           </div>
         </aside>
