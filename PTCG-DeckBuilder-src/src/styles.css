@@ -1129,6 +1129,9 @@ textarea:focus {
 :root[data-theme="dark"] .deckItem,
 :root[data-theme="dark"] .deckItemRow,
 :root[data-theme="dark"] .deckPreview,
+:root[data-theme="dark"] .libraryHeader,
+:root[data-theme="dark"] .filters,
+:root[data-theme="dark"] .cardRow,
 :root[data-theme="dark"] .selectedCard,
 :root[data-theme="dark"] .modal,
 :root[data-theme="dark"] .moveDetails article {
@@ -1145,6 +1148,9 @@ textarea:focus {
 :root[data-theme="dark"] .dataSourcePill,
 :root[data-theme="dark"] .labSyncState,
 :root[data-theme="dark"] .countPill,
+:root[data-theme="dark"] .searchBox,
+:root[data-theme="dark"] .splitHandle,
+:root[data-theme="dark"] .dropEmpty,
 :root[data-theme="dark"] .columnMenu {
   border-color: #334757;
   background: #202d38;
@@ -1180,6 +1186,9 @@ textarea:focus {
 :root[data-theme="dark"] .dataSourcePill,
 :root[data-theme="dark"] .deckNameEdit span,
 :root[data-theme="dark"] .deckItem span,
+:root[data-theme="dark"] .libraryTitle span,
+:root[data-theme="dark"] .filterField > span,
+:root[data-theme="dark"] .cardRow > span,
 :root[data-theme="dark"] .labSyncState,
 :root[data-theme="dark"] .moveDetails article span,
 :root[data-theme="dark"] .zipDropZone span,
@@ -1203,6 +1212,12 @@ textarea:focus {
 
 :root[data-theme="dark"] .labSyncState.error {
   border-color: #8a3b32;
+  background: #351c1a;
+  color: #ffb4a8;
+}
+
+:root[data-theme="dark"] .warningText {
+  border-bottom-color: #7f2d28;
   background: #351c1a;
   color: #ffb4a8;
 }
