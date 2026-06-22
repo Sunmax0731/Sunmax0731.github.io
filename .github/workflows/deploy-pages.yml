@@ -32,8 +32,10 @@ jobs:
         run: |
           if [ ! -d "PTCG-DeckBuilder-src" ]; then
             echo "PTCG-DeckBuilder-src not found; skipping."
+            echo "PTCG_BUILD=0" >> "$GITHUB_ENV"
             exit 0
           fi
+          echo "PTCG_BUILD=1" >> "$GITHUB_ENV"
 
           cd PTCG-DeckBuilder-src
           npm ci
@@ -49,6 +51,11 @@ jobs:
 
       - name: Verify PTCG Deck Builder public artifact
         run: |
+          if [ "${PTCG_BUILD:-0}" != "1" ]; then
+            echo "PTCG Deck Builder retired; skipping artifact verification."
+            exit 0
+          fi
+
           if [ ! -d "PTCG-DeckBuilder" ]; then
             echo "PTCG-DeckBuilder artifact was not generated."
             exit 1
@@ -124,6 +131,11 @@ jobs:
 
       - name: Verify PTCG Deck Builder has no analytics loader
         run: |
+          if [ "${PTCG_BUILD:-0}" != "1" ]; then
+            echo "PTCG Deck Builder retired; skipping analytics verification."
+            exit 0
+          fi
+
           if grep -RIl --binary-files=without-match -E 'analytics\.js|googletagmanager|google-analytics|SENTRY|sentry' PTCG-DeckBuilder; then
             echo "Analytics or logging loader found in PTCG artifact."
             exit 1
