@@ -12,6 +12,7 @@ import JSZip from "jszip";
 import {
   Copy,
   Download,
+  ExternalLink,
   FileText,
   GripHorizontal,
   History,
@@ -19,11 +20,14 @@ import {
   LayoutGrid,
   List,
   MinusCircle,
+  Monitor,
+  Moon,
   Plus,
   PlusCircle,
   Save,
   Search,
   SlidersHorizontal,
+  Sun,
   Trash2,
   Upload,
   X
@@ -48,6 +52,7 @@ import type { CardInfo, DeckCard, Locale, ManagedDeck } from "./types";
 
 type ViewMode = "list" | "grid";
 type ModalMode = "policy" | "history" | null;
+type ThemeMode = "system" | "light" | "dark";
 type ColumnKey =
   | "id"
   | "name"
@@ -67,6 +72,7 @@ type ColumnKey =
   | "moves";
 type SortableColumnKey = Extract<ColumnKey, "id" | "hp" | "type" | "weakness" | "category" | "stage" | "retreat">;
 type SortDirection = "asc" | "desc";
+type LabSyncState = "idle" | "syncing" | "synced" | "skipped" | "error";
 
 type ColumnDef = {
   key: ColumnKey;
@@ -78,6 +84,16 @@ type ColumnDef = {
 };
 
 const appBaseUrl = (import.meta as unknown as { env?: { BASE_URL?: string } }).env?.BASE_URL || "/";
+const defaultAutoGameLabOrigin = ["127.0.0.1", "localhost", "::1"].includes(window.location.hostname)
+  ? "http://127.0.0.1:8765"
+  : window.location.pathname.startsWith("/deck-builder/")
+    ? window.location.origin
+    : "https://auto-game-lab.sunmaxapp.net";
+const autoGameLabApiBase = String(import.meta.env.VITE_AUTO_GAME_LAB_API_BASE || defaultAutoGameLabOrigin).replace(/\/$/, "");
+const autoGameLabUrl = String(
+  import.meta.env.VITE_AUTO_GAME_LAB_URL ||
+    (["127.0.0.1", "localhost", "::1"].includes(window.location.hostname) ? "http://127.0.0.1:5174" : defaultAutoGameLabOrigin)
+).replace(/\/$/, "");
 const sortableColumnKeys = new Set<ColumnKey>(["id", "hp", "type", "weakness", "category", "stage", "retreat"]);
 
 function cardName(cardById: Map<number, CardInfo>, id: number) {
@@ -185,6 +201,19 @@ function cardMetaSignature(cards: DeckCard[]) {
   );
 }
 
+async function responseErrorText(response: Response) {
+  const text = await response.text();
+  try {
+    const parsed = JSON.parse(text) as { error?: unknown };
+    if (parsed.error) {
+      return String(parsed.error);
+    }
+  } catch {
+    // Non-JSON responses are returned as-is so the UI can show the server message.
+  }
+  return text || `${response.status} ${response.statusText}`;
+}
+
 function sameNameCount(cards: DeckCard[], cardById: Map<number, CardInfo>, targetCard: CardInfo, excludeCardId?: number) {
   return cards.reduce((sum, deckCard) => {
     const card = cardById.get(deckCard.cardId);
@@ -255,11 +284,14 @@ function downloadBlob(filename: string, blob: Blob) {
 
 export default function App() {
   const [locale, setLocale] = useState<Locale>(() => defaultLocale());
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => (window.localStorage.getItem("ptcg-deck-builder-theme") as ThemeMode) || "system");
   const [cards, setCards] = useState<CardInfo[]>([]);
   const [zipBundle, setZipBundle] = useState<ZipDataBundle | null>(null);
   const [zipDragActive, setZipDragActive] = useState(false);
   const [zipLoading, setZipLoading] = useState(false);
   const [zipExporting, setZipExporting] = useState(false);
+  const [labSyncState, setLabSyncState] = useState<LabSyncState>("idle");
+  const [labSyncMessage, setLabSyncMessage] = useState("");
   const [decks, setDecks] = useState<ManagedDeck[]>([]);
   const [selectedDeckId, setSelectedDeckId] = useState("");
   const [selectedDeckExportIds, setSelectedDeckExportIds] = useState<string[]>([]);
@@ -306,6 +338,18 @@ export default function App() {
   const importCsvRef = useRef<HTMLInputElement | null>(null);
   const importZipRef = useRef<HTMLInputElement | null>(null);
   const splitRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const applyTheme = () => {
+      const resolved = themeMode === "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : themeMode;
+      document.documentElement.dataset.theme = resolved;
+      window.localStorage.setItem("ptcg-deck-builder-theme", themeMode);
+    };
+    applyTheme();
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", applyTheme);
+    return () => media.removeEventListener("change", applyTheme);
+  }, [themeMode]);
 
   useEffect(() => {
     if (zipBundle) {
@@ -747,6 +791,31 @@ export default function App() {
     setDecks(next);
     void persistDecks(next);
     setChangeIntent("");
+    void syncDeckToAutoGameLab(saved);
+  }
+
+  async function syncDeckToAutoGameLab(deck: ManagedDeck) {
+    if (deckTotal(deck) !== 60) {
+      setLabSyncState("skipped");
+      setLabSyncMessage(t(locale, "autoLabSyncSkipped"));
+      return;
+    }
+    setLabSyncState("syncing");
+    setLabSyncMessage(t(locale, "autoLabSyncing"));
+    try {
+      const form = new FormData();
+      form.append("kind", "deck_csv");
+      form.append("file", new File([expandedCsv(deck.cards)], `${safeFilename(deck.name || "deck")}.csv`, { type: "text/csv;charset=utf-8" }));
+      const response = await fetch(`${autoGameLabApiBase}/api/import`, { method: "POST", body: form, credentials: "include" });
+      if (!response.ok) {
+        throw new Error(await responseErrorText(response));
+      }
+      setLabSyncState("synced");
+      setLabSyncMessage(t(locale, "autoLabSynced"));
+    } catch (err) {
+      setLabSyncState("error");
+      setLabSyncMessage(`${t(locale, "autoLabSyncFailed")}: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   function exportCurrentCsv() {
@@ -1175,6 +1244,10 @@ export default function App() {
           <span className="dataSourcePill">
             {zipBundle ? `${t(locale, "zipLoaded")}: ${zipBundle.name}` : cards.length > 0 ? t(locale, "localApiData") : t(locale, "zipNotLoaded")}
           </span>
+          <a className="topLinkButton" href={autoGameLabUrl} target="_blank" rel="noreferrer">
+            <ExternalLink size={16} />
+            {t(locale, "openAutoLab")}
+          </a>
           <button type="button" onClick={exportCurrentCsv} disabled={!draft}>
             <Upload size={16} />
             {t(locale, "exportCsv")}
@@ -1206,6 +1279,15 @@ export default function App() {
             <select value={locale} onChange={(event) => setLocale(event.target.value as Locale)}>
               <option value="ja">日本語</option>
               <option value="en">English</option>
+            </select>
+          </label>
+          <label className="localeControl themeControl">
+            {themeMode === "dark" ? <Moon size={16} /> : themeMode === "light" ? <Sun size={16} /> : <Monitor size={16} />}
+            <span>{t(locale, "theme")}</span>
+            <select value={themeMode} onChange={(event) => setThemeMode(event.target.value as ThemeMode)}>
+              <option value="system">{t(locale, "systemTheme")}</option>
+              <option value="light">{t(locale, "lightTheme")}</option>
+              <option value="dark">{t(locale, "darkTheme")}</option>
             </select>
           </label>
         </div>
@@ -1253,7 +1335,12 @@ export default function App() {
                 <History size={16} />
                 {t(locale, "history")}
               </button>
+              <button type="button" onClick={() => draft && void syncDeckToAutoGameLab(draft)} disabled={!draft || labSyncState === "syncing"}>
+                <Upload size={16} />
+                {labSyncState === "syncing" ? t(locale, "autoLabSyncingShort") : t(locale, "registerAutoLab")}
+              </button>
             </div>
+            {labSyncMessage ? <span className={`labSyncState ${labSyncState}`}>{labSyncMessage}</span> : null}
             <div className="deckExportPanel">
               <div className="deckSelectionTools">
                 <button type="button" onClick={() => setSelectedDeckExportIds(decks.map((deck) => deck.id))} disabled={decks.length === 0}>

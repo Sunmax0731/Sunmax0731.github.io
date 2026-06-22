@@ -49,6 +49,11 @@ button {
   white-space: nowrap;
 }
 
+button,
+.topLinkButton {
+  text-decoration: none;
+}
+
 button:hover {
   border-color: #8eb39d;
 }
@@ -166,6 +171,28 @@ textarea:focus {
   font-size: 13px;
 }
 
+.themeControl {
+  grid-template-columns: auto auto 134px;
+}
+
+.topLinkButton {
+  border: 1px solid #d2ddd5;
+  background: #ffffff;
+  color: #16211b;
+  border-radius: 8px;
+  min-height: 34px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.topLinkButton:hover {
+  border-color: #8eb39d;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 254px minmax(520px, 1fr) 330px;
@@ -227,6 +254,30 @@ textarea:focus {
 .deckToolRow button,
 .viewSwitch button {
   flex: 1;
+}
+
+.labSyncState {
+  display: block;
+  min-height: 24px;
+  padding: 6px 8px;
+  border: 1px solid #d9e4dc;
+  border-radius: 6px;
+  background: #f7faf7;
+  color: #536057;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.labSyncState.synced {
+  border-color: #9bd6c3;
+  background: #effaf5;
+  color: #14745e;
+}
+
+.labSyncState.error {
+  border-color: #e8b4a6;
+  background: #fff5f1;
+  color: #bb3e22;
 }
 
 .deckExportPanel {
@@ -1056,6 +1107,111 @@ textarea:focus {
 .columnMenu input {
   width: 16px;
   min-height: 16px;
+}
+
+:root[data-theme="dark"] {
+  color: #e6edf3;
+  background: #101820;
+}
+
+:root[data-theme="dark"] body {
+  background: #101820;
+}
+
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .deckRail,
+:root[data-theme="dark"] .previewPane,
+:root[data-theme="dark"] .inspector,
+:root[data-theme="dark"] .deckFixed,
+:root[data-theme="dark"] .tableHead,
+:root[data-theme="dark"] .tableRow,
+:root[data-theme="dark"] .cardGridItem,
+:root[data-theme="dark"] .deckItem,
+:root[data-theme="dark"] .deckItemRow,
+:root[data-theme="dark"] .deckPreview,
+:root[data-theme="dark"] .selectedCard,
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .moveDetails article {
+  border-color: #2b3b49;
+  background: #17212b;
+  color: #e6edf3;
+}
+
+:root[data-theme="dark"] button,
+:root[data-theme="dark"] .topLinkButton,
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .dataSourcePill,
+:root[data-theme="dark"] .labSyncState,
+:root[data-theme="dark"] .countPill,
+:root[data-theme="dark"] .columnMenu {
+  border-color: #334757;
+  background: #202d38;
+  color: #e6edf3;
+}
+
+:root[data-theme="dark"] button:hover,
+:root[data-theme="dark"] .topLinkButton:hover {
+  border-color: #62b993;
+}
+
+:root[data-theme="dark"] button.primary {
+  border-color: #2ea66d;
+  background: #208354;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] button.danger {
+  border-color: #7f2d28;
+  color: #ffb4a8;
+}
+
+:root[data-theme="dark"] .brand h1,
+:root[data-theme="dark"] .deckItem strong,
+:root[data-theme="dark"] .cardTitle,
+:root[data-theme="dark"] .panelTitle,
+:root[data-theme="dark"] .selectedCard strong,
+:root[data-theme="dark"] .moveDetails h3 {
+  color: #f3f7fb;
+}
+
+:root[data-theme="dark"] .localeControl,
+:root[data-theme="dark"] .dataSourcePill,
+:root[data-theme="dark"] .deckNameEdit span,
+:root[data-theme="dark"] .deckItem span,
+:root[data-theme="dark"] .labSyncState,
+:root[data-theme="dark"] .moveDetails article span,
+:root[data-theme="dark"] .zipDropZone span,
+:root[data-theme="dark"] .deckSelectionCount,
+:root[data-theme="dark"] .columnMenu strong {
+  color: #a7b5c3;
+}
+
+:root[data-theme="dark"] .deckItemRow.active,
+:root[data-theme="dark"] .tableRow.selected,
+:root[data-theme="dark"] .cardGridItem.selected {
+  border-color: #2ea66d;
+  background: #173528;
+}
+
+:root[data-theme="dark"] .labSyncState.synced {
+  border-color: #27795f;
+  background: #123227;
+  color: #91e7c8;
+}
+
+:root[data-theme="dark"] .labSyncState.error {
+  border-color: #8a3b32;
+  background: #351c1a;
+  color: #ffb4a8;
+}
+
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus {
+  border-color: #2ea66d;
+  box-shadow: 0 0 0 3px rgba(46, 166, 109, 0.22);
 }
 
 @media (max-width: 1180px) {

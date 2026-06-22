@@ -47,12 +47,34 @@ npm run dev
 ## 静的ホスティングでの使い方
 
 GitHub Pagesなど、サーバーAPIを置けない環境では、アプリ画面上部の `ZIP読込` または画面へのドラッグ&ドロップで、手元の `pokemon-tcg-ai-battle.zip` を読み込みます。
+画面右上のテーマ切り替えでは、ライト、ダーク、システム標準を選べます。
+同じ場所の `Auto Game Lab` ボタンから、Team限定のAuto Game Labへ移動できます。
 
 この方式ではCSV/PDFはブラウザ内で展開され、サーバーへアップロードされません。
 ZIP、CSV、PDF、カード画像をGitHub Pagesやリポジトリへ配置しないでください。
 
 本ツールにはカードデータ、Kaggle Competition Data、カード画像、公式ロゴ、公式カード本文、チーム固有の戦略、実デッキ例、スコアリング設定は含まれていません。
 利用者は各自でKaggleのRulesに同意し、自分の環境で取得したZIPを読み込ませる前提です。
+
+## Auto Game Lab連携
+
+Team限定remote workerでは、Deck BuilderをAuto Game Labと同じVPSの `/deck-builder/` で配信します。
+この環境で60枚のデッキを保存すると、ブラウザは提出用 `deck.csv` 相当のCard IDだけを同一originの `/api/import` へ送信します。
+Auto Game Labは受け取ったデッキを登録済みデッキ一覧へ追加します。
+登録済みデッキ一覧はサーバー上で共有されるため、他のTeam利用者がAuto Game Labから同じデッキCSVを選択できます。
+
+この連携で送信するのはCard IDの60行CSVだけです。
+ZIP、カードCSV、PDF、カード画像、カード本文、役割メモ、変更履歴は送信しません。
+
+ローカル開発で別originのAuto Game Lab APIへ接続する場合は、Deck Builder起動時に `VITE_AUTO_GAME_LAB_API_BASE` を指定します。
+
+```powershell
+$env:VITE_AUTO_GAME_LAB_API_BASE="http://127.0.0.1:8765"
+npm run dev
+```
+
+静的GitHub Pages版からTeam限定Auto Game Lab APIへ登録する場合は、ビルド時に `VITE_AUTO_GAME_LAB_API_BASE` を本番URLへ向けます。
+API側は許可Originと認証を設定しておく必要があります。
 
 ## データとプライバシー
 
@@ -67,6 +89,8 @@ ZIP、CSV、PDF、カード画像をGitHub Pagesやリポジトリへ配置し�
 
 - OSの言語設定に応じた日本語/英語の初期表示
 - 表示言語の手動切り替え
+- ライト、ダーク、システム標準テーマの切り替え
+- Auto Game Labへのリンクボタン
 - ZIP内CSVをもとにしたカード検索
 - ZIPファイルのドラッグ&ドロップ読み込み
 - カード種類、タイプ、HP範囲、エキスパンション、進化段階、ルール、弱点、抵抗力、にげる、特性、ワザ情報、投入枚数によるフィルター/ソート
